@@ -114,9 +114,21 @@
   .tabs button { all:unset; cursor:pointer; font-size:13px; padding:8px 10px; color:var(--muted); border-bottom:2px solid transparent; margin-bottom:-1px; }
   .tabs button.on { color:var(--ink); border-color:var(--ink); }
   .start small { display:block; margin-top:18px; color:var(--muted); font-size:12px; }
+  /* Ficha COMPACTA (zonas y objetos): pequeña, a la izquierda, deja ver el espacio. "Más información" la amplía. */
+  .panel.compact { left:20px; right:auto; top:84px; width:300px; padding:16px 18px; max-height:calc(100vh - 380px); transform:translateX(-120%); }
+  .panel.compact.open { transform:none; }
+  .panel.compact h2 { font-size:22px; } .panel.compact .desc { font-size:13px; margin:6px 0 0; }
+  .panel.compact .chips { margin:10px 0 2px; } .panel.compact .chips span { font-size:11px; padding:4px 8px; }
+  .panel.compact .gal .main, .panel.compact .gal small, .panel.compact .solo-full { display:none; }
+  .panel.compact .gal { margin:10px 0 0; } .panel.compact .gal .th { margin-top:0; } .panel.compact .gal .th img { width:46px; height:46px; opacity:1; outline:none; }
+  .panel.compact.expanded .gal .main, .panel.compact.expanded .solo-full { display:block; }
+  .panel.compact.expanded { max-height:calc(100vh - 200px); width:340px; }
+  .panel .mas-btn { all:unset; cursor:pointer; font-size:12px; color:var(--ink); text-decoration:underline; text-underline-offset:3px; margin-top:12px; display:inline-block; }
+  .panel.compact .pasos { margin-top:12px; } .panel.compact .pasos button { padding:7px 10px; font-size:12px; }
   .wa-fab { position:fixed; right:20px; bottom:20px; width:52px; height:52px; border-radius:50%; background:#1f7a4d; color:#fff; display:grid; place-items:center;
             box-shadow:0 6px 18px rgba(0,0,0,.18); z-index:5; transition:transform .2s; } .wa-fab:hover { transform:scale(1.06); }
   body.panelopen .wa-fab { opacity:0; pointer-events:none; }
+  body.compactopen .plano { opacity:.0; pointer-events:none; } @media (min-height:760px) { body.compactopen .plano { opacity:1; pointer-events:auto; } }
   .wa-cta { display:flex; align-items:center; justify-content:center; gap:8px; margin:18px 0 4px; padding:12px; border-radius:999px; background:#1f7a4d; color:#fff;
             text-decoration:none; font-size:13px; letter-spacing:.04em; } .wa-cta:hover { background:#196640; }
   @media (max-width:700px) {
@@ -128,8 +140,12 @@
     body.walk .panel { top:auto; }
     .brand h1 { font-size:24px; } .check { display:none; }
     .panel { top:auto; bottom:104px; right:10px; left:10px; width:auto; max-height:calc(100vh - 190px); border-radius:16px; transform:translateY(140%); }   /* la ficha queda ENCIMA de la barra de zonas: los botones siguen accesibles */
+    .panel.compact, .panel.compact.expanded { top:auto; bottom:104px; left:10px; right:10px; width:auto; max-height:32vh; transform:translateY(160%); }
+    .panel.compact.expanded { max-height:calc(100vh - 190px); }
+    body.walk .panel.compact { top:auto; } body.compactopen .plano { display:none !important; }
     .bar { bottom:12px; }
   }
+  @media (max-width:460px) { .brand { top:16px; left:14px; } .brand h1 { font-size:17px !important; letter-spacing:.04em; } .hora button { padding:6px 8px; } }
   @media (max-width:700px) and (pointer:fine) {     /* ventana angosta en computador: el plano sigue visible */
     .plano { display:block; top:70px; } .pill.mob { display:none; }
   }
@@ -147,7 +163,7 @@
 <a class="wa-fab" id="waBtn" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.5-.3z"/></svg></a>
 <div class="topr">
   <div class="hora" id="hora" aria-label="Hora del día">
-    <button data-hora="dia" class="on" title="Día">☀︎<span>Día</span></button><button data-hora="atardecer" title="Atardecer">◐<span>Atardecer</span></button><button data-hora="noche" title="Noche">☾<span>Noche</span></button>
+    <button data-hora="dia" class="on" title="Día">☀︎<span>Día</span></button><button data-hora="atardecer" title="Atardecer">◑<span>Atardecer</span></button><button data-hora="noche" title="Noche">☾<span>Noche</span></button>
   </div>
   <button class="pill" id="infoBtn">La locación</button>
   <button class="pill mob" id="planoBtn">Plano</button>
@@ -294,11 +310,12 @@ const gallery = fotos => {
   if (!fotos || !fotos.length) return '';
   const src = f => `./fotos/${f}.jpg`;
   return `<div class="gal"><img class="main" src="${src(fotos[0])}" alt="">` +
-    (fotos.length > 1 ? `<div class="th">${fotos.map((f, i) => `<img src="${src(f)}" data-src="${src(f)}" class="${i ? '' : 'on'}" alt="">`).join('')}</div>` : '') +
+    (fotos.length ? `<div class="th">${fotos.map((f, i) => `<img src="${src(f)}" data-src="${src(f)}" class="${i ? '' : 'on'}" alt="">`).join('')}</div>` : '') +
     `<small>${esc(inv.nota_fotos || '')}</small></div>`;
 };
 pbody.addEventListener('click', e => {
   const t = e.target;
+  if (t.matches('.gal .th img') && panel.classList.contains('compact') && !panel.classList.contains('expanded')) { const lb = document.getElementById('lightbox'); lb.querySelector('img').src = t.dataset.src; lb.style.display = 'grid'; return; }
   if (t.matches('.gal .th img')) { pbody.querySelector('.gal .main').src = t.dataset.src; pbody.querySelectorAll('.gal .th img').forEach(x => x.classList.toggle('on', x === t)); }
   if (t.matches('.gal .main')) { const lb = document.getElementById('lightbox'); lb.querySelector('img').src = t.src; lb.style.display = 'grid'; }
 });
@@ -313,9 +330,11 @@ function showObject(u) {
   const enMontaje = counts[u.tipo] ? [{ k: 'En este montaje', v: String(counts[u.tipo]), estado: 'confirmado' }] : [];
   campos = campos.filter(c => !(enMontaje.length && c.k === 'Cantidad en montaje'));   // evita el dato repetido
   pbody.innerHTML = `${u.volver !== undefined && u.volver >= 0 ? `<button class="pill" data-volver="${u.volver}" style="padding:5px 12px;font-size:12px;margin-bottom:10px">← ${esc(ZONAS[u.volver].label)}</button>` : ''}<div class="cat">${esc(t.categoria || '')}</div><h2>${esc(t.nombre)}</h2><div class="id">${esc(u.id)}</div>
-    ${gallery(t.fotos)}<p class="desc">${esc(u.nota || t.descripcion || '')}</p>${rows([...campos, ...(t.categoria === 'Mobiliario' ? enMontaje : [])])}
-    <p class="note interno">Modelo 3D: ${esc(t.modelo3d || '')}. Posición en el montaje: provisional.</p>${cta(t.nombre)}`;
-  panel.classList.add('open'); document.body.classList.add('panelopen'); window.__hs?.setPaused(true); tip.style.display = 'none';
+    <p class="desc">${esc(u.nota || t.descripcion || '')}</p>${gallery(t.fotos)}
+    <div class="solo-full">${rows([...campos, ...(t.categoria === 'Mobiliario' ? enMontaje : [])])}
+    <p class="note interno">Modelo 3D: ${esc(t.modelo3d || '')}. Posición en el montaje: provisional.</p>${cta(t.nombre)}</div>
+    <button class="mas-btn" data-mas="1">Ver medidas y detalles</button>`;
+  abrirPanel(true);
 }
 // ---- Zonas: navegación principal (orden del recorrido guiado) ----
 const ZONAS = [
@@ -350,10 +369,11 @@ function showZona(i) {
     ${s.destacados ? `<div class="chips">${s.destacados.map(c => `<span>${esc(c)}</span>`).join('')}</div>` : ''}
     ${gallery(s.fotos)}
     ${tipos.length ? `<div class="sub">En esta zona</div><div class="aqui">${tipos.map(([t, n]) => `<button data-tipo="${t}">${esc(inv.tipos[t]?.nombre || t)}<b>${n}</b></button>`).join('')}</div>` : ''}
-    <details class="mas"><summary class="sub" style="cursor:pointer">Más detalles</summary>${rows(s.campos || [])}</details>
+    <div class="solo-full"><div class="sub">Detalles</div>${rows(s.campos || [])}${cta(s.nombre)}</div>
+    <button class="mas-btn" data-mas="1">Más información</button>
     <div class="pasos"><button data-z="${i - 1}" ${i ? '' : 'disabled'}>← ${i ? esc(ZONAS[i - 1].label) : ''}</button><button data-z="${i + 1}" ${i < ZONAS.length - 1 ? '' : 'disabled'}>${i < ZONAS.length - 1 ? esc(ZONAS[i + 1].label) : ''} →</button></div>
-    ${cta(s.nombre)}`;
-  panel.classList.add('open'); document.body.classList.add('panelopen'); window.__hs?.setPaused(true); tip.style.display = 'none';
+`;
+  abrirPanel(true);
 }
 pbody.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
@@ -361,6 +381,7 @@ pbody.addEventListener('click', e => {
   if (b.dataset.tipo) { const o = venue.objetos.find(q => q.tipo === b.dataset.tipo); if (o) showObject({ id: o.id, tipo: o.tipo, nota: o.nota, volver: zonaActual }); }
   if (b.dataset.tab) showVenue(b.dataset.tab);
   if (b.dataset.volver !== undefined) showZona(+b.dataset.volver);
+  if (b.dataset.mas) { const ex = panel.classList.toggle('expanded'); b.textContent = ex ? 'Menos información' : 'Más información'; }
 });
 function showSpace(id) { const i = ZONAS.findIndex(z => z.id === id); if (i >= 0) { marcarZona(i); showZona(i); } }
 // ---- Contacto por WhatsApp (número y mensaje se editan en inventario.json → venue.contacto) ----
@@ -392,7 +413,7 @@ function showVenue(tab = 'resumen') {
     Object.entries(counts).filter(([t]) => inv.tipos[t]?.categoria === 'Mobiliario').map(([t, n]) => `<button data-tipo="${t}">${esc(inv.tipos[t].nombre)}<b>${n}</b></button>`).join('') + '</div>';
   pbody.innerHTML = `<div class="cat">La locación</div><h2>${esc(v.nombre)}</h2>
     <div class="tabs">${Object.entries(T).map(([k, l]) => `<button data-tab="${k}" class="${k === tab ? 'on' : ''}">${l}</button>`).join('')}</div>${body}${cta()}`;
-  panel.classList.add('open'); document.body.classList.add('panelopen'); window.__hs?.setPaused(true);
+  abrirPanel(false);
 }
 document.getElementById('infoBtn').onclick = () => showVenue();
 // Modo cliente (por defecto): oculta IDs, etiquetas de estado, datos no confirmados y notas técnicas.
@@ -403,7 +424,13 @@ addEventListener('keydown', e => {
     if (panel.classList.contains('open') && ultimaFicha) ultimaFicha();
   }
 });
-function closePanel() { panel.classList.remove('open'); document.body.classList.remove('panelopen'); window.__hs?.setPaused(false); }
+function closePanel() { panel.classList.remove('open', 'expanded'); document.body.classList.remove('panelopen', 'compactopen'); window.__hs?.setPaused(false); }
+// compacta = zona / objeto (no tapa el recorrido); completa = "La locación"
+function abrirPanel(compacta) {
+  panel.classList.toggle('compact', compacta); panel.classList.remove('expanded'); panel.classList.add('open'); panel.scrollTop = 0;
+  document.body.classList.toggle('panelopen', !compacta); document.body.classList.toggle('compactopen', compacta);
+  if (!compacta) window.__hs?.setPaused(true); tip.style.display = 'none';
+}
 document.getElementById('close').onclick = closePanel;
 
 // ---- Selección ----
