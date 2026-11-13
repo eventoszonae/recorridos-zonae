@@ -307,6 +307,25 @@ buckets['madera_deck'] += box(15.23, 21.97, 3.07 - BANDA, 3.07, ZP - 0.04, ZP - 
 buckets['concreto_sendero'] += box(15.75, 21.97, 3.07, 6.05, -0.70, ZP)
 for _k in ('concreto_sendero', 'madera_deck'):
     buckets[_k] = _up(buckets[_k])
+# Zócalo del salón (Zona E 13-nov: entre el sendero y el salón se veía una franja de prado: debe ser concreto).
+# La losa del Rhino mide 0,25 m de espesor y el prado está a -0,68: se cierra el borde exterior de la losa
+# con un faldón de concreto desde -0,25 hasta el terreno, siguiendo exactamente su contorno.
+def _zocalo_losa(oid, z_top=-0.25, z_bot=-0.74):
+    m = M[oid]; tops = []
+    for f in m['f']:
+        q = V[np.array(f) - 1]
+        if np.abs(q[:, 2]).max() < 0.01: tops.append([tuple(np.round(v[:2], 4)) for v in q])
+    cuenta = {}
+    for q in tops:
+        for i in range(len(q)):
+            e = tuple(sorted((q[i], q[(i + 1) % len(q)]))); cuenta[e] = cuenta.get(e, 0) + 1
+    out = []
+    for (a, b), c in cuenta.items():
+        if c != 1: continue
+        A0, B0 = np.array([a[0], a[1], z_top]), np.array([b[0], b[1], z_top]); A1, B1 = A0.copy(), B0.copy(); A1[2] = B1[2] = z_bot
+        out += [np.array([A0, B0, B1]), np.array([A0, B1, A1]), np.array([A0, B1, B0]), np.array([A0, A1, B1])]   # dos caras
+    return out
+buckets['concreto'] += _zocalo_losa(36527)
 # Zona de servicio trasera (detrás de los baños): Zona E 12-nov – "debe tener una pared, no se ve lo que hay adentro".
 # Se cierran los 3 lados abiertos bajo la cubierta trasera (sur, oeste y este), desde el sardinel hasta la viga. Material [E]: muro claro.
 buckets['muro_claro'] += box(21.97, 37.91, -8.72, -8.60, 0.0, 2.75)     # sur
