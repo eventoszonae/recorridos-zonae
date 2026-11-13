@@ -372,7 +372,13 @@
         "salon-mesas-2",
         "bar-2"
       ],
-      "descripcion": "Pabellón de vidrio y acero negro con techo de guirnaldas de luces. Espacio principal de la fiesta."
+      "descripcion": "Pabellón de vidrio y acero negro con techo de guirnaldas de luces. Espacio principal de la fiesta.",
+      "resumen": "Pabellón de vidrio y acero negro con techo de guirnaldas de luces.",
+      "destacados": [
+        "80 personas",
+        "≈ 167 m²",
+        "4 m de altura"
+      ]
     },
     "GH-ESP-DECK": {
       "nombre": "Deck de cóctel",
@@ -393,7 +399,13 @@
         "coctel-lago",
         "sala-celosia"
       ],
-      "descripcion": "Terraza de madera cubierta por el alero, con vista al lago. Espacio del cóctel."
+      "descripcion": "Terraza de madera cubierta por el alero, con vista al lago. Espacio del cóctel.",
+      "resumen": "Terraza de madera bajo el alero, suspendida sobre el jardín y mirando al lago.",
+      "destacados": [
+        "≈ 110 m²",
+        "6 cocteleras · 24 sillas",
+        "Sala de hierro"
+      ]
     },
     "GH-ESP-SERVICIOS": {
       "nombre": "Bar y servicios",
@@ -407,7 +419,13 @@
       "fotos": [
         "bar-1"
       ],
-      "descripcion": "Bar interno con barra en L de espejo y acero, y acceso a los baños."
+      "descripcion": "Bar interno con barra en L de espejo y acero, y acceso a los baños.",
+      "resumen": "Barra en L de espejo y acero, nicho de espejos y acceso a los baños.",
+      "destacados": [
+        "Barra incluida",
+        "Baños de hombres y mujeres",
+        "Lámparas de ratán"
+      ]
     },
     "GH-ESP-ENTRADA": {
       "nombre": "Llegada y pasarela",
@@ -441,7 +459,13 @@
       "fotos": [
         "llegada-sendero"
       ],
-      "descripcion": "Llegada de los invitados: adoquín, sendero de concreto y pasarela de madera entre jardines de palmas."
+      "descripcion": "Llegada de los invitados: adoquín, sendero de concreto y pasarela de madera entre jardines de palmas.",
+      "resumen": "Sendero de concreto y madera entre jardines tropicales.",
+      "destacados": [
+        "3,10 m de ancho",
+        "Jardines y palmas",
+        "Luz en el sendero"
+      ]
     },
     "GH-ESP-MUELLE": {
       "nombre": "Muelle",
@@ -472,7 +496,13 @@
         "muelle-2",
         "sala-lago"
       ],
-      "descripcion": "Muelle de madera sobre la orilla del lago, con sala de hierro forjado."
+      "descripcion": "Muelle de madera sobre la orilla del lago, con sala de hierro forjado.",
+      "resumen": "Plataforma de madera sobre la orilla del lago, a 9 m del deck.",
+      "destacados": [
+        "8 × 4 m",
+        "Sala de corazones",
+        "Reflector de noche"
+      ]
     },
     "GH-ESP-CEREMONIA": {
       "nombre": "Zona de ceremonia",
@@ -498,6 +528,12 @@
           "v": "Ubicados de forma aproximada en el plano",
           "estado": "estimado"
         }
+      ],
+      "resumen": "Prado frente al lago; el altar mira hacia el muelle.",
+      "destacados": [
+        "80 personas",
+        "Vista al lago",
+        "Bancas doradas disponibles"
       ]
     },
     "GH-ESP-SUITE": {
@@ -522,6 +558,11 @@
           "v": "No modelado todavía",
           "estado": "pendiente"
         }
+      ],
+      "resumen": "Casa independiente junto al Green House para la preparación.",
+      "destacados": [
+        "Incluida en el alquiler",
+        "Junto al salón"
       ]
     }
   },
