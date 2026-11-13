@@ -14,7 +14,7 @@ export const ESCALA = {
 // Texturas tomadas de los ESCANEOS de Zona E (13-nov): [archivo, ancho m, largo m]
 const ESCANEO = {
   concreto_sendero: ['concreto_sendero', 1.5, 2.35],   // concreto real con junta cada ~2,35 m
-  madera_banda: ['madera_banda', 0.75, 7.5],           // bandas de madera de la llegada (tablillas a lo largo)
+  madera_banda: ['madera_cielo', 1.8, 1.8],           // Zona E 13-nov: bandas de la llegada = misma madera del cielo del alero
 };
 
 const loader = new THREE.TextureLoader();
@@ -96,7 +96,7 @@ export async function aplicarMateriales(root, renderer) {
     madera_cielo: { roughness: 0.7, color: 0x9a7058 },    // fotos: madera café oscura
     madera_pasarela: { roughness: 0.8, color: 0xffffff },
     concreto_sendero: { roughness: 0.92, color: 0xffffff },
-    madera_banda: { roughness: 0.85, color: 0xffffff },
+    madera_banda: { roughness: 0.72, color: 0x9a7058 },
     madera_rojiza:{ roughness: 0.5, color: 0xffffff },
     acero_negro:  { roughness: 0.5, metalness: 0.5, color: 0x1b1b1b },
     techo_negro:  { roughness: 0.85, metalness: 0.1, color: 0x161616 },
