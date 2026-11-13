@@ -212,8 +212,8 @@ def _up(tris):
     return out
 # ---------- Sendero de llegada y pasarela (plano de modulación + videos ENTRADA y PASARELA) ----------
 # Medidas tomadas del plano de modulación (escala calibrada con las columnas). [E] ancho total ≈ 2,67 m.
-ZP = -0.66                         # Concreto a ras del prado (prado = -0,68; deck/salón = 0,00)
-Z_PAS_FIN = -0.34                  # La pasarela de madera se despega del prado y sube hasta 2 escalones bajo el deck [E: 2 × 0,17 m]
+ZP = -0.34                         # Zona E 13-nov: la entrada va ~0,34 m bajo el salón (2 escalones de 0,17); prado de la entrada = -0,36
+Z_PAS_FIN = -0.34                  # La pasarela va plana al nivel de la entrada y llega al deck con 2 escalones [E: 2 × 0,17 m]
 def ribbon(center, half_w, z, offs=(-1, 1)):
     zf = z if callable(z) else (lambda k: z)
     """Cinta a lo largo de una polilínea (x,y). offs = fracciones del medio ancho que limitan la cinta."""
@@ -256,7 +256,7 @@ for k in range(len(curva)-1):
 # La banda izquierda SIGUE LA CURVA del concreto (franja de 0,52 m pegada a su borde exterior) y desde esa curva
 # arranca el corredor de madera de 1,50 m hacia el cóctel, sin montarse sobre el concreto.
 XL0, XL1 = X0, X0 + 1.50
-Z_RECTO_FIN = -0.56
+Z_RECTO_FIN = -0.34
 Y_SUBE = Y_CURVA + cry
 zw = lambda y: ZP + (Z_RECTO_FIN - ZP) * np.clip((y - Y_SUBE) / (10.30 - Y_SUBE), 0, 1)
 orx, ory = crx + BANDA, cry + BANDA                                   # elipse exterior de la banda

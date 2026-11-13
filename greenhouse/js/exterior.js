@@ -8,14 +8,23 @@ const P = (x, y, h = 0) => new THREE.Vector3(x, h, -y);
 // Terreno plano al nivel del prado (-0,68 m bajo el salón) y fondo del lago bajo el agua.
 let LAGO = null, ORILLA_BB = null; const SEG_GRID = new Map(), CELDA_LAGO = new Map();   // tramos de orilla por celda de 4 m (rápido)
 const NIVEL_AGUA = -0.95;
+/** Nivel del prado SIN la orilla (Zona E 13-nov: el lote es desnivelado).
+ *  Entrada, jardines y costados del salón: ~0,34 m bajo el salón (la pasarela llega al deck con 2 escalones).
+ *  Desde el borde del deck hacia el lago el prado baja como una lomita: al pie de los escalones del deck queda
+ *  a -0,69 y sigue bajando suave hasta el muelle. Transiciones: ESTIMADAS. */
+export function nivelPrado(y) {
+  const S = THREE.MathUtils.smoothstep;
+  return -0.36 - 0.33 * S(y, 12.3, 14.4) - 0.12 * S(y, 14.4, 21.5);
+}
 /** Altura del terreno. Orilla irregular (Zona E): unos tramos del borde quedan más altos (barranco de pasto)
  *  y otros bajan suave hasta el agua. Frente al muelle se mantiene el nivel del prado. Alturas ESTIMADAS. */
 export function alturaTerreno(y, x = 0) {
-  if (!LAGO) return -0.69;
+  const base = nivelPrado(y);
+  if (!LAGO) return base;
   const key = Math.floor(x / 4) + ',' + Math.floor(y / 4), segs = SEG_GRID.get(key);
   if (!segs) {                                   // celda sin orilla: toda adentro o toda afuera del lago (se calcula una vez)
     if (!CELDA_LAGO.has(key)) CELDA_LAGO.set(key, inside([x, y], LAGO));
-    return CELDA_LAGO.get(key) ? -1.8 : -0.69;
+    return CELDA_LAGO.get(key) ? -1.8 : base;
   }
   const dentro = inside([x, y], LAGO);
   let d = Infinity;
@@ -24,15 +33,15 @@ export function alturaTerreno(y, x = 0) {
     d = Math.min(d, Math.hypot(x - ax - t * dx, y - ay - t * dy));
   }
   if (dentro) return Math.max(-1.8, NIVEL_AGUA - 0.08 - d * 0.55);
-  if (d > 4) return -0.69;
+  if (d > 4) return base;
   const cercaMuelle = Math.abs(x) < 6 && y > 18;
   const n = 0.5 + 0.5 * (0.6 * Math.sin(x * 0.33 + y * 0.12) + 0.4 * Math.sin(x * 0.87 - y * 0.41 + 1.3));   // 0..1
-  const borde = cercaMuelle ? -0.69 : -0.69 + (n - 0.4) * 0.6;                 // -0,93 (bajo) … -0,33 (barranco)
+  const borde = cercaMuelle ? base : base + (n - 0.4) * 0.6;                    // tramo bajo … barranco
   if (d < 0.6) {                                                    // cara del borde: barranco empinado o playa suave
     const k = n > 0.55 ? THREE.MathUtils.smoothstep(d, 0, 0.25) : d / 0.6;
     return THREE.MathUtils.lerp(NIVEL_AGUA - 0.12, borde, k);
   }
-  return THREE.MathUtils.lerp(borde, -0.69, THREE.MathUtils.smoothstep(d, 0.6, 4));
+  return THREE.MathUtils.lerp(borde, base, THREE.MathUtils.smoothstep(d, 0.6, 4));
 }
 /** Malla del prado con la pendiente hacia el lago. */
 export function crearTerreno(material, lago) {
@@ -135,7 +144,7 @@ function crearAdoquin(scene, poly) {
   geo.rotateX(-Math.PI / 2);
   const p = geo.attributes.position, uv = geo.attributes.uv;
   for (let i = 0; i < p.count; i++) uv.setXY(i, p.getX(i), p.getZ(i));
-  const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ map: t, roughness: 0.9 })); m.position.y = -0.665; m.receiveShadow = true;
+  const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ map: t, roughness: 0.9 })); { const cx = poly.reduce((a, q) => a + q[0], 0) / poly.length, cy = poly.reduce((a, q) => a + q[1], 0) / poly.length; m.position.y = alturaTerreno(cy, cx) + 0.025; } m.receiveShadow = true;
   scene.add(m); return m;
 }
 
@@ -207,17 +216,17 @@ export function construirExterior(scene, ext, opts = {}) {
       const dE = distEdificio(x, y);
       if (dE < 0.6) continue;                                            // pegado al muro: sin planta
       const borde = dE < 1.3 ? 0 : Math.min(1, distBorde([x, y], poly) / Math.max(0.6, prof * 0.8));   // cerca del muro: solo plantas bajas
-      puntos.push({ x, y, z: alturaTerreno(y), borde });
+      puntos.push({ x, y, z: alturaTerreno(y, x), borde });
     }
     arbustosTropicales(scene, puntos, 5 + puntos.length);
   }
   for (const p of ext.palmas) {
     const g = palm(p.alto, THREE.MathUtils.degToRad(p.giro), r, p.pos, chocaEdificio);
-    g.position.copy(P(p.pos[0], p.pos[1], alturaTerreno(p.pos[1]))); scene.add(g);
+    g.position.copy(P(p.pos[0], p.pos[1], alturaTerreno(p.pos[1], p.pos[0]))); scene.add(g);
   }
   // Bolardos de luz (video ENTRADA): poste negro ~0,6 m con difusor blanco [medidas E]
   for (const [x, y] of ext.bolardos) {
-    const h0 = alturaTerreno(y);
+    const h0 = alturaTerreno(y, x);
     const post = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.5, 12), M.bolardo); post.position.copy(P(x, y, h0 + 0.25));
     const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.12, 12), M.luz); cap.position.copy(P(x, y, h0 + 0.56));
     post.castShadow = true; scene.add(post, cap);
@@ -228,12 +237,12 @@ export function construirExterior(scene, ext, opts = {}) {
     let g = new THREE.DodecahedronGeometry(0.5, 1); g.deleteAttribute('normal'); g.deleteAttribute('uv'); g = mergeVertices(g); const pos = g.attributes.position;   // vértices unidos: la deformación no abre la piedra
     for (let i = 0; i < pos.count; i++) { const k = 0.72 + r() * 0.5; pos.setXYZ(i, pos.getX(i) * k, pos.getY(i) * (0.75 + r() * 0.4), pos.getZ(i) * k); }
     g.computeVertexNormals(); g.scale(0.9, p.alto, 0.7);
-    const m = new THREE.Mesh(g, M.piedra); m.position.copy(P(p.pos[0], p.pos[1], -0.69 + p.alto * 0.42)); m.rotation.y = r() * 6;
+    const m = new THREE.Mesh(g, M.piedra); m.position.copy(P(p.pos[0], p.pos[1], alturaTerreno(p.pos[1], p.pos[0]) + p.alto * 0.42)); m.rotation.y = r() * 6;
     m.castShadow = true; scene.add(m);
   }
   if (ext.lago) { extra.update = crearLago(scene, ext.lago); crearOrilla(scene, ext.lago, r); }
   if (ext.muelle && opts.madera) extra.floors.push(crearMuelle(scene, ext.muelle, opts.madera));
-  (ext.guaduas || []).forEach((gd, i) => crearGuadual(scene, gd, alturaTerreno(gd.pos[1], gd.pos[0]) === -1.8 ? -0.69 : alturaTerreno(gd.pos[1], gd.pos[0]), 11 + i * 17));
+  (ext.guaduas || []).forEach((gd, i) => crearGuadual(scene, gd, Math.max(alturaTerreno(gd.pos[1], gd.pos[0]), NIVEL_AGUA), 11 + i * 17));
   pinosFondo(scene);
   return extra;
 }
