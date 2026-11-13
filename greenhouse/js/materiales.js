@@ -15,6 +15,9 @@ export const ESCALA = {
 const ESCANEO = {
   concreto_sendero: ['concreto_sendero', 1.5, 2.35],   // concreto real con junta cada ~2,35 m
   madera_banda: ['madera_cielo', 1.8, 1.8],           // Zona E 13-nov: bandas de la llegada = misma madera del cielo del alero
+  damero: ['damero', 1.57, 1.57],                      // ESCANEO del nicho: baldosas de 19,6 cm alineadas con los muros (no en diagonal)
+  madera_nicho: ['madera_nicho', 1.22, 2.44],          // FOTO del nicho: láminas de triplex con veta y tira dorada
+  concreto: ['concreto_sendero', 1.5, 2.35],           // zócalos y losas: el mismo concreto real del sendero
 };
 
 const loader = new THREE.TextureLoader();
@@ -102,7 +105,8 @@ export async function aplicarMateriales(root, renderer) {
     techo_negro:  { roughness: 0.85, metalness: 0.1, color: 0x161616 },
     verde_bosque: { roughness: 0.45, color: 0xffffff },
     damero:       { roughness: 0.3, color: 0xffffff },
-    madera_nicho: { roughness: 0.5, color: 0xffffff },
+    concreto:     { roughness: 0.9, color: 0xe8e4dc },
+    madera_nicho: { roughness: 0.5, color: 0xe6d2b8 },
     metal_cafe:   { roughness: 0.42, metalness: 0.35, color: 0x2e1a12 },   // lámina metálica café oscuro (volumen de servicios)
     marmol_negro: { roughness: 0.15, color: 0x0d0d0d },
     vidrio:       { roughness: 0.03, metalness: 0.0, color: 0xdfeeee, opacity: 0.12, envMapIntensity: 1.6 },
@@ -112,9 +116,7 @@ export async function aplicarMateriales(root, renderer) {
     const m = o.material, n = m.name;
     if (maps[n]) m.map = maps[n];
     if (n === 'madera_rojiza') m.map = panelesMadera(renderer);
-    if (n === 'madera_nicho') m.map = panelesNicho(renderer);
     if (n === 'verde_bosque') m.map = laminaCorrugada(renderer);
-    if (n === 'damero') m.map = damero(renderer);
     if (tune[n]) for (const [k, v] of Object.entries(tune[n])) k === 'color' ? m.color.setHex(v) : (m[k] = v);
     m.needsUpdate = true;
   });
