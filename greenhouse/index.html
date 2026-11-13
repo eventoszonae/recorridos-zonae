@@ -127,7 +127,7 @@
     .plano { display:none; left:12px; bottom:auto; top:70px; width:170px; height:200px; } body.showplano .plano { display:block; }
     body.walk .panel { top:auto; }
     .brand h1 { font-size:24px; } .check { display:none; }
-    .panel { top:auto; bottom:0; right:0; left:0; width:auto; max-height:55vh; border-radius:16px 16px 0 0; transform:translateY(110%); }
+    .panel { top:auto; bottom:104px; right:10px; left:10px; width:auto; max-height:calc(100vh - 190px); border-radius:16px; transform:translateY(140%); }   /* la ficha queda ENCIMA de la barra de zonas: los botones siguen accesibles */
     .bar { bottom:12px; }
   }
   @media (max-width:700px) and (pointer:fine) {     /* ventana angosta en computador: el plano sigue visible */
@@ -472,11 +472,12 @@ function setMode(m) {
   } else {
     walk.enabled = false; window.__walkOn = false; walk.marker.visible = false; controls.enabled = true;
     camera.fov = 42; camera.updateProjectionMatrix();
-    if (zonaActual >= 0) fade(() => { const v = views[ZONAS[zonaActual].id]; camera.position.copy(v.pos); controls.target.copy(v.target); setInterior(!!v.interior); controls.update(); });
-    else fade(() => { camera.position.copy(views.general.pos); controls.target.copy(views.general.target); controls.update(); });
+    // "Ver desde arriba" = vista general de todo el Green House (deja de estar en una zona)
+    marcarZona(-1); closePanel(); anim = null;
+    fade(() => { camera.position.copy(views.general.pos); controls.target.copy(views.general.target); setInterior(false); controls.update(); });
   }
 }
-document.querySelectorAll('#mode button').forEach(b => b.onclick = () => setMode(b.dataset.mode));
+document.querySelectorAll('#mode button').forEach(b => b.onclick = () => setMode(b.dataset.mode));   // tocar de nuevo "Ver desde arriba" vuelve a la vista general
 const start = document.getElementById('start'); start.style.display = 'grid';
 document.getElementById('startWalk').onclick = () => { start.remove(); zonaActual = 0; setMode('walk'); showZona(0); };
 document.getElementById('startAerial').onclick = () => { start.remove(); setMode('aerial'); };
