@@ -433,8 +433,13 @@
       "nombre": "Deck de cóctel",
       "campos": [
         {
+          "k": "Medidas",
+          "v": "14,10 × 7,92 m",
+          "estado": "confirmado"
+        },
+        {
           "k": "Área",
-          "v": "≈ 110 m²",
+          "v": "≈ 112 m²",
           "estado": "confirmado"
         },
         {
@@ -451,7 +456,7 @@
       "descripcion": "Terraza de madera cubierta por el alero, con vista al lago. Espacio del cóctel.",
       "resumen": "Terraza de madera bajo el alero, suspendida sobre el jardín y mirando al lago.",
       "destacados": [
-        "≈ 110 m²",
+        "14,10 × 7,92 m (≈ 112 m²)",
         "6 cocteleras · 24 sillas",
         "Sala de hierro"
       ]
@@ -679,7 +684,7 @@
     "contacto": {
       "whatsapp": "573107549139",
       "whatsapp_visible": "+57 310 754 9139",
-      "mensaje": "Hola, estoy viendo el recorrido virtual del Green House y quiero información",
+      "mensaje": "¡Hola! Vi el recorrido virtual del Green House y me encantaría recibir información para mi evento.",
       "estado": "confirmado"
     }
   }

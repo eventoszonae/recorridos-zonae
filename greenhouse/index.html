@@ -406,7 +406,7 @@ function showSpace(id) { const i = ZONAS.findIndex(z => z.id === id); if (i >= 0
 // ---- Contacto por WhatsApp (número y mensaje se editan en inventario.json → venue.contacto) ----
 function waLink(sobre) {
   const c = inv.venue?.contacto; if (!c?.whatsapp) return null;
-  const txt = c.mensaje + (sobre ? ` sobre: ${sobre}.` : '.');
+  const txt = c.mensaje;   // Zona E 13-nov: mensaje siempre genérico del Green House (no menciona la zona ni el objeto)
   return `https://wa.me/${c.whatsapp}?text=${encodeURIComponent(txt)}`;
 }
 function cta(sobre) {
