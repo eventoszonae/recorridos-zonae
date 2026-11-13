@@ -6,7 +6,7 @@ import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometr
 
 const P = (x, y, h = 0) => new THREE.Vector3(x, h, -y);
 // Terreno plano al nivel del prado (-0,68 m bajo el salón) y fondo del lago bajo el agua.
-let LAGO = null, ORILLA_BB = null; const SEG_GRID = new Map(), CELDA_LAGO = new Map();   // tramos de orilla por celda de 4 m (rápido)
+let LAGO = null, ORILLA_BB = null, MUELLE = null; const SEG_GRID = new Map(), CELDA_LAGO = new Map();   // tramos de orilla por celda de 4 m (rápido)
 const NIVEL_AGUA = -2.0;   // ~0,35 m bajo el muelle [E]
 const FONDO_LAGO = -2.8;
 /** Nivel del prado SIN la orilla. MEDIDO con los escaneos de Zona E (13-nov, Scaniverse):
@@ -26,6 +26,14 @@ export function nivelPrado(y) {
   return -1.66;
 }
 export function alturaTerreno(y, x = 0) {
+  // Bajo el muelle (rectangular, 8 × 4 m) el terreno queda por debajo de la plataforma: así el pasto no la atraviesa
+  if (MUELLE) {
+    const dx = Math.abs(x - MUELLE.centro[0]) - MUELLE.largo / 2, dy = Math.abs(y - MUELLE.centro[1]) - MUELLE.ancho / 2;
+    if (dx < 0.7 && dy < 0.7) return Math.min(alturaBase(y, x), MUELLE.nivel - 0.12);   // el faldón de 20 cm del muelle tapa el borde
+  }
+  return alturaBase(y, x);
+}
+function alturaBase(y, x) {
   const base = nivelPrado(y);
   if (!LAGO) return base;
   const key = Math.floor(x / 4) + ',' + Math.floor(y / 4), segs = SEG_GRID.get(key);
@@ -51,7 +59,8 @@ export function alturaTerreno(y, x = 0) {
   return THREE.MathUtils.lerp(borde, base, THREE.MathUtils.smoothstep(d, 0.6, 4));
 }
 /** Malla del prado con la pendiente hacia el lago. */
-export function crearTerreno(material, lago) {
+export function crearTerreno(material, lago, muelle = null) {
+  MUELLE = muelle;
   LAGO = lago || null;
   if (LAGO) {                                                    // caja de la orilla (solo tramos cercanos al venue)
     const o = LAGO.filter(([x, y]) => Math.abs(x) < 79 && y < 100);

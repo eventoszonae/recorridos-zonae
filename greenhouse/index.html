@@ -257,7 +257,7 @@ const { prado } = await aplicarMateriales(gltf.scene, renderer);
 scene.add(gltf.scene);
 const archMaterials = []; gltf.scene.traverse(o => o.isMesh && archMaterials.push(o.material));
 
-ground = crearTerreno(new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1 }), venue.exterior.lago); scene.add(ground);
+ground = crearTerreno(new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1 }), venue.exterior.lago, venue.exterior.muelle); scene.add(ground);
 ground.material.map = prado; ground.material.needsUpdate = true;
 let maderaMat = null; gltf.scene.traverse(o => { if (o.isMesh && o.material.name === 'madera_deck') maderaMat = o.material; });
 const exterior = construirExterior(scene, venue.exterior, { madera: maderaMat });
