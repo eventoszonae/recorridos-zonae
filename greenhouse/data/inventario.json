@@ -334,6 +334,55 @@
         "muelle-1",
         "muelle-2"
       ]
+    },
+    "bano_mujeres": {
+      "nombre": "Baño de mujeres",
+      "categoria": "Servicios",
+      "descripcion": "2 sanitarios y un lavamanos con espejo.",
+      "campos": [
+        {
+          "k": "Sanitarios",
+          "v": "2",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Lavamanos",
+          "v": "1, con espejo",
+          "estado": "confirmado"
+        }
+      ],
+      "fotos": [
+        "bano-mujeres-1",
+        "bano-mujeres-2"
+      ],
+      "modelo3d": "Puerta del modelo Rhino"
+    },
+    "bano_hombres": {
+      "nombre": "Baño de hombres",
+      "categoria": "Servicios",
+      "descripcion": "1 sanitario, 1 orinal y un lavamanos con espejo.",
+      "campos": [
+        {
+          "k": "Sanitarios",
+          "v": "1",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Orinales",
+          "v": "1",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Lavamanos",
+          "v": "1, con espejo",
+          "estado": "confirmado"
+        }
+      ],
+      "fotos": [
+        "bano-hombres-1",
+        "bano-hombres-2"
+      ],
+      "modelo3d": "Puerta del modelo Rhino"
     }
   },
   "espacios": {

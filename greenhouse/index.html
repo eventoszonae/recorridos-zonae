@@ -271,8 +271,9 @@ for (const obj of venue.objetos) {
   const g = createFurniture(obj);
   if (g) { scene.add(g); pickables.push(g); }
   else {   // objetos fijos del modelo: marcador invisible para poder seleccionarlos
-    const s = new THREE.Mesh(new THREE.SphereGeometry(0.35, 12, 8), new THREE.MeshBasicMaterial({ visible: false }));
-    s.position.set(obj.pos[0], obj.tipo === 'barra' ? 1.0 : 1.3, -obj.pos[1]);
+    const bano = obj.tipo.startsWith('bano');   // baños: toda la puerta (0,85 × 2,1 m) se puede tocar
+    const s = new THREE.Mesh(bano ? new THREE.BoxGeometry(0.85, 2.1, 0.12) : new THREE.SphereGeometry(0.35, 12, 8), new THREE.MeshBasicMaterial({ visible: false }));
+    s.position.set(obj.pos[0], bano ? 1.05 : obj.tipo === 'barra' ? 1.0 : 1.3, -obj.pos[1] + (bano ? 0.15 : 0));
     s.userData = { id: obj.id, tipo: obj.tipo, medidas: obj.medidas_modelo, nota: obj.nota }; s.name = obj.id;
     scene.add(s); pickables.push(s);
   }
@@ -344,8 +345,8 @@ function showObject(u) {
 // ---- Zonas: navegación principal (orden del recorrido guiado) ----
 const ZONAS = [
   { id: 'GH-ESP-ENTRADA', label: 'Llegada', punto: 'llegada', zona: null },
-  { id: 'GH-ESP-SALON', label: 'Salón', punto: 'salon', zona: 'salon', excluye: ['barra'] },
-  { id: 'GH-ESP-SERVICIOS', label: 'Bar', punto: 'bar', zona: 'salon', solo: ['barra'] },
+  { id: 'GH-ESP-SALON', label: 'Salón', punto: 'salon', zona: 'salon', excluye: ['barra', 'bano_mujeres', 'bano_hombres'] },
+  { id: 'GH-ESP-SERVICIOS', label: 'Bar y baños', punto: 'bar', zona: 'salon', solo: ['barra', 'bano_mujeres', 'bano_hombres'] },
   { id: 'GH-ESP-DECK', label: 'Cóctel', punto: 'deck', zona: 'deck' },
   { id: 'GH-ESP-CEREMONIA', label: 'Ceremonia', punto: 'ceremonia', zona: null },
   { id: 'GH-ESP-MUELLE', label: 'Muelle', punto: 'muelle', zona: 'muelle' },

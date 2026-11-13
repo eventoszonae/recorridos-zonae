@@ -144,6 +144,14 @@
    "h": 1.45
   },
   {
+   "ref": "GH-BANO-M",
+   "h": 1.7
+  },
+  {
+   "ref": "GH-BANO-H",
+   "h": 1.7
+  },
+  {
    "espacio": "GH-ESP-SALON",
    "pos": [
     2.39,
@@ -4167,6 +4175,30 @@
    "pos": [
     -5.01,
     -4.3
+   ],
+   "z": 0,
+   "rot": 0,
+   "zona": "salon",
+   "montaje": "fijo"
+  },
+  {
+   "id": "GH-BANO-M",
+   "tipo": "bano_mujeres",
+   "pos": [
+    5.66,
+    -5.05
+   ],
+   "z": 0,
+   "rot": 0,
+   "zona": "salon",
+   "montaje": "fijo"
+  },
+  {
+   "id": "GH-BANO-H",
+   "tipo": "bano_hombres",
+   "pos": [
+    7.23,
+    -5.05
    ],
    "z": 0,
    "rot": 0,

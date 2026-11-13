@@ -43,6 +43,9 @@ add('GH-SALA-02', 'sala_corazones', 28.91, 30.55, rot=180, z=-1.66, zona='muelle
 
 # --- Elementos fijos (posición del modelo Rhino)
 add('GH-BARRA-01', 'barra', 23.90, 1.60, zona='salon', estado='fijo')
+# Baños (Zona E 13-nov): puertas del volumen de servicios hacia el salón (modelo Rhino, obj 36520 y 36519). Cuál es cuál: [E]
+add('GH-BANO-M', 'bano_mujeres', 34.57, 0.85, zona='salon', estado='fijo')
+add('GH-BANO-H', 'bano_hombres', 36.14, 0.85, zona='salon', estado='fijo')
 puertas = json.load(open('../site/greenhouse_arquitectura_puertas.json'))
 for p in puertas:
     objs.append(dict(id=p['id'], tipo=('puerta_abatible' if 'abatible' in p['nombre'] else 'puerta_corrediza'), pos=p['pos'][:2], z=0, rot=0, zona='salon', montaje='fijo', nota=p['nombre'] + ('' if p['abierta'] else ' · cerrada en el recorrido'),
@@ -130,7 +133,7 @@ venue = dict(
   hotspots=[
     dict(ref='GH-MESA-03', h=0.95), dict(ref='GH-SILLA-021', h=1.05), dict(ref='GH-NOVIOS-01', h=0.95),
     dict(ref='GH-POSTRES-01', h=1.2), dict(ref='GH-COCT-02', h=1.25), dict(ref='GH-SCOCT-06', h=1.3),
-    dict(ref='GH-SALA-01', h=1.15), dict(ref='GH-SALA-02', h=0.5), dict(ref='GH-BARRA-01', h=1.45),
+    dict(ref='GH-SALA-01', h=1.15), dict(ref='GH-SALA-02', h=0.5), dict(ref='GH-BARRA-01', h=1.45), dict(ref='GH-BANO-M', h=1.7), dict(ref='GH-BANO-H', h=1.7),
     dict(espacio='GH-ESP-SALON', pos=L(31.3, 5.9), h=3.1), dict(espacio='GH-ESP-DECK', pos=L(29.0, 15.5), h=2.6),
  dict(espacio='GH-ESP-SERVICIOS', pos=L(26.0, 0.0), h=2.6),
     dict(espacio='GH-ESP-ENTRADA', pos=L(14.2, -3.0), h=1.4), dict(espacio='GH-ESP-MUELLE', pos=L(28.91, 30.17), h=1.2),
