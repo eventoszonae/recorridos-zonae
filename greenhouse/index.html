@@ -356,13 +356,13 @@ function showObject(u) {
   abrirPanel(true);
 }
 // ---- Zonas: navegación principal (orden del recorrido guiado) ----
-const ZONAS = [
+const ZONAS = [   // orden del recorrido guiado (Zona E 13-nov)
   { id: 'GH-ESP-ENTRADA', label: 'Llegada', punto: 'llegada', zona: null },
+  { id: 'GH-ESP-DECK', label: 'Cóctel', punto: 'deck', zona: 'deck' },
+  { id: 'GH-ESP-MUELLE', label: 'Muelle', punto: 'muelle', zona: 'muelle' },
+  { id: 'GH-ESP-CEREMONIA', label: 'Ceremonia', punto: 'ceremonia', zona: null },
   { id: 'GH-ESP-SALON', label: 'Salón', punto: 'salon', zona: 'salon', excluye: ['barra', 'bano_mujeres', 'bano_hombres'] },
   { id: 'GH-ESP-SERVICIOS', label: 'Bar y baños', punto: 'bar', zona: 'salon', solo: ['barra', 'bano_mujeres', 'bano_hombres'] },
-  { id: 'GH-ESP-DECK', label: 'Cóctel', punto: 'deck', zona: 'deck' },
-  { id: 'GH-ESP-CEREMONIA', label: 'Ceremonia', punto: 'ceremonia', zona: null },
-  { id: 'GH-ESP-MUELLE', label: 'Muelle', punto: 'muelle', zona: 'muelle' },
   { id: 'GH-ESP-SUITE', label: 'Suite', punto: 'suite', zona: null },
 ];
 let zonaActual = -1;
