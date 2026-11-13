@@ -103,7 +103,8 @@ export async function aplicarMateriales(root, renderer) {
     madera_rojiza:{ roughness: 0.5, color: 0xffffff },
     acero_negro:  { roughness: 0.5, metalness: 0.5, color: 0x1b1b1b },
     techo_negro:  { roughness: 0.85, metalness: 0.1, color: 0x161616 },
-    cubierta:     { roughness: 0.6, metalness: 0.2, color: 0x141414 },   // Zona E 13-nov: cubierta del Green House NEGRA
+    cubierta:     { roughness: 0.6, metalness: 0.2, color: 0x141414 },
+    muro_claro:   { roughness: 0.7, metalness: 0.1, color: 0x1a1a1a },   // Zona E 13-nov: volúmenes y muros de la zona de servicio también en NEGRO   // Zona E 13-nov: cubierta del Green House NEGRA
     teja_gris:    { roughness: 0.6, metalness: 0.2, color: 0x141414 },   // Zona E 13-nov: cubierta de la suite NEGRA
     verde_bosque: { roughness: 0.45, color: 0xffffff },
     damero:       { roughness: 0.3, color: 0xffffff },
