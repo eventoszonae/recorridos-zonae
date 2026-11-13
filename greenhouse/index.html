@@ -143,6 +143,7 @@
     .panel { top:auto; bottom:104px; right:10px; left:10px; width:auto; max-height:calc(100vh - 190px); border-radius:16px; transform:translateY(140%); }   /* la ficha queda ENCIMA de la barra de zonas: los botones siguen accesibles */
     .panel.compact, .panel.compact.expanded { top:auto; bottom:104px; left:10px; right:10px; width:auto; max-height:32vh; transform:translateY(160%); }
     .panel.compact.expanded { max-height:calc(100vh - 190px); }
+    .panel.compact.open, .panel.compact.expanded.open { transform:none; }   /* al ampliar la ficha (Más información) debe seguir visible */
     /* en pantalla angosta la ficha compacta es solo una franja: nombre, frase y datos clave */
     .panel.compact:not(.expanded) { max-height:none; padding:12px 16px; }
     .panel.compact:not(.expanded) .gal, .panel.compact:not(.expanded) .aqui, .panel.compact:not(.expanded) .sub, .panel.compact:not(.expanded) .pasos { display:none; }
@@ -400,7 +401,7 @@ pbody.addEventListener('click', e => {
   if (b.dataset.tipo) { const o = venue.objetos.find(q => q.tipo === b.dataset.tipo); if (o) showObject({ id: o.id, tipo: o.tipo, nota: o.nota, volver: zonaActual }); }
   if (b.dataset.tab) showVenue(b.dataset.tab);
   if (b.dataset.volver !== undefined) showZona(+b.dataset.volver);
-  if (b.dataset.mas) { const ex = panel.classList.toggle('expanded'); b.textContent = ex ? 'Menos información' : 'Más información'; }
+  if (b.dataset.mas) { b.dataset.txt ||= b.textContent; const ex = panel.classList.toggle('expanded'); b.textContent = ex ? 'Menos información' : b.dataset.txt; if (ex) panel.scrollTop = 0; }
 });
 function showSpace(id) { const i = ZONAS.findIndex(z => z.id === id); if (i >= 0) { marcarZona(i); showZona(i); } }
 // ---- Contacto por WhatsApp (número y mensaje se editan en inventario.json → venue.contacto) ----
