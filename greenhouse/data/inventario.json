@@ -1,0 +1,595 @@
+{
+  "_leeme": "Fichas por TIPO de objeto. Cambiar un dato aquí NO requiere tocar el modelo 3D. estado: confirmado | estimado | pendiente",
+  "tipos": {
+    "mesa_madera": {
+      "nombre": "Mesa de madera de 10 puestos",
+      "categoria": "Mobiliario",
+      "descripcion": "Mesa de tablones de madera rústica con patas torneadas.",
+      "campos": [
+        {
+          "k": "Medidas (L × A × H)",
+          "v": "2,60 × 1,00 × 0,75 m",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Capacidad",
+          "v": "10 personas",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Cantidad disponible",
+          "v": "Hasta 8",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Cantidad en montaje",
+          "v": "8",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Material",
+          "v": "Madera (tablones)",
+          "estado": "confirmado"
+        }
+      ],
+      "modelo3d": "aproximado",
+      "fotos": [
+        "salon-mesas-2",
+        "salon-mesas-1"
+      ]
+    },
+    "silla_x": {
+      "nombre": "Silla X negra",
+      "categoria": "Mobiliario",
+      "descripcion": "Silla con respaldo en X, color negro.",
+      "campos": [
+        {
+          "k": "Medidas (alto × largo × ancho)",
+          "v": "88,5 × 50,5 × 54 cm",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Cantidad máxima",
+          "v": "80 (mobiliario para 80 personas)",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Material",
+          "v": "Por confirmar",
+          "estado": "pendiente"
+        }
+      ],
+      "modelo3d": "aproximado",
+      "fotos": [
+        "salon-mesas-2",
+        "salon-mesas-1"
+      ]
+    },
+    "mesa_coctel": {
+      "nombre": "Mesa coctelera alta",
+      "categoria": "Mobiliario",
+      "descripcion": "Mesa alta con cubierta de madera envejecida y base metálica.",
+      "campos": [
+        {
+          "k": "Medidas (L × A × H)",
+          "v": "0,70 × 0,70 × 1,00 m",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Sillas por mesa",
+          "v": "4",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Cantidad en montaje",
+          "v": "6",
+          "estado": "confirmado"
+        }
+      ],
+      "modelo3d": "aproximado",
+      "fotos": [
+        "coctel-deck",
+        "coctel-lago"
+      ]
+    },
+    "silla_coctel": {
+      "nombre": "Silla coctelera",
+      "categoria": "Mobiliario",
+      "descripcion": "Silla alta de hierro negro.",
+      "campos": [
+        {
+          "k": "Material",
+          "v": "Hierro, color negro",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Medidas (ancho × fondo × alto)",
+          "v": "42 × 37 cm × 1,10 m",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Alto del asiento",
+          "v": "70 cm",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Cantidad en montaje",
+          "v": "24",
+          "estado": "confirmado"
+        }
+      ],
+      "modelo3d": "a medida",
+      "fotos": [
+        "coctel-deck",
+        "coctel-lago"
+      ]
+    },
+    "sala_hierro": {
+      "nombre": "Sala de hierro forjado – celosía",
+      "categoria": "Mobiliario",
+      "descripcion": "4 poltronas de hierro forjado con respaldo en celosía y volutas, cojines blancos y 2 mesitas de vidrio.",
+      "campos": [
+        {
+          "k": "Composición",
+          "v": "4 poltronas + 2 mesitas de vidrio",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Ubicación habitual",
+          "v": "Deck de cóctel",
+          "estado": "estimado"
+        },
+        {
+          "k": "Poltrona (ancho × fondo)",
+          "v": "51 × 51 cm",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Alto asiento / total",
+          "v": "42 cm / 1,00 m",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Mesita (ancho × largo × alto)",
+          "v": "50,5 × 50,5 × 48 cm",
+          "estado": "confirmado"
+        }
+      ],
+      "modelo3d": "aproximado (medidas estimadas)",
+      "fotos": [
+        "sala-celosia",
+        "sala-lago"
+      ]
+    },
+    "barra": {
+      "nombre": "Barra del bar",
+      "categoria": "Elemento fijo",
+      "descripcion": "Barra en L con frente de acero negro y vidrio, cubierta de mármol negro.",
+      "campos": [
+        {
+          "k": "Forma",
+          "v": "En L",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Medidas según modelo",
+          "v": "≈ 2,70 × 1,80 m · alto 1,16 m",
+          "estado": "estimado"
+        },
+        {
+          "k": "Uso",
+          "v": "Por confirmar",
+          "estado": "pendiente"
+        }
+      ],
+      "modelo3d": "del modelo Rhino",
+      "fotos": [
+        "bar-2",
+        "bar-1"
+      ]
+    },
+    "puerta_corrediza": {
+      "nombre": "Puerta corrediza de vidrio",
+      "categoria": "Elemento fijo",
+      "descripcion": "Puerta corrediza de dos hojas con la misma retícula metálica negra de las ventanas.",
+      "campos": [
+        {
+          "k": "Vano según modelo",
+          "v": "ver medida del objeto",
+          "estado": "estimado"
+        },
+        {
+          "k": "Apertura total",
+          "v": "Por confirmar",
+          "estado": "pendiente"
+        }
+      ],
+      "modelo3d": "agregado (el modelo Rhino no lo traía)"
+    },
+    "mesa_postres": {
+      "nombre": "Mesa alta de postres",
+      "categoria": "Mobiliario",
+      "descripcion": "Mesa alta de caballete en madera. Normalmente va en el salón; a veces se usa en el área de cóctel.",
+      "campos": [
+        {
+          "k": "Medidas (L × A × H)",
+          "v": "2,60 × 1,00 × 0,95 m",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Cantidad",
+          "v": "1",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Ubicación",
+          "v": "Salón (habitual) o deck de cóctel",
+          "estado": "confirmado"
+        }
+      ],
+      "modelo3d": "a medida (2,60 × 1,00 × 0,95 m)",
+      "fotos": [
+        "postres-salon",
+        "postres-deck"
+      ]
+    },
+    "mesa_novios": {
+      "nombre": "Mesa de madera de 8 puestos",
+      "categoria": "Mobiliario",
+      "descripcion": "Mesa rústica de madera con patas torneadas. En el montaje típico se usa como mesa de novios, con 2 sillas.",
+      "campos": [
+        {
+          "k": "Medidas (L × A × H)",
+          "v": "2,00 × 1,00 × 0,75 m",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Capacidad",
+          "v": "8 personas",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Cantidad disponible",
+          "v": "3",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Uso en montaje típico",
+          "v": "En el montaje de ejemplo, 1 como mesa de novios. Se pueden usar mesas de 8 o de 10 según el evento",
+          "estado": "confirmado"
+        }
+      ],
+      "modelo3d": "aproximado",
+      "fotos": [
+        "mesa-novios",
+        "salon-novios-general"
+      ]
+    },
+    "puerta_abatible": {
+      "nombre": "Puerta normal (abatible)",
+      "categoria": "Elemento fijo",
+      "descripcion": "Puerta de dos hojas con la misma retícula metálica negra de las ventanas.",
+      "campos": [
+        {
+          "k": "Tipo",
+          "v": "Abatible (puerta normal)",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Diseño",
+          "v": "Retícula metálica negra igual a las ventanas",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Uso en eventos",
+          "v": "No se usa (acceso entre jardineras)",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Vano según modelo",
+          "v": "ver medida del objeto",
+          "estado": "estimado"
+        },
+        {
+          "k": "Número de hojas",
+          "v": "2",
+          "estado": "estimado"
+        }
+      ],
+      "modelo3d": "agregado (el modelo Rhino no lo traía)"
+    },
+    "sala_corazones": {
+      "nombre": "Sala de hierro forjado – corazones",
+      "categoria": "Mobiliario",
+      "descripcion": "Sofá de dos puestos con respaldo de corazones, 2 poltronas, 2 mesitas de vidrio y cojines blancos.",
+      "campos": [
+        {
+          "k": "Composición",
+          "v": "Sofá 2 puestos + 2 poltronas + 2 mesitas",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Ubicación habitual",
+          "v": "Muelle",
+          "estado": "estimado"
+        },
+        {
+          "k": "Poltrona (ancho × fondo)",
+          "v": "51 × 51 cm",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Alto asiento / total",
+          "v": "42 cm / 1,00 m",
+          "estado": "estimado"
+        },
+        {
+          "k": "Mesita (ancho × largo × alto)",
+          "v": "50,5 × 50,5 × 48 cm",
+          "estado": "confirmado"
+        }
+      ],
+      "modelo3d": "aproximado (medidas estimadas)",
+      "fotos": [
+        "muelle-1",
+        "muelle-2"
+      ]
+    }
+  },
+  "espacios": {
+    "GH-ESP-SALON": {
+      "nombre": "Salón",
+      "campos": [
+        {
+          "k": "Área Green House",
+          "v": "≈ 167 m²",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Capacidad",
+          "v": "80 personas",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Altura interior",
+          "v": "4,00 m",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Montaje típico",
+          "v": "Ejemplo: 8 mesas · 80 sillas · mesa de novios · mesa de postres (cada evento se personaliza)",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Iluminación fija",
+          "v": "Guirnaldas de luces en todo el techo · 2 lámparas de ratán en el bar",
+          "estado": "confirmado"
+        }
+      ],
+      "fotos": [
+        "salon-novios-general",
+        "salon-mesas-1",
+        "salon-mesas-2",
+        "bar-2"
+      ],
+      "descripcion": "Pabellón de vidrio y acero negro con techo de guirnaldas de luces. Espacio principal de la fiesta."
+    },
+    "GH-ESP-DECK": {
+      "nombre": "Deck de cóctel",
+      "campos": [
+        {
+          "k": "Área",
+          "v": "≈ 110 m²",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Mobiliario",
+          "v": "6 mesas cocteleras · 24 sillas · 2 salas de hierro",
+          "estado": "confirmado"
+        }
+      ],
+      "fotos": [
+        "coctel-deck",
+        "coctel-lago",
+        "sala-celosia"
+      ],
+      "descripcion": "Terraza de madera cubierta por el alero, con vista al lago. Espacio del cóctel."
+    },
+    "GH-ESP-SERVICIOS": {
+      "nombre": "Bar y servicios",
+      "campos": [
+        {
+          "k": "Incluye",
+          "v": "Barra, baños de hombres y de mujeres",
+          "estado": "confirmado"
+        }
+      ],
+      "fotos": [
+        "bar-1"
+      ],
+      "descripcion": "Bar interno con barra en L de espejo y acero, y acceso a los baños."
+    },
+    "GH-ESP-ENTRADA": {
+      "nombre": "Llegada y pasarela",
+      "campos": [
+        {
+          "k": "Recorrido",
+          "v": "Pasillo principal de concreto con bandas de madera; en la curva hacia el acceso lateral, la banda izquierda sigue como corredor de madera hasta el cóctel",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Iluminación",
+          "v": "Bolardos de luz a lo largo del sendero",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Largo aproximado",
+          "v": "≈ 30 m",
+          "estado": "estimado"
+        },
+        {
+          "k": "Ancho de la entrada",
+          "v": "3,10 m (concreto con bandas de madera a ambos lados)",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Corredor de madera hasta el cóctel",
+          "v": "1,50 m de ancho (continuación de la banda izquierda)",
+          "estado": "confirmado"
+        }
+      ],
+      "fotos": [
+        "llegada-sendero"
+      ],
+      "descripcion": "Llegada de los invitados: adoquín, sendero de concreto y pasarela de madera entre jardines de palmas."
+    },
+    "GH-ESP-MUELLE": {
+      "nombre": "Muelle",
+      "campos": [
+        {
+          "k": "Tipo",
+          "v": "Plataforma de madera a ras del prado, sobre la orilla del lago",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Medidas",
+          "v": "8 × 4 m",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Distancia al deck",
+          "v": "9 m",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Mobiliario",
+          "v": "Sala de hierro forjado (corazones)",
+          "estado": "confirmado"
+        }
+      ],
+      "fotos": [
+        "muelle-1",
+        "muelle-2",
+        "sala-lago"
+      ],
+      "descripcion": "Muelle de madera sobre la orilla del lago, con sala de hierro forjado."
+    },
+    "GH-ESP-CEREMONIA": {
+      "nombre": "Zona de ceremonia",
+      "descripcion": "Prado al frente del lago, entre el deck y el muelle; el altar se ubica frente al muelle con el lago de fondo. Las bancas doradas de hierro son de Zona E: se usan normalmente en Lakehouse y se traen al Green House cuando los novios quieren la ceremonia con vista al lago.",
+      "fotos": [
+        "ceremonia-1",
+        "ceremonia-2",
+        "muelle-1"
+      ],
+      "campos": [
+        {
+          "k": "Ubicación",
+          "v": "Al frente del lago",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Capacidad",
+          "v": "80 personas",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Límites exactos",
+          "v": "Ubicados de forma aproximada en el plano",
+          "estado": "estimado"
+        }
+      ]
+    },
+    "GH-ESP-SUITE": {
+      "nombre": "Suite",
+      "descripcion": "Casa independiente con cubierta a dos aguas, junto al Green House.",
+      "fotos": [
+        "salon-mesas-2"
+      ],
+      "campos": [
+        {
+          "k": "Incluida en el alquiler",
+          "v": "Sí",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Medidas según modelo",
+          "v": "≈ 4,0 × 7,0 m",
+          "estado": "estimado"
+        },
+        {
+          "k": "Interior",
+          "v": "No modelado todavía",
+          "estado": "pendiente"
+        }
+      ]
+    }
+  },
+  "nota_fotos": "Fotos de eventos reales: la decoración que se ve no está incluida.",
+  "venue": {
+    "nombre": "Green House",
+    "descripcion": "Pabellón de vidrio y acero junto al lago, con deck de cóctel, muelle y jardines.",
+    "fotos": [
+      "salon-novios-general",
+      "coctel-lago",
+      "muelle-1"
+    ],
+    "campos": [
+      {
+        "k": "Capacidad",
+        "v": "80 personas",
+        "estado": "confirmado"
+      },
+      {
+        "k": "Mobiliario incluido",
+        "v": "Sillas y mesas para 80 personas",
+        "estado": "confirmado"
+      },
+      {
+        "k": "Tipos de evento",
+        "v": "Bodas, corporativos y sociales",
+        "estado": "confirmado"
+      },
+      {
+        "k": "Montaje",
+        "v": "Personalizado en cada evento: distribución de mesas (de 8 o 10 puestos), pista, tarima y producción",
+        "estado": "confirmado"
+      }
+    ],
+    "incluye": [
+      "Capacidad: 80 personas",
+      "Mobiliario: sillas y mesas para 80 personas",
+      "Vista al lago",
+      "Zona de ceremonia",
+      "Paisajes de ensueño",
+      "Iluminación de techo y jardín",
+      "Zona de cóctel tipo deck",
+      "Corredores exteriores",
+      "Suite",
+      "Bar"
+    ],
+    "no_incluye": [
+      "Servicios adicionales",
+      "Comida",
+      "Decoración",
+      "Menaje",
+      "Coordinación logística",
+      "Wedding planner",
+      "Sonido"
+    ],
+    "horarios": [
+      {
+        "dias": "Horario del evento",
+        "montaje": "Desde las 6:00 a. m.",
+        "evento": "Hasta las 12:00 de la noche",
+        "desmontaje": "De 12:00 de la noche a 6:00 a. m."
+      }
+    ],
+    "contacto": {
+      "whatsapp": "573107549139",
+      "whatsapp_visible": "+57 310 754 9139",
+      "mensaje": "Hola, estoy viendo el recorrido virtual del Green House y quiero información",
+      "estado": "confirmado"
+    }
+  }
+}

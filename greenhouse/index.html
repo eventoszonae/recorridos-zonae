@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Green House · Revisión del modelo 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#1b1b1a; --muted:#77736c; --paper:rgba(250,248,244,.94); --line:rgba(27,27,26,.12); --ok:#3f7a52; --est:#b07a1f; --pen:#a14a3a; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; height:100%; overflow:hidden; background:#e9e6df; font-family:Inter,system-ui,sans-serif; color:var(--ink); }
+  #c { position:fixed; inset:0; display:block; touch-action:none; }
+  .brand { position:fixed; top:20px; left:24px; pointer-events:none; }
+  .brand h1 { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:30px; letter-spacing:.06em; margin:0; }
+  .brand p { margin:2px 0 0; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+  .bar { position:fixed; left:50%; bottom:22px; transform:translateX(-50%); display:flex; gap:4px; padding:5px; background:var(--paper);
+         border:1px solid var(--line); border-radius:999px; backdrop-filter:blur(10px); max-width:calc(100vw - 24px); overflow-x:auto; }
+  .bar button { all:unset; cursor:pointer; padding:9px 16px; border-radius:999px; font-size:13px; white-space:nowrap; }
+  .bar button:hover { background:rgba(0,0,0,.05); }
+  .bar button.on { background:var(--ink); color:#fff; }
+  .bar .sep { width:1px; background:var(--line); margin:6px 4px; }
+  .panel { z-index:6; position:fixed; top:20px; right:20px; width:340px; max-height:calc(100vh - 110px); overflow:auto; background:var(--paper);
+           border:1px solid var(--line); border-radius:14px; padding:22px; backdrop-filter:blur(10px); transform:translateX(120%);
+           transition:transform .35s ease; }
+  .panel.open { transform:none; }
+  .panel .close { all:unset; cursor:pointer; position:absolute; top:14px; right:16px; font-size:20px; color:var(--muted); }
+  .panel .cat { font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+  .panel h2 { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:26px; margin:4px 0 2px; }
+  .panel .id { font-family:ui-monospace,monospace; font-size:12px; color:var(--muted); }
+  .panel .desc { font-size:14px; line-height:1.5; margin:14px 0; }
+  .panel dl { margin:0; border-top:1px solid var(--line); }
+  .panel .row { display:flex; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); font-size:13px; }
+  .panel dt { color:var(--muted); } .panel dd { margin:0; text-align:right; }
+  .tag { display:inline-block; font-size:10px; padding:1px 6px; border-radius:6px; margin-left:6px; vertical-align:1px; }
+  .tag.confirmado { background:rgba(63,122,82,.12); color:var(--ok); } .tag.estimado { background:rgba(176,122,31,.14); color:var(--est); }
+  .tag.pendiente { background:rgba(161,74,58,.12); color:var(--pen); }
+  body.cliente .tag, body.cliente .panel .id, body.cliente .interno, body.cliente .check { display:none !important; }
+  .note { font-size:12px; color:var(--muted); margin-top:14px; line-height:1.5; }
+  .check { position:fixed; left:24px; bottom:86px; background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:12px 14px;
+           font-size:12px; min-width:220px; backdrop-filter:blur(10px); }
+  .check b { display:block; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-weight:500; margin-bottom:6px; }
+  .check div { display:flex; justify-content:space-between; gap:16px; padding:2px 0; }
+  .tip { position:fixed; pointer-events:none; background:var(--ink); color:#fff; font-size:12px; padding:5px 9px; border-radius:6px; transform:translate(12px,12px); display:none; }
+  #loading { position:fixed; inset:0; display:grid; place-items:center; background:#e9e6df; font-family:'Cormorant Garamond',serif; font-size:24px; letter-spacing:.08em; transition:opacity .6s; }
+  .mode { position:fixed; top:20px; right:20px; display:flex; padding:4px; background:var(--paper); border:1px solid var(--line); border-radius:999px; backdrop-filter:blur(10px); z-index:5; }
+  .mode button { all:unset; cursor:pointer; padding:7px 14px; border-radius:999px; font-size:12px; letter-spacing:.04em; }
+  .mode button.on { background:var(--ink); color:#fff; }
+  .mode .mob { display:none; } @media (max-width:700px) and (pointer:coarse) { .mode .mob { display:inline-block; } }
+  .mode button { white-space:nowrap; }
+  body.walk .check, body.walk #bar { display:none; } body:not(.walk) #barWalk { display:none; }
+  body.walk .panel { top:74px; }
+  #fade { position:fixed; inset:0; background:#f4f1ea; opacity:0; pointer-events:none; transition:opacity .35s; }
+  .hint { position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); background:rgba(27,27,26,.72); color:#fff; padding:18px 22px; border-radius:14px;
+          font-size:14px; line-height:1.7; text-align:center; pointer-events:none; transition:opacity .5s; backdrop-filter:blur(6px); }
+  .hint b { font-weight:500; }
+  .start { position:fixed; inset:0; display:grid; place-items:center; background:rgba(233,230,223,.55); backdrop-filter:blur(3px); z-index:8; }
+  .start .card { text-align:center; }
+  .start h2 { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:44px; letter-spacing:.08em; margin:0 0 4px; }
+  .start p { color:var(--muted); margin:0 0 26px; font-size:13px; letter-spacing:.12em; text-transform:uppercase; }
+  .start button { all:unset; cursor:pointer; padding:13px 26px; border-radius:999px; background:var(--ink); color:#fff; font-size:14px; margin:4px; }
+  .start button.ghost { background:transparent; color:var(--ink); border:1px solid var(--ink); }
+  /* Etapa 6: hotspots */
+  #hsroot { position:fixed; inset:0; pointer-events:none; z-index:3; }
+  .hs { all:unset; position:absolute; left:0; top:0; opacity:0; pointer-events:none; cursor:pointer; transition:opacity .25s; display:flex; align-items:center; gap:8px; }
+  .hs.on { pointer-events:auto; }
+  .hs.obj i { width:14px; height:14px; border-radius:50%; background:rgba(255,255,255,.92); box-shadow:0 0 0 5px rgba(255,255,255,.28), 0 1px 6px rgba(0,0,0,.35); display:block; animation:pulse 2.6s ease-in-out infinite; }
+  .hs.obj span { font-size:12px; color:#fff; background:rgba(27,27,26,.72); padding:4px 9px; border-radius:999px; opacity:0; transform:translateX(-4px); transition:all .2s; white-space:nowrap; backdrop-filter:blur(6px); }
+  .hs.obj:hover span, .hs.obj:focus-visible span { opacity:1; transform:none; }
+  .hs.space span { font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#fff; background:rgba(27,27,26,.55); padding:6px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.35); backdrop-filter:blur(6px); white-space:nowrap; }
+  .hs.space:hover span { background:rgba(27,27,26,.8); }
+  @keyframes pulse { 0%,100% { box-shadow:0 0 0 4px rgba(255,255,255,.30), 0 1px 6px rgba(0,0,0,.35); } 50% { box-shadow:0 0 0 9px rgba(255,255,255,.08), 0 1px 6px rgba(0,0,0,.35); } }
+  /* galería en fichas */
+  .hor { margin:6px 0 12px; } .hor b { font-size:13px; font-weight:500; display:block; margin-bottom:2px; }
+  .inc { margin:0; padding-left:18px; font-size:14px; line-height:1.8; }
+  .gal { margin:14px -4px 4px; }
+  .gal .main { width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:10px; display:block; cursor:zoom-in; background:#ddd; }
+  .gal .th { display:flex; gap:6px; margin-top:6px; }
+  .gal .th img { width:52px; height:52px; object-fit:cover; border-radius:6px; cursor:pointer; opacity:.6; }
+  .gal .th img.on { opacity:1; outline:2px solid var(--ink); outline-offset:1px; }
+  .gal small { display:block; color:var(--muted); font-size:11px; margin-top:6px; }
+  #lightbox { position:fixed; inset:0; background:rgba(10,10,10,.92); display:none; place-items:center; z-index:20; cursor:zoom-out; }
+  #lightbox img { max-width:94vw; max-height:92vh; border-radius:6px; }
+  /* plano interactivo */
+  .plano { position:fixed; left:20px; bottom:22px; width:210px; height:250px; background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:8px; backdrop-filter:blur(10px); z-index:4; }
+  .plano canvas { width:100%; height:100%; display:block; }
+  .plano b { position:absolute; top:8px; left:10px; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); font-weight:500; pointer-events:none; }
+  .check { left:244px !important; }
+  .hora { position:fixed; top:84px; left:24px; display:flex; padding:4px; background:var(--paper); border:1px solid var(--line); border-radius:999px; backdrop-filter:blur(10px); z-index:5; }
+  .hora button { all:unset; cursor:pointer; padding:6px 12px; border-radius:999px; font-size:12px; letter-spacing:.04em; }
+  .hora button.on { background:var(--ink); color:#fff; }
+  .wa-fab { position:fixed; right:20px; bottom:22px; width:52px; height:52px; border-radius:50%; background:#1f7a4d; color:#fff; display:grid; place-items:center;
+            box-shadow:0 6px 18px rgba(0,0,0,.18); z-index:5; transition:transform .2s; } .wa-fab:hover { transform:scale(1.06); }
+  body.panelopen .wa-fab { opacity:0; pointer-events:none; }
+  .wa-cta { display:flex; align-items:center; justify-content:center; gap:8px; margin:18px 0 4px; padding:12px; border-radius:999px; background:#1f7a4d; color:#fff;
+            text-decoration:none; font-size:13px; letter-spacing:.04em; } .wa-cta:hover { background:#196640; }
+  @media (max-width:700px) {
+    .wa-fab { right:12px; bottom:74px; width:46px; height:46px; }
+    .hora { top:16px; left:auto; right:12px; } .hora button { padding:6px 9px; font-size:11px; }
+    .plano { display:none; left:12px; bottom:auto; top:70px; width:170px; height:200px; } body.showplano .plano { display:block; }
+    .mode { top:auto; bottom:74px; right:50%; transform:translateX(50%); } body.walk .panel { top:auto; }
+    .brand h1 { font-size:24px; } .check { display:none; }
+    .panel { top:auto; bottom:0; right:0; left:0; width:auto; max-height:55vh; border-radius:16px 16px 0 0; transform:translateY(110%); }
+    .bar { bottom:12px; }
+  }
+  @media (max-width:700px) and (pointer:fine) {     /* ventana angosta en computador: el plano sigue visible */
+    .plano { display:block; top:70px; }
+  }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+} }
+</script>
+</head>
+<body class="cliente">
+<canvas id="c"></canvas>
+<div class="brand"><h1>GREEN HOUSE</h1><p>Zona E · Recorrido virtual<span class="interno"> · versión interna</span></p></div>
+<div class="check" id="check"><b>Inventario en escena</b></div>
+<div class="bar" id="bar">
+  <button data-view="general" class="on">General</button>
+  <button data-view="GH-ESP-ENTRADA">Llegada</button>
+  <button data-view="planta">Planta</button>
+  <button data-view="GH-ESP-SALON">Salón</button>
+  <button data-view="GH-ESP-DECK">Deck</button>
+  <button data-view="GH-ESP-SERVICIOS">Bar</button>
+  <span class="sep"></span>
+  <button id="roofBtn">Ver interior</button>
+</div>
+<a class="wa-fab" id="waBtn" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.5-.3z"/></svg></a>
+<div class="hora" id="hora"><button data-hora="dia" class="on">Día</button><button data-hora="atardecer">Atardecer</button><button data-hora="noche">Noche</button></div>
+<div class="mode" id="mode"><button data-mode="walk">Recorrer</button><button data-mode="aerial" class="on">Vista aérea</button><button id="infoBtn">Información</button><button id="planoBtn" class="mob">Plano</button></div>
+<div class="bar" id="barWalk"></div>
+<div id="fade"></div>
+<div class="hint" id="hint" style="opacity:0"></div>
+<div class="start" id="start" style="display:none"><div class="card"><h2>GREEN HOUSE</h2><p>Zona E · Recorrido virtual</p>
+  <button id="startWalk">Iniciar recorrido</button><button class="ghost" id="startAerial">Vista aérea</button></div></div>
+<aside class="panel" id="panel"><button class="close" id="close" aria-label="Cerrar">×</button><div id="pbody"></div></aside>
+<div class="tip" id="tip"></div>
+<div id="hsroot"></div>
+<div class="plano"><b>Plano</b><canvas id="plano"></canvas></div>
+<div id="lightbox"><img alt=""></div>
+<div id="loading">Cargando Green House…</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { createFurniture } from './js/furniture.js';
+import GLB_B64 from './js/arquitectura_glb.js';
+import { aplicarMateriales, cieloHora } from './js/materiales.js';
+import { crearAmbiente } from './js/ambiente.js';
+import { construirExterior, crearTerreno, alturaTerreno } from './js/exterior.js';
+import { Recorrido } from './js/recorrido.js';
+import { guirnaldas, lamparasRatan } from './js/luces.js';
+import { crearBar, espejoBar, crearNicho } from './js/bar.js';
+import { Hotspots } from './js/hotspots.js';
+import { Plano } from './js/plano.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, matchMedia('(pointer: coarse)').matches ? 1.5 : 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.68;
+
+const scene = new THREE.Scene();
+scene.environmentIntensity = 0.7;
+
+const camera = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.1, 1200);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true; controls.maxPolarAngle = Math.PI * 0.495; controls.minDistance = 1.5; controls.maxDistance = 90;
+
+// Luz de día (provisional; la iluminación definitiva es la Etapa 4)
+const hemi = new THREE.HemisphereLight(0xeef3f7, 0x5d6b42, 0.35); scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xfff1dc, 3.2);
+sun.castShadow = true;
+const cielo = cieloHora(scene, renderer, sun);
+sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -22, right: 22, top: 22, bottom: -22, near: 1, far: 70 });
+sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.02;
+scene.add(sun);
+
+// Terreno (prado) – simplificado hasta tener la captura
+let ground = null;   // se crea al leer los datos del venue (necesita el contorno del lago)
+
+// Corte para "ver interior": oculta todo lo que esté por encima de 2,6 m
+const roofCut = new THREE.Plane(new THREE.Vector3(0, -1, 0), 2.6);
+let interior = false;
+
+const pickables = [], spacePads = [];
+const [gltf, venue, inv] = await Promise.all([
+  new GLTFLoader().parseAsync(Uint8Array.from(atob(GLB_B64), c => c.charCodeAt(0)).buffer, ''),
+  fetch('./data/greenhouse.venue.json').then(r => r.json()),
+  fetch('./data/inventario.json').then(r => r.json()),
+]);
+gltf.scene.traverse(o => {
+  if (!o.isMesh) return;
+  const glass = o.material.name === 'vidrio';
+  o.castShadow = !glass; o.receiveShadow = !glass;
+  if (glass) { o.material.depthWrite = false; o.renderOrder = 2; }
+  o.material.clippingPlanes = [];
+});
+const { prado } = await aplicarMateriales(gltf.scene, renderer);
+scene.add(gltf.scene);
+const archMaterials = []; gltf.scene.traverse(o => o.isMesh && archMaterials.push(o.material));
+
+ground = crearTerreno(new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1 }), venue.exterior.lago); scene.add(ground);
+ground.material.map = prado; ground.material.needsUpdate = true;
+let maderaMat = null; gltf.scene.traverse(o => { if (o.isMesh && o.material.name === 'madera_deck') maderaMat = o.material; });
+const exterior = construirExterior(scene, venue.exterior, { madera: maderaMat });
+guirnaldas(scene);
+lamparasRatan(scene, [[-5.7, -3.65], [-4.5, -3.65]], 2.55);   // sobre la barra del bar interno [posición E]
+crearBar(gltf.scene); crearNicho(scene);   // dentro del grupo de arquitectura: el recorrido la trata como obstáculo
+
+// Mobiliario e IDs desde los datos (no desde el modelo)
+const counts = {};
+for (const obj of venue.objetos) {
+  counts[obj.tipo] = (counts[obj.tipo] || 0) + 1;
+  const g = createFurniture(obj);
+  if (g) { scene.add(g); pickables.push(g); }
+  else {   // objetos fijos del modelo: marcador invisible para poder seleccionarlos
+    const s = new THREE.Mesh(new THREE.SphereGeometry(0.35, 12, 8), new THREE.MeshBasicMaterial({ visible: false }));
+    s.position.set(obj.pos[0], obj.tipo === 'barra' ? 1.0 : 1.3, -obj.pos[1]);
+    s.userData = { id: obj.id, tipo: obj.tipo, medidas: obj.medidas_modelo, nota: obj.nota }; s.name = obj.id;
+    scene.add(s); pickables.push(s);
+  }
+}
+const labels = { mesa_novios: 'Mesa de 8 (novios)', mesa_postres: 'Mesa de postres', mesa_madera: 'Mesas de madera', silla_x: 'Sillas X', mesa_coctel: 'Mesas cocteleras', silla_coctel: 'Sillas cocteleras', sala_hierro: 'Sala de hierro (deck)', sala_corazones: 'Sala de hierro (muelle)', barra: 'Barra', puerta_abatible: 'Puerta de acceso', puerta_corrediza: 'Puertas corredizas' };
+const check = document.getElementById('check');
+for (const [t, n] of Object.entries(counts)) check.insertAdjacentHTML('beforeend', `<div><span>${labels[t] || t}</span><span>${n}</span></div>`);
+
+// Pista de baile: marca discreta en el piso (contorno), es un espacio, no un objeto
+for (const e of venue.espacios.filter(e => e.id === 'GH-ESP-PISTA')) {   // (sin pista fija: la define producción en cada evento)
+  // sin contorno visible: la pista se identifica por su punto y su ficha
+  const xs = e.poligono.map(p => p[0]), ys = e.poligono.map(p => p[1]);
+  const pad = new THREE.Mesh(new THREE.PlaneGeometry(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)),
+    new THREE.MeshBasicMaterial({ visible: false }));
+  pad.rotation.x = -Math.PI / 2; pad.position.set((Math.max(...xs) + Math.min(...xs)) / 2, 0.01, -(Math.max(...ys) + Math.min(...ys)) / 2);
+  pad.userData = { space: e.id }; scene.add(pad); spacePads.push(pad);
+}
+
+// ---- Vistas ----
+const P = (x, y, h) => new THREE.Vector3(x, h, -y);
+const views = {
+  general: { pos: P(-26, 40, 20), target: P(-2, 8, 0) },
+  planta:  { pos: P(0.01, 4, 42), target: P(0, 4, 0), interior: true },
+};
+for (const e of venue.espacios) views[e.id] = { pos: P(...e.camara.pos), target: P(...e.camara.mira), space: e.id, interior: !['GH-ESP-DECK', 'GH-ESP-ENTRADA', 'GH-ESP-MUELLE', 'GH-ESP-CEREMONIA', 'GH-ESP-SUITE'].includes(e.id) };
+let anim = null;
+function go(name) {
+  const v = views[name]; if (!v) return;
+  anim = { t: 0, p0: camera.position.clone(), p1: v.pos, q0: controls.target.clone(), q1: v.target };
+  setInterior(!!v.interior);
+  document.querySelectorAll('#bar [data-view]').forEach(b => b.classList.toggle('on', b.dataset.view === name));
+  if (v.space) showSpace(v.space); else closePanel();
+}
+function setInterior(on) {
+  interior = on; renderer.clippingPlanes = on ? [roofCut] : [];
+  document.getElementById('roofBtn').classList.toggle('on', on);
+}
+document.querySelectorAll('#bar [data-view]').forEach(b => b.onclick = () => go(b.dataset.view));
+document.getElementById('roofBtn').onclick = () => setInterior(!interior);
+camera.position.copy(views.general.pos); controls.target.copy(views.general.target);
+
+// ---- Fichas ----
+const panel = document.getElementById('panel'), pbody = document.getElementById('pbody');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const gallery = fotos => {
+  if (!fotos || !fotos.length) return '';
+  const src = f => `./fotos/${f}.jpg`;
+  return `<div class="gal"><img class="main" src="${src(fotos[0])}" alt="">` +
+    (fotos.length > 1 ? `<div class="th">${fotos.map((f, i) => `<img src="${src(f)}" data-src="${src(f)}" class="${i ? '' : 'on'}" alt="">`).join('')}</div>` : '') +
+    `<small>${esc(inv.nota_fotos || '')}</small></div>`;
+};
+pbody.addEventListener('click', e => {
+  const t = e.target;
+  if (t.matches('.gal .th img')) { pbody.querySelector('.gal .main').src = t.dataset.src; pbody.querySelectorAll('.gal .th img').forEach(x => x.classList.toggle('on', x === t)); }
+  if (t.matches('.gal .main')) { const lb = document.getElementById('lightbox'); lb.querySelector('img').src = t.src; lb.style.display = 'grid'; }
+});
+document.getElementById('lightbox').onclick = e => e.currentTarget.style.display = 'none';
+const rows = campos => '<dl>' + campos.filter(c => !document.body.classList.contains('cliente') || c.estado === 'confirmado').map(c => `<div class="row"><dt>${esc(c.k)}</dt><dd>${esc(c.v)}<span class="tag ${c.estado}">${c.estado}</span></dd></div>`).join('') + '</dl>';
+let ultimaFicha = null;
+function showObject(u) {
+  ultimaFicha = () => showObject(u);
+  const t = inv.tipos[u.tipo] || { nombre: u.tipo, campos: [] };
+  let campos = t.campos;
+  if (u.medidas) campos = [{ k: 'Vano según modelo', v: `${u.medidas.ancho_m.toFixed(2).replace('.', ',')} × ${u.medidas.alto_m.toFixed(2).replace('.', ',')} m`, estado: 'estimado' }, ...campos.filter(c => c.k !== 'Vano según modelo')];
+  const enMontaje = counts[u.tipo] ? [{ k: 'En este montaje', v: String(counts[u.tipo]), estado: 'confirmado' }] : [];
+  campos = campos.filter(c => !(enMontaje.length && c.k === 'Cantidad en montaje'));   // evita el dato repetido
+  pbody.innerHTML = `<div class="cat">${esc(t.categoria || '')}</div><h2>${esc(t.nombre)}</h2><div class="id">${esc(u.id)}</div>
+    ${gallery(t.fotos)}<p class="desc">${esc(u.nota || t.descripcion || '')}</p>${rows([...campos, ...(t.categoria === 'Mobiliario' ? enMontaje : [])])}
+    <p class="note interno">Modelo 3D: ${esc(t.modelo3d || '')}. Posición en el montaje: provisional.</p>${cta(t.nombre)}`;
+  panel.classList.add('open'); document.body.classList.add('panelopen'); window.__hs?.setPaused(true); tip.style.display = 'none';
+}
+function showSpace(id) {
+  ultimaFicha = () => showSpace(id);
+  const s = inv.espacios[id]; if (!s) return;
+  pbody.innerHTML = `<div class="cat">Espacio</div><h2>${esc(s.nombre)}</h2><div class="id">${esc(id)}</div>${gallery(s.fotos)}<p class="desc">${esc(s.descripcion || '')}</p>${rows(s.campos)}${cta(s.nombre)}`;
+  panel.classList.add('open'); document.body.classList.add('panelopen'); window.__hs?.setPaused(true); tip.style.display = 'none';
+}
+// ---- Contacto por WhatsApp (número y mensaje se editan en inventario.json → venue.contacto) ----
+function waLink(sobre) {
+  const c = inv.venue?.contacto; if (!c?.whatsapp) return null;
+  const txt = c.mensaje + (sobre ? ` sobre: ${sobre}.` : '.');
+  return `https://wa.me/${c.whatsapp}?text=${encodeURIComponent(txt)}`;
+}
+function cta(sobre) {
+  const l = waLink(sobre); if (!l) return '';
+  return `<a class="wa-cta" href="${l}" target="_blank" rel="noopener">${WA_ICON}<span>Consultar por WhatsApp</span></a>`;
+}
+const WA_ICON = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.5-.3z"/></svg>';
+(function () {
+  const a = document.getElementById('waBtn'); const l = waLink();
+  if (!l) { a.style.display = 'none'; return; } a.href = l; a.title = 'WhatsApp ' + (inv.venue.contacto.whatsapp_visible || '');
+})();
+function showVenue() {
+  ultimaFicha = showVenue;
+  const v = inv.venue; if (!v) return;
+  pbody.innerHTML = `<div class="cat">La locación</div><h2>${esc(v.nombre)}</h2>${gallery(v.fotos)}<p class="desc">${esc(v.descripcion)}</p>${rows(v.campos || [])}
+    <div class="cat" style="margin:16px 0 6px">Incluye</div><ul class="inc">${v.incluye.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+    ${v.no_incluye ? `<div class="cat" style="margin:16px 0 6px">Se contrata aparte</div><ul class="inc">${v.no_incluye.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+    ${v.horarios ? `<div class="cat" style="margin:16px 0 6px">Horarios</div>` + v.horarios.map(h => `<div class="hor"><b>${esc(h.dias)}</b>
+      <dl><div class="row"><dt>Montaje</dt><dd>${esc(h.montaje)}</dd></div><div class="row"><dt>Evento</dt><dd>${esc(h.evento)}</dd></div>
+      <div class="row"><dt>Desmontaje</dt><dd>${esc(h.desmontaje)}</dd></div></dl></div>`).join('') : ''}${cta()}`;
+  panel.classList.add('open'); document.body.classList.add('panelopen'); window.__hs?.setPaused(true);
+}
+document.getElementById('infoBtn').onclick = showVenue;
+// Modo cliente (por defecto): oculta IDs, etiquetas de estado, datos no confirmados y notas técnicas.
+// Shift + I alterna la versión interna (para Zona E).
+addEventListener('keydown', e => {
+  if (e.shiftKey && e.code === 'KeyI' && !e.repeat) {
+    document.body.classList.toggle('cliente');
+    if (panel.classList.contains('open') && ultimaFicha) ultimaFicha();
+  }
+});
+function closePanel() { panel.classList.remove('open'); document.body.classList.remove('panelopen'); window.__hs?.setPaused(false); }
+document.getElementById('close').onclick = closePanel;
+
+// ---- Selección ----
+const ray = new THREE.Raycaster(), mouse = new THREE.Vector2(), tip = document.getElementById('tip');
+let hovered = null, downAt = null;
+function pick(e) {
+  mouse.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
+  ray.setFromCamera(mouse, camera);
+  const hit = ray.intersectObjects(pickables, true)[0];
+  if (!hit) return null;
+  let o = hit.object; while (o && !o.userData.id) o = o.parent; return o;
+}
+function setHover(o) {
+  if (hovered === o) return;
+  const paint = (g, v) => g.traverse(m => { if (m.isMesh && m.material.emissive) { m.material = m.material.clone(); m.material.emissive.setHex(v); } });
+  if (hovered && hovered.isGroup) paint(hovered, 0x000000);
+  hovered = o; if (o && o.isGroup) paint(o, 0x3a3020);
+  canvas.style.cursor = o ? 'pointer' : '';
+}
+canvas.addEventListener('pointermove', e => {
+  if (e.pointerType !== 'mouse' || e.buttons) { if (e.buttons) tip.style.display = 'none'; return; }
+  const o = pick(e); setHover(o);
+  if (o) { tip.style.display = 'block'; tip.style.left = e.clientX + 'px'; tip.style.top = e.clientY + 'px'; tip.textContent = inv.tipos[o.userData.tipo]?.nombre || ''; }
+  else tip.style.display = 'none';
+});
+canvas.addEventListener('pointerdown', e => downAt = [e.clientX, e.clientY]);
+canvas.addEventListener('pointerup', e => {
+  if (window.__walkOn) return;
+  if (!downAt || Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 6) return;
+  const o = pick(e); if (o) return showObject(o.userData);
+  const sp = ray.intersectObjects(spacePads)[0]; if (sp) showSpace(sp.object.userData.space); else closePanel();
+});
+
+// ---- Etapa 5: recorrido en primera persona ----
+const fadeEl = document.getElementById('fade');
+const fade = fn => { fadeEl.style.opacity = 1; setTimeout(() => { fn(); fadeEl.style.opacity = 0; }, 360); };
+const walk = new Recorrido({ camera, dom: canvas, scene, arquitectura: gltf.scene, ground, venue, pisosExtra: exterior.floors,
+  onPick: e => { const o = pick(e); if (o) { showObject(o.userData); return true; } closePanel(); return false; } });
+// ---- Etapa 6: hotspots y plano ----
+const occluders = []; gltf.scene.traverse(o => { if (o.isMesh && !o.material.transparent) occluders.push(o); });
+const hotspots = new Hotspots({ root: document.getElementById('hsroot'), camera, venue, inv, occluders,
+  onPick: (kind, d) => kind === 'space' ? showSpace(d.space) : showObject(d) });
+hotspots.setSpaces(venue.espacios); window.__hs = hotspots;
+const ESP_PUNTO = { 'GH-ESP-CEREMONIA': 'ceremonia', 'GH-ESP-SUITE': 'suite', 'GH-ESP-SALON': 'salon', 'GH-ESP-DECK': 'deck', 'GH-ESP-SERVICIOS': 'bar', 'GH-ESP-ENTRADA': 'llegada', 'GH-ESP-MUELLE': 'muelle' };
+const fondoPlano = await fetch('./data/plano.json').then(r => r.json()).catch(() => null);
+const plano = new Plano({ canvas: document.getElementById('plano'), venue, fondo: fondoPlano, onSpace: id => {
+  if (walk.enabled) { const p = venue.puntos.find(q => q.id === ESP_PUNTO[id]); if (p) walk.goTo(p, fade); showSpace(id); }
+  else go(id);
+} });
+document.getElementById('planoBtn').onclick = () => { document.body.classList.toggle('showplano'); plano.resize(); };
+addEventListener('resize', () => plano.resize());
+let planoT = 0;
+const barWalk = document.getElementById('barWalk');
+for (const p of venue.puntos) {
+  const b = document.createElement('button'); b.textContent = p.nombre; b.dataset.p = p.id;
+  b.onclick = () => { walk.goTo(p, fade); barWalk.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); };
+  barWalk.appendChild(b);
+}
+const hint = document.getElementById('hint');
+const touch = matchMedia('(pointer: coarse)').matches;
+hint.innerHTML = touch ? '<b>Arrastra</b> para mirar alrededor<br><b>Toca el piso</b> para caminar hasta ahí<br><b>Toca un objeto</b> para ver su ficha'
+                       : '<b>Arrastra</b> para mirar alrededor<br><b>Clic en el piso</b> o teclas <b>W A S D</b> para caminar<br><b>Clic en un objeto</b> para ver su ficha';
+function setMode(m) {
+  document.querySelectorAll('#mode button').forEach(b => b.classList.toggle('on', b.dataset.mode === m));
+  document.body.classList.toggle('walk', m === 'walk');
+  hotspots.setMode(m);
+  if (m === 'walk') {
+    setInterior(false); anim = null; controls.enabled = false; walk.enabled = true; window.__walkOn = true; closePanel();
+    camera.fov = 68; camera.updateProjectionMatrix();
+    walk.goTo(venue.puntos[0], fade); barWalk.querySelector('button').classList.add('on');
+    hint.style.opacity = 1; const off = () => { hint.style.opacity = 0; removeEventListener('pointerdown', off); removeEventListener('keydown', off); };
+    setTimeout(() => { addEventListener('pointerdown', off); addEventListener('keydown', off); }, 400); setTimeout(off, 7000);
+  } else {
+    walk.enabled = false; window.__walkOn = false; walk.marker.visible = false; controls.enabled = true;
+    camera.fov = 42; camera.updateProjectionMatrix();
+    fade(() => { camera.position.copy(views.general.pos); controls.target.copy(views.general.target); controls.update(); });
+    document.querySelectorAll('#bar [data-view]').forEach(b => b.classList.toggle('on', b.dataset.view === 'general'));
+  }
+}
+document.querySelectorAll('#mode button').forEach(b => b.onclick = () => setMode(b.dataset.mode));
+const start = document.getElementById('start'); start.style.display = 'grid';
+document.getElementById('startWalk').onclick = () => { start.remove(); setMode('walk'); };
+document.getElementById('startAerial').onclick = () => { start.remove(); setMode('aerial'); };
+
+// ---- Post-proceso (realismo): oclusión ambiental (sombras de contacto en esquinas y bajo los muebles)
+//      + resplandor suave de bombillos y luces. Solo en computador; en celular se dibuja directo (rendimiento).
+let composer = null;
+if (!matchMedia('(pointer: coarse)').matches) {
+  try {
+    composer = new EffectComposer(renderer);
+    composer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+    composer.addPass(new RenderPass(scene, camera));
+    const ao = new GTAOPass(scene, camera, innerWidth, innerHeight);
+    ao.updateGtaoMaterial({ radius: 0.55, distanceExponent: 1.4, thickness: 1.0, scale: 1.0, samples: 12 });
+    ao.blendIntensity = 0.85; composer.addPass(ao);
+    // el follaje de hojas recortadas no debe generar sombras cuadradas: se oculta en la pasada de oclusión
+    const ocultar = ao.overrideVisibility.bind(ao);
+    ao.overrideVisibility = function () { ocultar(); scene.traverse(o => { if (o.userData.sinAO && o.visible) { o.visible = false; this._visibilityCache.push(o); } }); };
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.28, 0.35, 1.15));
+    composer.addPass(new OutputPass());
+  } catch (e) { console.warn('Post-proceso desactivado', e); composer = null; }
+}
+const dibujar = () => {
+  if (composer) { try { composer.render(); return; } catch (e) { console.warn('Post-proceso desactivado', e); composer = null; } }
+  renderer.render(scene, camera);
+};
+addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); composer?.setSize(innerWidth, innerHeight); });
+const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const clock = new THREE.Clock();
+renderer.setAnimationLoop(() => {
+  const dt = Math.min(clock.getDelta(), 0.05);
+  exterior.update(dt);
+  hotspots.update();
+  if (performance.now() - planoT > 120) { planoT = performance.now();
+    if (walk.enabled) plano.setPosition(walk.planPos, walk.yaw);
+    else plano.setPosition([controls.target.x, -controls.target.z], Math.atan2(camera.position.x - controls.target.x, camera.position.z - controls.target.z)); }
+  if (walk.enabled) { walk.update(dt); dibujar(); return; }
+  if (anim) {
+    anim.t = Math.min(1, anim.t + 0.018); const k = ease(anim.t);
+    camera.position.lerpVectors(anim.p0, anim.p1, k); controls.target.lerpVectors(anim.q0, anim.q1, k);
+    if (anim.t >= 1) anim = null;
+  }
+  controls.update(); dibujar();
+});
+window.__gh = { scene, venue, counts, renderer, walk };   // para pruebas automáticas
+requestAnimationFrame(() => espejoBar(renderer, scene));   // reflejo de los espejos del bar (una sola captura)
+
+// ---- Día · Atardecer · Noche ----
+const ambiente = crearAmbiente({ scene, renderer, sun, hemi, cielo, venue, alturaTerreno,
+  alCambiar: () => requestAnimationFrame(() => espejoBar(renderer, scene)) });   // los espejos reflejan la nueva luz
+const horaBtns = document.querySelectorAll('#hora button');
+horaBtns.forEach(b => b.onclick = () => {
+  if (b.dataset.hora === ambiente.modo) return;
+  fadeEl.style.opacity = 0.85;
+  setTimeout(() => { ambiente.set(b.dataset.hora); horaBtns.forEach(x => x.classList.toggle('on', x === b)); fadeEl.style.opacity = 0; }, 360);
+});
+const ld = document.getElementById('loading'); ld.style.opacity = 0; setTimeout(() => ld.remove(), 700);
+</script>
+</body>
+</html>

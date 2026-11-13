@@ -1,0 +1,14 @@
+# Publicación en Netlify: el sitio es estático (no necesita compilar).
+[build]
+  publish = "."
+
+# La raíz lleva al piloto mientras exista una sola locación
+[[redirects]]
+  from = "/"
+  to = "/greenhouse/"
+  status = 302
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
