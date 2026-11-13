@@ -4,6 +4,10 @@
 // · Los datos vienen de greenhouse.venue.json → "hotspots"; el texto, de inventario.json.
 import * as THREE from 'three';
 
+// Pictogramas (SVG) para los baños
+const MUJER = '<svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="4" r="2.4" fill="currentColor"/><path d="M12 7.6c-2 0-3.1 1.2-3.6 3L6.6 16h3.2v6h1.8v-6h.8v6h1.8v-6h3.2l-1.8-5.4c-.5-1.8-1.6-3-3.6-3z" fill="currentColor"/></svg>';
+const HOMBRE = '<svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="4" r="2.4" fill="currentColor"/><path d="M9.2 7.6h5.6c1 0 1.8.8 1.8 1.8v6h-2v7h-2v-7h-1.2v7h-2v-7h-2v-6c0-1 .8-1.8 1.8-1.8z" fill="currentColor"/></svg>';
+export const ICONO = { bano_mujeres: MUJER, bano_hombres: HOMBRE };
 export class Hotspots {
   constructor({ root, camera, venue, inv, occluders, onPick }) {
     Object.assign(this, { camera, onPick });
@@ -18,7 +22,9 @@ export class Hotspots {
       const name = kind === 'space' ? inv.espacios[h.espacio]?.nombre : inv.tipos[ref.tipo]?.nombre;
       const el = document.createElement('button');
       el.className = 'hs ' + kind; el.setAttribute('aria-label', name || '');
-      el.innerHTML = kind === 'space' ? `<span>${name}</span>` : `<i></i><span>${name}</span>`;
+      const ico = ref && ICONO[ref.tipo];   // baños: pictograma de mujer / hombre, como el letrero real de la puerta
+      if (ico) el.classList.add('ico');
+      el.innerHTML = kind === 'space' ? `<span>${name}</span>` : ico ? `<i>${ico}</i><span>${name}</span>` : `<i></i><span>${name}</span>`;
       const data = kind === 'space' ? { space: h.espacio } : { id: ref.id, tipo: ref.tipo, medidas: ref.medidas_modelo, nota: ref.nota };
       el.addEventListener('click', e => { e.stopPropagation(); this.onPick(kind, data); });
       el.addEventListener('pointerdown', e => e.stopPropagation());

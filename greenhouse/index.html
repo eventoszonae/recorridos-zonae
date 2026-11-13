@@ -66,6 +66,7 @@
   .hs.obj i { width:14px; height:14px; border-radius:50%; background:rgba(255,255,255,.92); box-shadow:0 0 0 5px rgba(255,255,255,.28), 0 1px 6px rgba(0,0,0,.35); display:block; animation:pulse 2.6s ease-in-out infinite; }
   .hs.obj span { font-size:12px; color:#fff; background:rgba(27,27,26,.72); padding:4px 9px; border-radius:999px; opacity:0; transform:translateX(-4px); transition:all .2s; white-space:nowrap; backdrop-filter:blur(6px); }
   .hs.obj:hover span, .hs.obj:focus-visible span { opacity:1; transform:none; }
+  .hs.ico i { width:30px; height:30px; display:grid; place-items:center; background:#fff; color:#1b1b1a; animation:none; box-shadow:0 1px 8px rgba(0,0,0,.35); }
   .hs.space span { font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#fff; background:rgba(27,27,26,.55); padding:6px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.35); backdrop-filter:blur(6px); white-space:nowrap; }
   .hs.space:hover span { background:rgba(27,27,26,.8); }
   @keyframes pulse { 0%,100% { box-shadow:0 0 0 4px rgba(255,255,255,.30), 0 1px 6px rgba(0,0,0,.35); } 50% { box-shadow:0 0 0 9px rgba(255,255,255,.08), 0 1px 6px rgba(0,0,0,.35); } }
@@ -277,6 +278,18 @@ for (const obj of venue.objetos) {
     s.userData = { id: obj.id, tipo: obj.tipo, medidas: obj.medidas_modelo, nota: obj.nota }; s.name = obj.id;
     scene.add(s); pickables.push(s);
   }
+}
+// Letrero en cada puerta de baño (pictograma cobrizo como el real) [tamaño E: 18 × 30 cm]
+function letreroBano(tipo) {
+  const c = document.createElement('canvas'); c.width = 128; c.height = 212; const g = c.getContext('2d');
+  g.fillStyle = '#b8794a'; g.beginPath(); g.arc(64, 30, 20, 0, Math.PI * 2); g.fill();
+  if (tipo === 'bano_mujeres') { g.beginPath(); g.moveTo(64, 58); g.lineTo(28, 150); g.lineTo(100, 150); g.closePath(); g.fill(); g.fillRect(46, 150, 12, 56); g.fillRect(70, 150, 12, 56); }
+  else { g.fillRect(36, 58, 56, 90); g.fillRect(40, 148, 20, 58); g.fillRect(68, 148, 20, 58); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+  return new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.30), new THREE.MeshStandardMaterial({ map: t, transparent: true, alphaTest: 0.3, metalness: 0.6, roughness: 0.4 }));
+}
+for (const o of venue.objetos.filter(o => o.tipo.startsWith('bano'))) {
+  const m = letreroBano(o.tipo); m.position.set(o.pos[0], 1.6, -(-5.21)); m.rotation.y = Math.PI; scene.add(m);   // cara de la puerta hacia el salón (y = -5,21)
 }
 const labels = { mesa_novios: 'Mesa de 8 (novios)', mesa_postres: 'Mesa de postres', mesa_madera: 'Mesas de madera', silla_x: 'Sillas X', mesa_coctel: 'Mesas cocteleras', silla_coctel: 'Sillas cocteleras', sala_hierro: 'Sala de hierro (deck)', sala_corazones: 'Sala de hierro (muelle)', barra: 'Barra', puerta_abatible: 'Puerta de acceso', puerta_corrediza: 'Puertas corredizas' };
 // conteo por zona (para "En esta zona")

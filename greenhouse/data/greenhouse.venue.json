@@ -4185,7 +4185,7 @@
    "id": "GH-BANO-M",
    "tipo": "bano_mujeres",
    "pos": [
-    5.66,
+    7.23,
     -5.05
    ],
    "z": 0,
@@ -4197,7 +4197,7 @@
    "id": "GH-BANO-H",
    "tipo": "bano_hombres",
    "pos": [
-    7.23,
+    5.66,
     -5.05
    ],
    "z": 0,

@@ -43,9 +43,10 @@ add('GH-SALA-02', 'sala_corazones', 28.91, 30.55, rot=180, z=-1.66, zona='muelle
 
 # --- Elementos fijos (posición del modelo Rhino)
 add('GH-BARRA-01', 'barra', 23.90, 1.60, zona='salon', estado='fijo')
-# Baños (Zona E 13-nov): puertas del volumen de servicios hacia el salón (modelo Rhino, obj 36520 y 36519). Cuál es cuál: [E]
-add('GH-BANO-M', 'bano_mujeres', 34.57, 0.85, zona='salon', estado='fijo')
-add('GH-BANO-H', 'bano_hombres', 36.14, 0.85, zona='salon', estado='fijo')
+# Baños (Zona E 13-nov): puertas del volumen de servicios hacia el salón (modelo Rhino, obj 36520 y 36519).
+# Mirando las puertas desde el salón: IZQUIERDA = mujeres, DERECHA = hombres (Zona E).
+add('GH-BANO-M', 'bano_mujeres', 36.14, 0.85, zona='salon', estado='fijo')
+add('GH-BANO-H', 'bano_hombres', 34.57, 0.85, zona='salon', estado='fijo')
 puertas = json.load(open('../site/greenhouse_arquitectura_puertas.json'))
 for p in puertas:
     objs.append(dict(id=p['id'], tipo=('puerta_abatible' if 'abatible' in p['nombre'] else 'puerta_corrediza'), pos=p['pos'][:2], z=0, rot=0, zona='salon', montaje='fijo', nota=p['nombre'] + ('' if p['abierta'] else ' · cerrada en el recorrido'),
