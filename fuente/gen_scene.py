@@ -79,7 +79,7 @@ def orilla_irregular(poly, n_orilla=9, paso=0.8):
     out, s_acum = [], 0.0
     for i in range(len(poly)):
         a, b = poly[i], poly[(i + 1) % len(poly)]
-        if i >= n_orilla:
+        if i >= n_orilla or (i == len(poly) - 1 and n_orilla < len(poly)):
             out.append(a); continue
         L = math.dist(a, b); n = max(1, int(L / paso)); nx, ny = -(b[1] - a[1]) / L, (b[0] - a[0]) / L
         for k in range(n):
@@ -103,7 +103,9 @@ exterior = dict(
   # Coordenadas locales (origen = centro del salón). Prado ≈ 15 m entre la escalinata del deck y la orilla.
   # Huella del edificio (envolvente convexa de muros del modelo Rhino, coords locales): la vegetación no la atraviesa
   edificio=[[[-7.04, 5.28], [7.06, 5.28], [7.06, 9.22], [-7.04, 9.22]], [[19.3, -4.63], [19.3, 2.69], [6.83, 5.22], [-6.82, 5.22], [-6.91, 5.15], [-6.91, -5.75], [-6.84, -5.85], [3.09, -12.21], [4.91, -12.21]]],
-  lago=orilla_irregular([[-80, 27.0], [-30, 26.0], [-10, 24.2], [0.0, 23.6], [10.0, 24.2], [16.0, 20.0], [20.0, 12.0], [24.0, 4.0], [30.0, -2.0], [80, -2.0], [80, 140], [-80, 140]]),
+  # Lago con ORILLA LEJANA (Zona E 13-nov: el lago termina y detrás hay prado con árboles). Ancho ~50 m [E]
+  lago=orilla_irregular([[-80, 27.0], [-30, 26.0], [-10, 24.2], [0.0, 23.6], [10.0, 24.2], [16.0, 20.0], [20.0, 12.0], [24.0, 4.0], [30.0, -2.0],
+                         [46.0, -5.0], [60.0, 6.0], [66.0, 30.0], [57.0, 55.0], [32.0, 69.0], [0.0, 73.0], [-32.0, 70.0], [-56.0, 60.0], [-72.0, 45.0]], n_orilla=99),
   # Guaduales (video VISTA AL MUELLE): matas de guadua en la orilla, a la izquierda del muelle mirando al lago. Posición y tamaño [E]
   guaduas=[dict(pos=[-6.2, 22.7], culmos=34, alto=12.0, radio=1.3), dict(pos=[-9.6, 22.1], culmos=26, alto=10.5, radio=1.1)],
   muelle=dict(id='GH-MUELLE-01', centro=[0.0, 24.27], largo=8.0, ancho=4.0, giro=0, nivel=-1.66)   # al frente del Green House (Zona E),

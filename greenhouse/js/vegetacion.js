@@ -227,15 +227,21 @@ function texPinos() {
 }
 
 /** Bosque de pinos alrededor del lago (fondo). Tamaños, posiciones y número de árboles: ESTIMADOS (decorativo de horizonte). */
-export function pinosFondo(scene, seed = 3) {
+export function pinosFondo(scene, { enLago = () => false, suelo = () => -1.7 } = {}, seed = 3) {
+  // Zona E 13-nov: los árboles van DETRÁS del lago, sobre el prado de la otra orilla (y a los costados), nunca en el agua.
   const r = rng(seed), mat = new THREE.MeshStandardMaterial({ map: texPinos(), alphaTest: 0.45, side: THREE.DoubleSide, roughness: 0.9 });
   const variantes = [[], [], []];
-  const filas = [[68, 26, 60], [86, 30, 75], [108, 40, 90], [135, 55, 70]];   // radio, dispersión, árboles
-  for (const [R0, disp, n] of filas) for (let i = 0; i < n; i++) {
-    const a = THREE.MathUtils.lerp(-0.3, Math.PI + 0.3, r()), R = R0 + r() * disp;
-    const x = Math.cos(a) * R, y = 40 + Math.sin(a) * R * 0.8;
-    const h = 16 + r() * 16 + (R0 > 100 ? 6 : 0);
-    variantes[Math.floor(r() * 3)].push({ x, y, h, w: h * (0.42 + r() * 0.12), rot: r() * Math.PI, tono: 0.75 + r() * 0.4, frio: r() });
+  let n = 0, intentos = 0;
+  while (n < 380 && intentos < 20000) {
+    intentos++;
+    const x = -150 + r() * 300, y = -40 + r() * 230;
+    if (Math.hypot(x, y - 5) < 42) continue;                              // no sobre el venue ni sus jardines
+    if (enLago(x, y) || enLago(x + 2.5, y) || enLago(x - 2.5, y) || enLago(x, y + 2.5) || enLago(x, y - 2.5)) continue;
+    const lejos = Math.hypot(x, y - 35);
+    if (r() > Math.min(1, 1.4 - lejos / 160)) continue;                   // más denso cerca de la orilla, más ralo lejos
+    const h = 14 + r() * 16 + (lejos > 90 ? 6 : 0);
+    variantes[Math.floor(r() * 3)].push({ x, y, z: suelo(x, y), h, w: h * (0.42 + r() * 0.12), rot: r() * Math.PI, tono: 0.75 + r() * 0.4, frio: r() });
+    n++;
   }
   const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), col = new THREE.Color();
   variantes.forEach((arr, v) => {
@@ -244,7 +250,7 @@ export function pinosFondo(scene, seed = 3) {
     const uv = g.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setX(i, (v + uv.getX(i)) / 3);
     const inst = new THREE.InstancedMesh(g, mat, arr.length);
     arr.forEach((t, i) => {
-      m4.compose(new THREE.Vector3(t.x, -1.8, -t.y), q.setFromEuler(new THREE.Euler(0, t.rot, 0)), new THREE.Vector3(t.w, t.h, t.w));
+      m4.compose(new THREE.Vector3(t.x, t.z - 0.3, -t.y), q.setFromEuler(new THREE.Euler(0, t.rot, 0)), new THREE.Vector3(t.w, t.h, t.w));
       inst.setMatrixAt(i, m4); inst.setColorAt(i, col.setRGB(t.tono * (0.92 - t.frio * 0.1), t.tono, t.tono * (0.9 + t.frio * 0.15)));
     });
     inst.userData.sinAO = true; scene.add(inst);

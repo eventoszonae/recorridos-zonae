@@ -66,11 +66,11 @@ export function crearTerreno(material, lago) {
         }
     }
   }
-  const g = new THREE.PlaneGeometry(240, 240, 240, 240); g.rotateX(-Math.PI / 2);
+  const g = new THREE.PlaneGeometry(420, 420, 300, 300); g.translate(0, 40, 0); g.rotateX(-Math.PI / 2);   // llega hasta la otra orilla y el bosque
   const p = g.attributes.position;
   for (let i = 0; i < p.count; i++) p.setY(i, alturaTerreno(-p.getZ(i), p.getX(i)));
   g.computeVertexNormals();
-  const uv = g.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * 60, uv.getY(i) * 60);
+  const uv = g.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * 105, uv.getY(i) * 105);
   const m = new THREE.Mesh(g, material); m.receiveShadow = true; return m;
 }
 
@@ -242,7 +242,7 @@ export function construirExterior(scene, ext, opts = {}) {
   if (ext.lago) { extra.update = crearLago(scene, ext.lago); crearOrilla(scene, ext.lago, r); }
   if (ext.muelle && opts.madera) extra.floors.push(crearMuelle(scene, ext.muelle, opts.madera));
   (ext.guaduas || []).forEach((gd, i) => crearGuadual(scene, gd, Math.max(alturaTerreno(gd.pos[1], gd.pos[0]), NIVEL_AGUA), 11 + i * 17));
-  pinosFondo(scene);
+  pinosFondo(scene, { enLago: (x, y) => !!ext.lago && inside([x, y], ext.lago), suelo: (x, y) => alturaTerreno(y, x) });
   return extra;
 }
 

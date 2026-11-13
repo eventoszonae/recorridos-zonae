@@ -122,7 +122,7 @@ export async function aplicarMateriales(root, renderer) {
   });
   // Mobiliario: madera real de las mesas y de las cocteleras
   MAT.maderaMiel.map = await tex('madera_mesa', renderer, [1 / 0.65, 1 / 0.65]);   // [E] la foto muestra 3 tablas ≈ 0,65 m (tablas de ~22 cm) MAT.maderaMiel.color.setHex(0xf0b878); MAT.maderaMiel.needsUpdate = true;
-  MAT.maderaGris.map = await tex('madera_coctel', renderer, [1 / 0.7, 1 / 0.7]); MAT.maderaGris.color.setHex(0xffffff); MAT.maderaGris.needsUpdate = true;
+  MAT.maderaGris.map = await tex('madera_coctel', renderer, [1 / 0.7, 1 / 0.7]); MAT.maderaGris.color.setHex(0x6e5a4c); MAT.maderaGris.needsUpdate = true;   // Zona E: la madera de las cocteleras es más oscura
   return { prado: await tex('prado', renderer, [1, 1]) };   // la malla del terreno ya trae UV repetidas (cada 4 m)
 }
 
