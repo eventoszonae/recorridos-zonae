@@ -9,15 +9,13 @@ const P = (x, y, h = 0) => new THREE.Vector3(x, h, -y);
 let LAGO = null, ORILLA_BB = null; const SEG_GRID = new Map(), CELDA_LAGO = new Map();   // tramos de orilla por celda de 4 m (rápido)
 const NIVEL_AGUA = -0.95;
 /** Nivel del prado SIN la orilla (Zona E 13-nov: el lote es desnivelado).
- *  Entrada, jardines y costados del salón: ~0,34 m bajo el salón (la pasarela llega al deck con 2 escalones).
- *  Desde el borde del deck hacia el lago el prado baja como una lomita: al pie de los escalones del deck queda
- *  a -0,69 y sigue bajando suave hasta el muelle. Transiciones: ESTIMADAS. */
+ *  Entrada, sendero, jardines y pasarela: a la MISMA altura del salón (prado apenas 6 cm abajo).
+ *  En la zona del cóctel el terreno baja en depresión: el deck y el final de la pasarela quedan suspendidos.
+ *  Al pie de las escaleras del deck el prado queda a -0,69 y sigue bajando suave hasta el muelle. Transiciones: ESTIMADAS. */
 export function nivelPrado(y) {
   const S = THREE.MathUtils.smoothstep;
-  return -0.36 - 0.33 * S(y, 12.3, 14.4) - 0.12 * S(y, 14.4, 21.5);
+  return -0.06 - 0.63 * S(y, 4.5, 13.6) - 0.12 * S(y, 13.6, 21.5);
 }
-/** Altura del terreno. Orilla irregular (Zona E): unos tramos del borde quedan más altos (barranco de pasto)
- *  y otros bajan suave hasta el agua. Frente al muelle se mantiene el nivel del prado. Alturas ESTIMADAS. */
 export function alturaTerreno(y, x = 0) {
   const base = nivelPrado(y);
   if (!LAGO) return base;

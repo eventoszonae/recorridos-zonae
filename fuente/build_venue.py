@@ -212,8 +212,8 @@ def _up(tris):
     return out
 # ---------- Sendero de llegada y pasarela (plano de modulación + videos ENTRADA y PASARELA) ----------
 # Medidas tomadas del plano de modulación (escala calibrada con las columnas). [E] ancho total ≈ 2,67 m.
-ZP = -0.34                         # Zona E 13-nov: la entrada va ~0,34 m bajo el salón (2 escalones de 0,17); prado de la entrada = -0,36
-Z_PAS_FIN = -0.34                  # La pasarela va plana al nivel de la entrada y llega al deck con 2 escalones [E: 2 × 0,17 m]
+ZP = -0.005                        # Zona E 13-nov: entrada, sendero y pasarela a la MISMA altura del salón (el prado baja bajo el cóctel)
+Z_PAS_FIN = -0.005                 # La pasarela va a nivel del salón y llega al deck sin escalones; queda suspendida donde el terreno baja
 def ribbon(center, half_w, z, offs=(-1, 1)):
     zf = z if callable(z) else (lambda k: z)
     """Cinta a lo largo de una polilínea (x,y). offs = fracciones del medio ancho que limitan la cinta."""
@@ -256,7 +256,7 @@ for k in range(len(curva)-1):
 # La banda izquierda SIGUE LA CURVA del concreto (franja de 0,52 m pegada a su borde exterior) y desde esa curva
 # arranca el corredor de madera de 1,50 m hacia el cóctel, sin montarse sobre el concreto.
 XL0, XL1 = X0, X0 + 1.50
-Z_RECTO_FIN = -0.34
+Z_RECTO_FIN = -0.005
 Y_SUBE = Y_CURVA + cry
 zw = lambda y: ZP + (Z_RECTO_FIN - ZP) * np.clip((y - Y_SUBE) / (10.30 - Y_SUBE), 0, 1)
 orx, ory = crx + BANDA, cry + BANDA                                   # elipse exterior de la banda
@@ -332,8 +332,7 @@ buckets['muro_claro'] += box(21.97, 37.91, -8.72, -8.60, 0.0, 2.75)     # sur
 buckets['muro_claro'] += box(21.99, 22.11, -8.60, 0.04, 0.0, 2.75)      # oeste
 buckets['muro_claro'] += box(37.79, 37.91, -8.60, -1.71, 0.0, 2.75)     # este
 # Antes del deck: 2 escalones de madera (Zona E) desde el final de la pasarela (-0,34) hasta el deck (0,00)
-buckets['madera_deck'] += box(21.00, 21.44, 15.05, 17.17, -0.70, -0.17)
-buckets['madera_deck'] += box(21.44, 21.87, 15.05, 17.17, -0.70, 0.0)
+buckets['madera_deck'] += box(21.00, 21.87, 15.05, 17.17, -0.70, -0.005)   # remate a nivel entre la pasarela y el deck (sin escalones)
 # Relleno del hueco entre los escalones y el bloque de esquina del deck (obj 129, desde y = 17,17)
 buckets['madera_deck'] += box(21.22, 21.44, 16.55, 17.17, -0.70, 0.0)
 
