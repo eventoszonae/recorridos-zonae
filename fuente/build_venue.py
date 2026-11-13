@@ -74,7 +74,7 @@ def classify(oid, tri, zmid=0):
     up, down = n[2] > 0.7, n[2] < -0.7
     zc = tri[:,2].mean(); horiz = up or down
     if oid in SUITE_TECHO: return 'teja_gris'
-    if oid in SUITE_MUROS: return 'muro_claro' if oid == 36501 else 'acero_negro'   # Zona E 13-nov: la suite es como el Green House: retícula NEGRA con vidrio
+    if oid in SUITE_MUROS: return 'acero_negro'   # Zona E 13-nov: la suite es como el Green House: retícula NEGRA con vidrio
     if oid in SUITE_REMATES: return 'acero_negro'
     if oid == 36509: return 'madera_deck'
     if oid in (36510, 0): return 'concreto_sendero' if (up and oid == 0) else 'concreto'

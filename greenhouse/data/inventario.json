@@ -586,8 +586,8 @@
       ]
     },
     "GH-ESP-SUITE": {
-      "nombre": "Suite",
-      "descripcion": "Casa independiente con cubierta a dos aguas, junto al Green House.",
+      "nombre": "Suite de la novia",
+      "descripcion": "Casa independiente estilo invernadero junto al Green House: estructura negra con vidrio, pensada para que la novia se arregle con sus damas de honor o su familia.",
       "fotos": [
         "salon-mesas-2"
       ],
@@ -608,8 +608,9 @@
           "estado": "pendiente"
         }
       ],
-      "resumen": "Casa independiente junto al Green House para la preparación.",
+      "resumen": "Suite estilo invernadero, en vidrio y estructura negra, para que la novia se arregle con sus damas de honor o su familia.",
       "destacados": [
+        "Estilo invernadero",
         "Incluida en el alquiler",
         "Junto al salón"
       ]
