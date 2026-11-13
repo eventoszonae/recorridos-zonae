@@ -9,7 +9,7 @@ export const ESCALA = {
   piso_salon: 0.58,   // [E] módulo del estampado; medido en el video contra el ancho de silla y mesa
   madera_deck: 1.8,   // Zona E 13-nov: el piso del deck y el muelle son la MISMA madera del cielo del alero
   madera_cielo: 1.8,  // [E] tablas largas y angostas (fotos del alero)
-  madera_pasarela: 2.4,
+  madera_pasarela: 1.8,   // Zona E 13-nov: la pasarela es la MISMA madera oscura del deck
 };
 // Texturas tomadas de los ESCANEOS de Zona E (13-nov): [archivo, ancho m, largo m]
 const ESCANEO = {
@@ -92,12 +92,12 @@ async function tex(name, renderer, repeat = [1, 1], rotation = 0) {
 export async function aplicarMateriales(root, renderer) {
   const maps = {};
   for (const [name, [f, w, l]] of Object.entries(ESCANEO)) maps[name] = await tex(f, renderer, [1 / w, 1 / l]);
-  for (const [name, s] of Object.entries(ESCALA)) maps[name] = await tex({ madera_deck: 'madera_cielo', madera_pasarela: 'madera_deck' }[name] || name, renderer, [1 / s, 1 / s]);
+  for (const [name, s] of Object.entries(ESCALA)) maps[name] = await tex({ madera_deck: 'madera_cielo', madera_pasarela: 'madera_cielo' }[name] || name, renderer, [1 / s, 1 / s]);
   const tune = {
     piso_salon:   { roughness: 0.42, color: 0xf2e4d4 },   // cemento pulido, tono cálido de los videos
     madera_deck:  { roughness: 0.72, color: 0x9a7058 },   // misma madera café del cielo del alero (deck y muelle)
     madera_cielo: { roughness: 0.7, color: 0x9a7058 },    // fotos: madera café oscura
-    madera_pasarela: { roughness: 0.8, color: 0xffffff },
+    madera_pasarela: { roughness: 0.72, color: 0x9a7058 },
     concreto_sendero: { roughness: 0.92, color: 0xffffff },
     madera_banda: { roughness: 0.72, color: 0x9a7058 },
     madera_rojiza:{ roughness: 0.5, color: 0xffffff },
