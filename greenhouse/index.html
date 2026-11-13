@@ -142,6 +142,11 @@
     .panel { top:auto; bottom:104px; right:10px; left:10px; width:auto; max-height:calc(100vh - 190px); border-radius:16px; transform:translateY(140%); }   /* la ficha queda ENCIMA de la barra de zonas: los botones siguen accesibles */
     .panel.compact, .panel.compact.expanded { top:auto; bottom:104px; left:10px; right:10px; width:auto; max-height:32vh; transform:translateY(160%); }
     .panel.compact.expanded { max-height:calc(100vh - 190px); }
+    /* en pantalla angosta la ficha compacta es solo una franja: nombre, frase y datos clave */
+    .panel.compact:not(.expanded) { max-height:none; padding:12px 16px; }
+    .panel.compact:not(.expanded) .gal, .panel.compact:not(.expanded) .aqui, .panel.compact:not(.expanded) .sub, .panel.compact:not(.expanded) .pasos { display:none; }
+    .panel.compact:not(.expanded) .desc { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .panel.compact:not(.expanded) h2 { font-size:20px; margin:2px 0 0; } .panel.compact .mas-btn { margin-top:8px; }
     body.walk .panel.compact { top:auto; } body.compactopen .plano { display:none !important; }
     .bar { bottom:12px; }
   }
@@ -471,7 +476,7 @@ const walk = new Recorrido({ camera, dom: canvas, scene, arquitectura: gltf.scen
   onPick: e => { const o = pick(e); if (o) { showObject(o.userData); return true; } closePanel(); return false; } });
 // ---- Etapa 6: hotspots y plano ----
 const occluders = []; gltf.scene.traverse(o => { if (o.isMesh && !o.material.transparent) occluders.push(o); });
-const hotspots = new Hotspots({ root: document.getElementById('hsroot'), camera, venue, inv, occluders,
+const hotspots = new Hotspots({ root: document.getElementById('hsroot'), camera, venue: { ...venue, hotspots: venue.hotspots.filter(h => !h.espacio) }, inv, occluders,   // sin letreros de zona flotando: las zonas están en la barra
   onPick: (kind, d) => kind === 'space' ? showSpace(d.space) : showObject(d) });
 hotspots.setSpaces([]); window.__hs = hotspots;   // las zonas se navegan desde la barra inferior (menos letreros en pantalla)
 const ESP_PUNTO = { 'GH-ESP-CEREMONIA': 'ceremonia', 'GH-ESP-SUITE': 'suite', 'GH-ESP-SALON': 'salon', 'GH-ESP-DECK': 'deck', 'GH-ESP-SERVICIOS': 'bar', 'GH-ESP-ENTRADA': 'llegada', 'GH-ESP-MUELLE': 'muelle' };
