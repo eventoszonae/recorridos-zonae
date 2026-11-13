@@ -16,6 +16,7 @@ MATERIALS = {  # color base aproximado (Etapa 4 reemplaza por texturas reales)
   'piso_salon':    dict(c=[0.30,0.30,0.29,1],    r=0.55, m=0.0),
   'concreto':      dict(c=[0.55,0.54,0.51,1],    r=0.9,  m=0.0),
   'madera_deck':   dict(c=[0.33,0.19,0.13,1],    r=0.75, m=0.0),
+  'madera_banda':  dict(c=[0.33,0.19,0.13,1],    r=0.8,  m=0.0),
   'madera_cielo':  dict(c=[0.62,0.34,0.15,1],    r=0.6,  m=0.0),
   'cubierta':      dict(c=[0.86,0.86,0.84,1],    r=0.8,  m=0.0),
   'techo_negro':   dict(c=[0.06,0.06,0.06,1],    r=0.8,  m=0.1),
@@ -243,11 +244,11 @@ RIB_UV = []; CUSTOM_UV = {}
 # LLEGADA (Zona E, 12-nov): pasillo principal de 3,10 m = banda de madera izq. + concreto + banda de madera der.
 # Donde el concreto gira en curva hacia la puerta lateral, SOLO la banda izquierda sigue de largo y se convierte
 # en el corredor de madera de 1,50 m que llega hasta el cóctel. La banda derecha termina en la curva.
-X0, X1, BANDA = 12.65, 15.75, 0.52
+X0, X1, BANDA = 12.65, 15.75, 0.80     # bandas de 0,80 m y concreto de 1,50 m (medido en el escaneo de la llegada)
 Y_INI, Y_CURVA = -8.72, 3.07
-buckets['madera_deck'] += box(X0, X0 + BANDA, Y_INI, Y_CURVA, ZP - 0.04, ZP - 0.004)          # banda izquierda
+buckets['madera_banda'] += box(X0, X0 + BANDA, Y_INI, Y_CURVA, ZP - 0.04, ZP - 0.004)          # banda izquierda
 buckets['concreto_sendero'] += box(X0 + BANDA, X1 - BANDA, Y_INI, Y_CURVA, ZP - 0.04, ZP)     # concreto
-buckets['madera_deck'] += box(X1 - BANDA, X1, Y_INI, Y_CURVA, ZP - 0.04, ZP - 0.004)          # banda derecha (termina aquí)
+buckets['madera_banda'] += box(X1 - BANDA, X1, Y_INI, Y_CURVA, ZP - 0.04, ZP - 0.004)          # banda derecha (termina aquí)
 ccx, ccy, crx, cry = X1, Y_CURVA, X1 - (X0 + BANDA), 2.98                                        # curva de concreto
 ang = np.linspace(np.pi, np.pi/2, 16)
 curva = [(ccx + crx*np.cos(a), ccy + cry*np.sin(a)) for a in ang]
@@ -265,7 +266,7 @@ for k in range(len(ang)-1):                                           # franja c
     p = [(ccx + crx*np.cos(a0), ccy + cry*np.sin(a0)), (ccx + orx*np.cos(a0), ccy + ory*np.sin(a0)),
          (ccx + orx*np.cos(a1), ccy + ory*np.sin(a1)), (ccx + crx*np.cos(a1), ccy + cry*np.sin(a1))]
     q = [np.array([x, y, ZP + 0.002]) for x, y in p]
-    buckets['madera_deck'] += [np.array([q[0],q[1],q[2]]), np.array([q[0],q[2],q[3]])]
+    buckets['madera_banda'] += [np.array([q[0],q[1],q[2]]), np.array([q[0],q[2],q[3]])]
 def y_borde(x):                                                       # borde superior de la franja curva
     u = np.clip((x - ccx) / orx, -1, 1); return ccy + ory*np.sqrt(1 - u*u)
 xs = np.linspace(XL0, XL1, 9)
@@ -301,11 +302,11 @@ for sd in (-1, 1): buckets['madera_deck'] += skirt(arc, HW_MADERA, sd, -1.00, la
 buckets['verde_bosque'] += box(25.92, 31.68, 0.56, 0.70, 2.25, 2.65)
 # Bandas de madera a los dos lados del acceso de concreto hacia la puerta lateral (foto de la puerta; Zona E):
 # arriba continúa la franja curva de la banda izquierda; abajo continúa la banda derecha.
-buckets['madera_deck'] += box(15.75, 21.97, 6.05, 6.05 + BANDA, ZP - 0.04, ZP - 0.002)
-buckets['madera_deck'] += box(15.23, 21.97, 3.07 - BANDA, 3.07, ZP - 0.04, ZP - 0.002)
+buckets['madera_banda'] += box(15.75, 21.97, 6.05, 6.05 + BANDA, ZP - 0.04, ZP - 0.002)
+buckets['madera_banda'] += box(X1 - BANDA, 21.97, 3.07 - BANDA, 3.07, ZP - 0.04, ZP - 0.002)
 # Acceso secundario entre jardineras: concreto plano a ras del prado, como el sendero principal [por confirmar el remate en la puerta]
 buckets['concreto_sendero'] += box(15.75, 21.97, 3.07, 6.05, -0.70, ZP)
-for _k in ('concreto_sendero', 'madera_deck'):
+for _k in ('concreto_sendero', 'madera_deck', 'madera_banda'):
     buckets[_k] = _up(buckets[_k])
 # Zócalo del salón (Zona E 13-nov: entre el sendero y el salón se veía una franja de prado: debe ser concreto).
 # La losa del Rhino mide 0,25 m de espesor y el prado está a -0,68: se cierra el borde exterior de la losa

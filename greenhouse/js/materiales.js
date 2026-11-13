@@ -7,9 +7,14 @@ import { MAT } from './furniture.js';
 // Tamaño real que cubre una repetición de cada textura (metros). [E] = estimado.
 export const ESCALA = {
   piso_salon: 0.58,   // [E] módulo del estampado; medido en el video contra el ancho de silla y mesa
-  madera_deck: 1.4,   // [E] tablas de ~12 cm, largas (a 1,0 m se veían como ladrillos)
+  madera_deck: 2.4,   // ESCANEO del deck (Zona E 13-nov): parche real de 2,4 m
   madera_cielo: 1.8,  // [E] tablas largas y angostas (fotos del alero)
-  madera_pasarela: 1.4,
+  madera_pasarela: 2.4,
+};
+// Texturas tomadas de los ESCANEOS de Zona E (13-nov): [archivo, ancho m, largo m]
+const ESCANEO = {
+  concreto_sendero: ['concreto_sendero', 1.5, 2.35],   // concreto real con junta cada ~2,35 m
+  madera_banda: ['madera_banda', 0.75, 7.5],           // bandas de madera de la llegada (tablillas a lo largo)
 };
 
 const loader = new THREE.TextureLoader();
@@ -83,13 +88,15 @@ async function tex(name, renderer, repeat = [1, 1], rotation = 0) {
 /** Aplica texturas y ajustes físicos a los materiales del GLB de arquitectura y del mobiliario. */
 export async function aplicarMateriales(root, renderer) {
   const maps = {};
+  for (const [name, [f, w, l]] of Object.entries(ESCANEO)) maps[name] = await tex(f, renderer, [1 / w, 1 / l]);
   for (const [name, s] of Object.entries(ESCALA)) maps[name] = await tex(name === 'madera_pasarela' ? 'madera_deck' : name, renderer, [1 / s, 1 / s]);
   const tune = {
     piso_salon:   { roughness: 0.42, color: 0xf2e4d4 },   // cemento pulido, tono cálido de los videos
-    madera_deck:  { roughness: 0.8, color: 0x8f6e5e },    // más oscuro: la foto quedó aclarada
+    madera_deck:  { roughness: 0.8, color: 0xffffff },    // textura real del escaneo: sin teñir
     madera_cielo: { roughness: 0.7, color: 0x9a7058 },    // fotos: madera café oscura
-    madera_pasarela: { roughness: 0.8, color: 0x8f6e5e },
-    concreto_sendero: { roughness: 0.92, color: 0xd6d1c7 },
+    madera_pasarela: { roughness: 0.8, color: 0xffffff },
+    concreto_sendero: { roughness: 0.92, color: 0xffffff },
+    madera_banda: { roughness: 0.85, color: 0xffffff },
     madera_rojiza:{ roughness: 0.5, color: 0xffffff },
     acero_negro:  { roughness: 0.5, metalness: 0.5, color: 0x1b1b1b },
     techo_negro:  { roughness: 0.85, metalness: 0.1, color: 0x161616 },
@@ -105,7 +112,6 @@ export async function aplicarMateriales(root, renderer) {
     const m = o.material, n = m.name;
     if (maps[n]) m.map = maps[n];
     if (n === 'madera_rojiza') m.map = panelesMadera(renderer);
-    if (n === 'concreto_sendero') m.map = concretoSendero(renderer);
     if (n === 'madera_nicho') m.map = panelesNicho(renderer);
     if (n === 'verde_bosque') m.map = laminaCorrugada(renderer);
     if (n === 'damero') m.map = damero(renderer);

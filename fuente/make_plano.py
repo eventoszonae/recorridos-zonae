@@ -32,7 +32,7 @@ def floor(name, fc, z=2):
     flat = (np.ptp(P[:, :, 2], 1) < 0.35) & (P[:, :, 2].max(1) < 0.3)
     ax.add_collection(PolyCollection(P[flat][:, :, :2], facecolors=fc, edgecolors=fc, linewidths=0.2, zorder=z))
 floor('concreto', '#e2e0db'); floor('concreto_sendero', '#d9d6cf'); floor('piso_salon', '#f1efea', 3); floor('damero', '#d8d6d0', 3)
-for n in ('madera_deck', 'madera_pasarela'): floor(n, '#dcc7ad', 2)
+for n in ('madera_deck', 'madera_pasarela', 'madera_banda'): floor(n, '#dcc7ad', 2)
 # tablas del deck/pasarela: líneas finas
 # corte a 1,0 m: elementos verticales
 def cut(name, color, lw, z=6):

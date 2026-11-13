@@ -136,17 +136,9 @@ function rng(seed) { return () => ((seed = (seed * 16807) % 2147483647) - 1) / 2
 
 /** Plaza de adoquín en espiga al inicio de la llegada (foto). Adoquín ≈ 20 × 10 cm [E]. */
 function crearAdoquin(scene, poly) {
-  const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
-  g.fillStyle = '#9d988e'; g.fillRect(0, 0, 256, 256);
-  const u = 32;                                               // 256 px = 0,8 m → u = 10 cm
-  for (let y = -4; y < 12; y++) for (let x = -4; x < 12; x++) {
-    const ox = x * u * 2 - y * u, oy = y * u + x * 0;
-    for (const [dx, dy, w, h] of [[0, 0, 2 * u, u], [2 * u, -u, u, 2 * u]]) {
-      const v = 200 + Math.floor(Math.random() * 25);
-      g.fillStyle = `rgb(${v},${v - 4},${v - 12})`; g.fillRect(ox + dx + 2, oy + dy + 2, w - 4, h - 4);
-    }
-  }
-  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(1 / 0.8, 1 / 0.8);
+  // Adoquín en espina de pescado: textura REAL del escaneo de la llegada (Zona E 13-nov); parche de 2,5 × 1,25 m
+  const t = new THREE.TextureLoader().load(new URL('../tex/adoquin.jpg', import.meta.url).href);
+  t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(1 / 2.5, 1 / 1.25);
   const geo = new THREE.ShapeGeometry(new THREE.Shape(poly.map(([x, y]) => new THREE.Vector2(x, y))));
   geo.rotateX(-Math.PI / 2);
   const p = geo.attributes.position, uv = geo.attributes.uv;
