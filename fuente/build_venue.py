@@ -275,7 +275,7 @@ for xa, xb in zip(xs[:-1], xs[1:]):                                   # corredor
     buckets['madera_deck'] += [np.array([q[0],q[1],q[2]]), np.array([q[0],q[2],q[3]])]
 for xx in (XL0, XL1):                                                 # faldones del tramo elevado
     y0 = max(Y_SUBE, y_borde(xx))
-    buckets['madera_deck'] += [np.array([(xx, y0, -0.70), (xx, 10.30, -0.70), (xx, 10.30, Z_RECTO_FIN)]), np.array([(xx, y0, -0.70), (xx, 10.30, Z_RECTO_FIN), (xx, y0, zw(y0))])]
+    buckets['madera_deck'] += [np.array([(xx, y0, -1.00), (xx, 10.30, -1.00), (xx, 10.30, Z_RECTO_FIN)]), np.array([(xx, y0, -1.00), (xx, 10.30, Z_RECTO_FIN), (xx, y0, zw(y0))])]
 # Pasarela curva de madera (video PASARELA): cuarto de elipse hasta el costado del deck
 cx, cy, rx, ry = 20.88, 10.30, 20.88 - (XL0 + XL1) / 2, 5.50      # arranca en el eje del corredor de madera
 arc = [(cx - rx*np.cos(a), cy + ry*np.sin(a)) for a in np.linspace(0, np.pi/2, 24)]
@@ -295,7 +295,7 @@ def skirt(center, half_w, side, z0, z1):
         q = [np.array([*a, z0]), np.array([*b, z0]), np.array([*b, z1f(i+1)]), np.array([*a, z1f(i)])]
         out += [np.array([q[0],q[1],q[2]]), np.array([q[0],q[2],q[3]])]
     return out
-for sd in (-1, 1): buckets['madera_deck'] += skirt(arc, HW_MADERA, sd, -0.70, lambda k: ZARC(k) - 0.002)
+for sd in (-1, 1): buckets['madera_deck'] += skirt(arc, HW_MADERA, sd, -1.00, lambda k: ZARC(k) - 0.002)
 # Acceso secundario de concreto entre las dos jardineras hasta la puerta lateral (indicado por Zona E, no se usa en eventos)
 # Dintel verde (lámina corrugada del contenedor) sobre la boca del nicho (foto del nicho)
 buckets['verde_bosque'] += box(25.92, 31.68, 0.56, 0.70, 2.25, 2.65)
@@ -326,13 +326,20 @@ def _zocalo_losa(oid, z_top=-0.25, z_bot=-0.74):
         out += [np.array([A0, B0, B1]), np.array([A0, B1, A1]), np.array([A0, B1, B0]), np.array([A0, A1, B1])]   # dos caras
     return out
 buckets['concreto'] += _zocalo_losa(36527)
+# Deck del cóctel SUSPENDIDO sobre el terreno en depresión (Zona E 13-nov; escaneos: el deck queda ~0,75 m sobre el prado).
+# Bajo la plataforma (0,25 m) se ven los apoyos: postes cada ~2,3 m [E] y una viga perimetral.
+for _x in np.linspace(22.0, 35.85, 7):
+    for _y in np.linspace(11.4, 19.05, 4):
+        buckets['acero_negro'] += box(_x - 0.06, _x + 0.06, _y - 0.06, _y + 0.06, -1.10, -0.25)
+for (_a, _b, _c, _d) in [(21.87, 35.97, 11.25, 11.37), (21.87, 35.97, 19.05, 19.17), (21.87, 21.99, 11.25, 19.17), (35.85, 35.97, 11.25, 19.17)]:
+    buckets['acero_negro'] += box(_a, _b, _c, _d, -0.40, -0.25)
 # Zona de servicio trasera (detrás de los baños): Zona E 12-nov – "debe tener una pared, no se ve lo que hay adentro".
 # Se cierran los 3 lados abiertos bajo la cubierta trasera (sur, oeste y este), desde el sardinel hasta la viga. Material [E]: muro claro.
 buckets['muro_claro'] += box(21.97, 37.91, -8.72, -8.60, 0.0, 2.75)     # sur
 buckets['muro_claro'] += box(21.99, 22.11, -8.60, 0.04, 0.0, 2.75)      # oeste
 buckets['muro_claro'] += box(37.79, 37.91, -8.60, -1.71, 0.0, 2.75)     # este
 # Antes del deck: 2 escalones de madera (Zona E) desde el final de la pasarela (-0,34) hasta el deck (0,00)
-buckets['madera_deck'] += box(21.00, 21.87, 15.05, 17.17, -0.70, -0.005)   # remate a nivel entre la pasarela y el deck (sin escalones)
+buckets['madera_deck'] += box(21.00, 21.87, 15.05, 17.17, -1.00, -0.005)   # remate a nivel entre la pasarela y el deck (sin escalones)
 # Relleno del hueco entre los escalones y el bloque de esquina del deck (obj 129, desde y = 17,17)
 buckets['madera_deck'] += box(21.22, 21.44, 16.55, 17.17, -0.70, 0.0)
 

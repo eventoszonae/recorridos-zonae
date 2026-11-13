@@ -1485,7 +1485,7 @@
    "largo": 8.0,
    "ancho": 4.0,
    "giro": 0,
-   "nivel": -0.66
+   "nivel": -1.66
   }
  },
  "espacios": [
@@ -3204,7 +3204,7 @@
     0.0,
     24.65
    ],
-   "z": -0.66,
+   "z": -1.66,
    "rot": 180,
    "zona": "muelle",
    "montaje": "provisional"

@@ -39,7 +39,7 @@ for i, (x, y) in enumerate(coct, 1):
 
 # --- 2 salas de hierro forjado DISTINTAS (fotos): celosía en el deck, corazones en el muelle – posición provisional
 add('GH-SALA-01', 'sala_hierro', 23.30, 18.10, rot=0, zona='deck')
-add('GH-SALA-02', 'sala_corazones', 28.91, 30.55, rot=180, z=-0.66, zona='muelle')
+add('GH-SALA-02', 'sala_corazones', 28.91, 30.55, rot=180, z=-1.66, zona='muelle')
 
 # --- Elementos fijos (posición del modelo Rhino)
 add('GH-BARRA-01', 'barra', 23.90, 1.60, zona='salon', estado='fijo')
@@ -106,7 +106,7 @@ exterior = dict(
   lago=orilla_irregular([[-80, 27.0], [-30, 26.0], [-10, 24.2], [0.0, 23.6], [10.0, 24.2], [16.0, 20.0], [20.0, 12.0], [24.0, 4.0], [30.0, -2.0], [80, -2.0], [80, 140], [-80, 140]]),
   # Guaduales (video VISTA AL MUELLE): matas de guadua en la orilla, a la izquierda del muelle mirando al lago. Posición y tamaño [E]
   guaduas=[dict(pos=[-6.2, 22.7], culmos=34, alto=12.0, radio=1.3), dict(pos=[-9.6, 22.1], culmos=26, alto=10.5, radio=1.1)],
-  muelle=dict(id='GH-MUELLE-01', centro=[0.0, 24.27], largo=8.0, ancho=4.0, giro=0, nivel=-0.66)   # al frente del Green House (Zona E),
+  muelle=dict(id='GH-MUELLE-01', centro=[0.0, 24.27], largo=8.0, ancho=4.0, giro=0, nivel=-1.66)   # al frente del Green House (Zona E),
 )
 
 venue = dict(

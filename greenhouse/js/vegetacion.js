@@ -244,7 +244,7 @@ export function pinosFondo(scene, seed = 3) {
     const uv = g.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setX(i, (v + uv.getX(i)) / 3);
     const inst = new THREE.InstancedMesh(g, mat, arr.length);
     arr.forEach((t, i) => {
-      m4.compose(new THREE.Vector3(t.x, -0.8, -t.y), q.setFromEuler(new THREE.Euler(0, t.rot, 0)), new THREE.Vector3(t.w, t.h, t.w));
+      m4.compose(new THREE.Vector3(t.x, -1.8, -t.y), q.setFromEuler(new THREE.Euler(0, t.rot, 0)), new THREE.Vector3(t.w, t.h, t.w));
       inst.setMatrixAt(i, m4); inst.setColorAt(i, col.setRGB(t.tono * (0.92 - t.frio * 0.1), t.tono, t.tono * (0.9 + t.frio * 0.15)));
     });
     inst.userData.sinAO = true; scene.add(inst);

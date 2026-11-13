@@ -7,14 +7,23 @@ import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometr
 const P = (x, y, h = 0) => new THREE.Vector3(x, h, -y);
 // Terreno plano al nivel del prado (-0,68 m bajo el salón) y fondo del lago bajo el agua.
 let LAGO = null, ORILLA_BB = null; const SEG_GRID = new Map(), CELDA_LAGO = new Map();   // tramos de orilla por celda de 4 m (rápido)
-const NIVEL_AGUA = -0.95;
-/** Nivel del prado SIN la orilla (Zona E 13-nov: el lote es desnivelado).
- *  Entrada, sendero, jardines y pasarela: a la MISMA altura del salón (prado apenas 6 cm abajo).
- *  En la zona del cóctel el terreno baja en depresión: el deck y el final de la pasarela quedan suspendidos.
- *  Al pie de las escaleras del deck el prado queda a -0,69 y sigue bajando suave hasta el muelle. Transiciones: ESTIMADAS. */
+const NIVEL_AGUA = -2.0;   // ~0,35 m bajo el muelle [E]
+const FONDO_LAGO = -2.8;
+/** Nivel del prado SIN la orilla. MEDIDO con los escaneos de Zona E (13-nov, Scaniverse):
+ *  · Entrada, sendero y jardines: a nivel del salón (prado ~6 cm abajo).
+ *  · Bajo la pasarela y el cóctel el terreno baja en depresión: el deck queda ~0,75 m sobre el prado de su frente.
+ *  · Del frente del deck al muelle (~9 m) el prado baja como una lomita: el muelle queda ~1,65 m bajo el deck.
+ *  Perfil del escaneo deck→muelle (distancia desde el frente del deck → altura): 0→-0,75 · 2→-0,95 · 4→-1,25 · 6→-1,47 · 9→-1,64 */
+const PERFIL_LAGO = [[0, -0.70], [1, -0.76], [2, -0.95], [3, -1.10], [4, -1.25], [5, -1.40], [6, -1.47], [7, -1.55], [8, -1.60], [9, -1.64], [30, -1.66]];
+const Y_FRENTE_DECK = 13.27;
 export function nivelPrado(y) {
-  const S = THREE.MathUtils.smoothstep;
-  return -0.06 - 0.63 * S(y, 4.5, 13.6) - 0.12 * S(y, 13.6, 21.5);
+  if (y <= Y_FRENTE_DECK) return -0.06 - 0.69 * THREE.MathUtils.smoothstep(y, 2.5, Y_FRENTE_DECK - 1.5);
+  const d = y - Y_FRENTE_DECK;
+  for (let i = 1; i < PERFIL_LAGO.length; i++) {
+    const [d0, h0] = PERFIL_LAGO[i - 1], [d1, h1] = PERFIL_LAGO[i];
+    if (d <= d1) return h0 + (h1 - h0) * (d - d0) / (d1 - d0);
+  }
+  return -1.66;
 }
 export function alturaTerreno(y, x = 0) {
   const base = nivelPrado(y);
@@ -22,7 +31,7 @@ export function alturaTerreno(y, x = 0) {
   const key = Math.floor(x / 4) + ',' + Math.floor(y / 4), segs = SEG_GRID.get(key);
   if (!segs) {                                   // celda sin orilla: toda adentro o toda afuera del lago (se calcula una vez)
     if (!CELDA_LAGO.has(key)) CELDA_LAGO.set(key, inside([x, y], LAGO));
-    return CELDA_LAGO.get(key) ? -1.8 : base;
+    return CELDA_LAGO.get(key) ? FONDO_LAGO : base;
   }
   const dentro = inside([x, y], LAGO);
   let d = Infinity;
@@ -30,7 +39,7 @@ export function alturaTerreno(y, x = 0) {
     const dx = bx - ax, dy = by - ay, t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy || 1)));
     d = Math.min(d, Math.hypot(x - ax - t * dx, y - ay - t * dy));
   }
-  if (dentro) return Math.max(-1.8, NIVEL_AGUA - 0.08 - d * 0.55);
+  if (dentro) return Math.max(FONDO_LAGO, NIVEL_AGUA - 0.08 - d * 0.55);
   if (d > 4) return base;
   const cercaMuelle = Math.abs(x) < 6 && y > 18;
   const n = 0.5 + 0.5 * (0.6 * Math.sin(x * 0.33 + y * 0.12) + 0.4 * Math.sin(x * 0.87 - y * 0.41 + 1.3));   // 0..1
