@@ -12,3 +12,5 @@
   for = "/*"
   [headers.values]
     X-Content-Type-Options = "nosniff"
+    # Siempre pedir la última versión (evita que el navegador muestre una copia vieja)
+    Cache-Control = "public, max-age=0, must-revalidate"
