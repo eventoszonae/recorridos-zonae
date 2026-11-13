@@ -74,7 +74,7 @@ def classify(oid, tri, zmid=0):
     up, down = n[2] > 0.7, n[2] < -0.7
     zc = tri[:,2].mean(); horiz = up or down
     if oid in SUITE_TECHO: return 'teja_gris'
-    if oid in SUITE_MUROS: return 'muro_claro'
+    if oid in SUITE_MUROS: return 'muro_claro' if oid == 36501 else 'acero_negro'   # Zona E 13-nov: la suite es como el Green House: retícula NEGRA con vidrio
     if oid in SUITE_REMATES: return 'acero_negro'
     if oid == 36509: return 'madera_deck'
     if oid in (36510, 0): return 'concreto_sendero' if (up and oid == 0) else 'concreto'
@@ -334,6 +334,10 @@ for _x in np.linspace(22.0, 35.85, 7):
         buckets['acero_negro'] += box(_x - 0.06, _x + 0.06, _y - 0.06, _y + 0.06, -1.10, -0.25)
 for (_a, _b, _c, _d) in [(21.87, 35.97, 11.25, 11.37), (21.87, 35.97, 19.05, 19.17), (21.87, 21.99, 11.25, 19.17), (35.85, 35.97, 11.25, 19.17)]:
     buckets['acero_negro'] += box(_a, _b, _c, _d, -0.40, -0.25)
+# Suite: vidrios dentro de la retícula negra (oeste, este y norte); el bloque sur (36501) es muro cerrado.
+buckets['vidrio'] += pane('x', 44.14, 5.38, 8.40, 0.0, 2.65)
+buckets['vidrio'] += pane('x', 48.04, 3.54, 8.40, 0.0, 2.65)
+buckets['vidrio'] += pane('y', 8.42, 44.12, 48.02, 0.0, 2.65)
 # Zona de servicio trasera (detrás de los baños): Zona E 12-nov – "debe tener una pared, no se ve lo que hay adentro".
 # Se cierran los 3 lados abiertos bajo la cubierta trasera (sur, oeste y este), desde el sardinel hasta la viga. Material [E]: muro claro.
 buckets['muro_claro'] += box(21.97, 37.91, -8.72, -8.60, 0.0, 2.75)     # sur
