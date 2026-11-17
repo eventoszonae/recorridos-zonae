@@ -161,18 +161,18 @@
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
   "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/",
-  "./js/ambiente.js": "./js/ambiente.js?v=20261117113105",
-  "./js/arquitectura_glb.js": "./js/arquitectura_glb.js?v=20261117113105",
-  "./js/bar.js": "./js/bar.js?v=20261117113105",
-  "./js/exterior.js": "./js/exterior.js?v=20261117113105",
-  "./js/furniture.js": "./js/furniture.js?v=20261117113105",
-  "./js/hotspots.js": "./js/hotspots.js?v=20261117113105",
-  "./js/luces.js": "./js/luces.js?v=20261117113105",
-  "./js/materiales.js": "./js/materiales.js?v=20261117113105",
-  "./js/plano.js": "./js/plano.js?v=20261117113105",
-  "./js/recorrido.js": "./js/recorrido.js?v=20261117113105",
-  "./js/texturas.js": "./js/texturas.js?v=20261117113105",
-  "./js/vegetacion.js": "./js/vegetacion.js?v=20261117113105"
+  "./js/ambiente.js": "./js/ambiente.js?v=20261117113435",
+  "./js/arquitectura_glb.js": "./js/arquitectura_glb.js?v=20261117113435",
+  "./js/bar.js": "./js/bar.js?v=20261117113435",
+  "./js/exterior.js": "./js/exterior.js?v=20261117113435",
+  "./js/furniture.js": "./js/furniture.js?v=20261117113435",
+  "./js/hotspots.js": "./js/hotspots.js?v=20261117113435",
+  "./js/luces.js": "./js/luces.js?v=20261117113435",
+  "./js/materiales.js": "./js/materiales.js?v=20261117113435",
+  "./js/plano.js": "./js/plano.js?v=20261117113435",
+  "./js/recorrido.js": "./js/recorrido.js?v=20261117113435",
+  "./js/texturas.js": "./js/texturas.js?v=20261117113435",
+  "./js/vegetacion.js": "./js/vegetacion.js?v=20261117113435"
 } }
 </script>
 </head>
@@ -274,7 +274,10 @@ const archMaterials = []; gltf.scene.traverse(o => o.isMesh && archMaterials.pus
 ground = crearTerreno(new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1 }), venue.exterior.lago, venue.exterior.muelle); scene.add(ground);
 ground.material.map = prado; ground.material.needsUpdate = true;
 let maderaMat = null; gltf.scene.traverse(o => { if (o.isMesh && o.material.name === 'madera_deck') maderaMat = o.material; });
+const _antesExt = new Set(scene.children);
 const exterior = construirExterior(scene, venue.exterior, { madera: maderaMat });
+for (const o of scene.children) if (!_antesExt.has(o)) o.userData.noCortar = true;   // vegetación y exterior: el corte de "ver interior" no les quita la copa
+ground.userData.noCortar = true;
 guirnaldas(scene);
 lamparasRatan(scene, [[-5.7, -3.65], [-4.5, -3.65]], 2.55);   // sobre la barra del bar interno [posición E]
 gltf.scene.traverse(o => { if (o.isMesh && (o.material.name === 'espejo' || o.material.name === 'espejo_bano')) registrarEspejoSuite(o.material); });
@@ -344,7 +347,17 @@ function go(name) {
   anim = { t: 0, p0: camera.position.clone(), p1: v.pos, q0: controls.target.clone(), q1: v.target };
   setInterior(!!v.interior);
 }
-function setInterior(on) { interior = on; renderer.clippingPlanes = on ? [roofCut] : []; }
+// "Ver interior": corta a 2,6 m solo la arquitectura y lo que está dentro (no los árboles ni palmas)
+renderer.localClippingEnabled = true;
+function setInterior(on) {
+  interior = on; renderer.clippingPlanes = [];
+  const marcar = (o, corta) => {
+    if (o.userData?.noCortar) corta = false;
+    if (o.material) for (const m of [].concat(o.material)) { m.clippingPlanes = corta && on ? [roofCut] : null; }
+    for (const c of o.children) marcar(c, corta);
+  };
+  for (const o of scene.children) marcar(o, true);
+}
 camera.position.copy(views.general.pos); controls.target.copy(views.general.target);
 
 // ---- Fichas ----
