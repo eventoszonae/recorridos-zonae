@@ -170,7 +170,7 @@ venue = dict(
          camara=dict(pos=L(36.5, 13.5)+[6.0], mira=L(28.9, 5.9)+[0.8])),
     dict(id='GH-ESP-DECK', nombre='Deck de cóctel', poligono=R([(22.0, 11.25), (35.97, 11.25), (35.97, 19.17), (22.0, 19.17)]),
          camara=dict(pos=L(29.0, 26.0)+[5.0], mira=L(29.0, 15.0)+[0.8])),
-    dict(id='GH-ESP-SERVICIOS', nombre='Bar y servicios', poligono=R([(22.57, -1.71), (37.90, -1.71), (37.90, 0.69), (22.57, 0.69)]),
+    dict(id='GH-ESP-SERVICIOS', nombre='Bar', poligono=R([(22.57, -1.71), (37.90, -1.71), (37.90, 0.69), (22.57, 0.69)]),
          camara=dict(pos=L(30.0, 8.0)+[2.2], mira=L(24.5, 1.0)+[1.2])),
   ],
   objetos=objs)

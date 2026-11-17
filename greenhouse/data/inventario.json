@@ -682,22 +682,22 @@
       ]
     },
     "GH-ESP-SERVICIOS": {
-      "nombre": "Bar y servicios",
+      "nombre": "Bar",
       "campos": [
         {
           "k": "Incluye",
-          "v": "Barra, baños de hombres y de mujeres",
+          "v": "Barra en L",
           "estado": "confirmado"
         }
       ],
       "fotos": [
         "bar-1"
       ],
-      "descripcion": "Bar interno con barra en L de espejo y acero, y acceso a los baños.",
-      "resumen": "Barra en L de espejo y acero, nicho de espejos y acceso a los baños.",
+      "descripcion": "Bar interno con barra en L de espejo y acero, nicho de espejos y lámparas de ratán.",
+      "resumen": "Barra en L de espejo y acero, nicho de espejos y lámparas de ratán.",
       "destacados": [
         "Barra incluida",
-        "Baños de hombres y mujeres",
+        "Nicho de espejos",
         "Lámparas de ratán"
       ]
     },
