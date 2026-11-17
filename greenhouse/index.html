@@ -22,8 +22,8 @@
   .bar .sep { width:1px; background:var(--line); margin:6px 4px; }
   .panel { z-index:6; position:fixed; top:20px; right:20px; width:340px; max-height:calc(100vh - 110px); overflow:auto; background:var(--paper);
            border:1px solid var(--line); border-radius:14px; padding:22px; backdrop-filter:blur(10px); transform:translateX(120%);
-           transition:transform .35s ease; }
-  .panel.open { transform:none; }
+           transition:transform .35s ease, visibility 0s linear .35s; visibility:hidden; }
+  .panel.open { transform:none; visibility:visible; transition:transform .35s ease, visibility 0s; }   /* cerrada = invisible del todo (en celular asomaba una franja vacía) */
   .panel .close { all:unset; cursor:pointer; position:absolute; top:14px; right:16px; font-size:20px; color:var(--muted); }
   .panel .cat { font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
   .panel h2 { font-family:'Cormorant Garamond',serif; font-weight:500; font-size:26px; margin:4px 0 2px; }
