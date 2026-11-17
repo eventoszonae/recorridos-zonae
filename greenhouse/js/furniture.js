@@ -415,8 +415,9 @@ Object.assign(BUILDERS, {
     const tallos = [];
     for (let i = 0; i < 8; i++) {   // monstera: 8 hojas sobre tallos que salen de la maceta [E]
       const a = i / 8 * Math.PI * 2 + (i % 2) * 0.3, h = 0.20 + (i % 3) * 0.08, r = 0.16 + (i % 2) * 0.06, L = 0.26 + (i % 3) * 0.05;
-      const tip = [0.05 + Math.cos(a) * r, 0.50 + Math.sin(a) * r, 0.57 + h];
-      tallos.push(tube([[0.05, 0.50, 0.55], [0.05 + Math.cos(a) * r * 0.4, 0.50 + Math.sin(a) * r * 0.4, 0.57 + h * 0.9], tip], 0.006, 8, false, 4));
+      // coordenadas del plano [x, y, altura]: la maceta está en (0,05 ; 0) sobre la mesa, borde superior a 0,57 m
+      const tip = [0.05 + Math.cos(a) * r, Math.sin(a) * r, 0.57 + h];
+      tallos.push(tube([[0.05, 0, 0.55], [0.05 + Math.cos(a) * r * 0.4, Math.sin(a) * r * 0.4, 0.57 + h * 0.9], tip], 0.006, 8, false, 4));
       const g = hojaMonstera(L, L * 0.9); g.rotateX(-Math.PI / 2 + 0.75); g.rotateY(-a + Math.PI / 2);
       g.translate(tip[0], tip[2], -tip[1]); leaf.push(g);
     }
