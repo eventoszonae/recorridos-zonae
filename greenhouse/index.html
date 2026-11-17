@@ -202,7 +202,7 @@ import { crearAmbiente } from './js/ambiente.js';
 import { construirExterior, crearTerreno, alturaTerreno } from './js/exterior.js';
 import { Recorrido } from './js/recorrido.js';
 import { guirnaldas, lamparasRatan } from './js/luces.js';
-import { crearBar, espejoBar, crearNicho } from './js/bar.js';
+import { crearBar, espejoBar, crearNicho, registrarEspejoSuite } from './js/bar.js';
 import { Hotspots } from './js/hotspots.js';
 import { Plano } from './js/plano.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -264,6 +264,7 @@ let maderaMat = null; gltf.scene.traverse(o => { if (o.isMesh && o.material.name
 const exterior = construirExterior(scene, venue.exterior, { madera: maderaMat });
 guirnaldas(scene);
 lamparasRatan(scene, [[-5.7, -3.65], [-4.5, -3.65]], 2.55);   // sobre la barra del bar interno [posición E]
+gltf.scene.traverse(o => { if (o.isMesh && o.material.name === 'espejo') registrarEspejoSuite(o.material); });
 crearBar(gltf.scene); crearNicho(scene);   // dentro del grupo de arquitectura: el recorrido la trata como obstáculo
 
 // Mobiliario e IDs desde los datos (no desde el modelo)

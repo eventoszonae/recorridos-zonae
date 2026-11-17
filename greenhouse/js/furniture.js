@@ -402,7 +402,7 @@ Object.assign(BUILDERS, {
     for (const z of [0.22]) wood.push(...rect(0.205, 0.205, z, 0.012));
     tela.push(softBox(0.46, 0.44, 0.10, 0, 0.02, S, 0.04));
     const pts = []; for (let i = 0; i <= 16; i++) { const a = Math.PI * (0.05 + 0.9 * i / 16); pts.push([Math.cos(a) * 0.23, -Math.sin(a) * 0.20 + 0.02, S + 0.20]); }
-    tela.push(tube(pts, 0.06, 24, false, 8));
+    tela.push(tube(pts, 0.04, 24, false, 8));
     return [[merge(wood), MAT.roble], [merge(tela), MAT.floral]];
   },
   // Lámpara colgante de hojas doradas con 6 velas (fotos). Ø ≈ 0,60 m, cuelga ≈ 1,0 m bajo la cumbrera [E]
