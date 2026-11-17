@@ -302,7 +302,7 @@ Object.assign(BUILDERS, {
 
 // ======== Suite de la novia (fotos y videos de Zona E, 17-nov). Medidas ESTIMADAS a partir de las fotos. ========
 Object.assign(MAT, {
-  tapiz:     new THREE.MeshStandardMaterial({ color: 0xa79c9a, roughness: 0.95 }),            // tela gris topo de sofá y poltronas
+  tapiz:     new THREE.MeshStandardMaterial({ color: 0xa08f88, roughness: 0.95 }),            // tela gris topo de sofá y poltronas
   roble:     new THREE.MeshStandardMaterial({ color: 0xb08a5c, roughness: 0.7 }),             // madera natural del marco del sofá
   mostaza:   new THREE.MeshStandardMaterial({ color: 0xb28a4c, roughness: 0.9 }),             // cojines camel / mostaza
   crema:     new THREE.MeshStandardMaterial({ color: 0xe9e2d2, roughness: 0.95 }),

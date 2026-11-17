@@ -138,7 +138,7 @@ venue = dict(
     dict(id='salon',   nombre='Salón',    pos=L(31.7, 10.4),  mira=L(28.5, 3.0)),
     dict(id='bar',     nombre='Bar',      pos=L(26.6, 3.6),   mira=L(23.9, 1.4)),
     dict(id='ceremonia', nombre='Ceremonia', pos=L(28.91, 21.0), mira=L(28.91, 32.0)),
-    dict(id='suite',   nombre='Suite',    pos=L(44.75, 4.35),  mira=L(47.6, 7.9)),   # dentro de la suite, junto a la puerta
+    dict(id='suite',   nombre='Suite',    pos=L(45.0, 7.95),  mira=L(46.9, 3.9)),   # dentro de la suite: mira al tocador con la sala a la izquierda
     dict(id='muelle',  nombre='Muelle',   pos=L(28.91, 31.3),  mira=L(28.91, 15.0)),
   ],
   # Puntos interactivos: UNO por tipo de elemento (ref = objeto donde se ancla) y uno por espacio.
@@ -156,7 +156,7 @@ venue = dict(
     dict(id='GH-ESP-CEREMONIA', nombre='Zona de ceremonia', poligono=R([(23.9, 20.2), (33.9, 20.2), (33.9, 28.2), (23.9, 28.2)]),
          camara=dict(pos=L(28.91, 16.5)+[3.2], mira=L(28.91, 27.0)+[0.0])),
     dict(id='GH-ESP-SUITE', nombre='Suite', poligono=R([(44.1, 1.4), (48.1, 1.4), (48.1, 11.55), (44.1, 11.55)]),
-         camara=dict(pos=L(41.6, 12.6)+[6.2], mira=L(46.1, 6.2)+[0.3])),
+         camara=dict(pos=L(43.0, 10.4)+[8.0], mira=L(46.1, 5.6)+[0.0])),
     dict(id='GH-ESP-MUELLE', nombre='Muelle', poligono=R(muelle_rect()), camara=dict(pos=L(28.91, 20.0)+[4.0], mira=L(28.91, 30.17)+[0.0])),
     dict(id='GH-ESP-ENTRADA', nombre='Llegada y pasarela', poligono=R([(12.86,-8.72),(15.53,-8.72),(15.53,10.35),(20.88,14.46),(21.87,14.46),(21.87,17.11),(20.88,17.11),(12.86,10.22)]),
          camara=dict(pos=L(14.2, -11.5)+[0.94], mira=L(15.0, 6.0)+[0.5])),

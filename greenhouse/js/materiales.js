@@ -119,7 +119,7 @@ export async function aplicarMateriales(root, renderer) {
     papel_palmas: { roughness: 0.75, color: 0xffffff },
     tablas_rojizas: { roughness: 0.6, color: 0xffffff },
     espejo:       { roughness: 0.02, metalness: 1.0, color: 0xe8eeee, envMapIntensity: 1.2 },
-    vidrio_esmerilado: { roughness: 0.55, metalness: 0.0, color: 0xf1f4f3, opacity: 0.8, envMapIntensity: 0.6 },   // Zona E 17-nov: vidrio esmerilado de la suite
+    vidrio_esmerilado: { roughness: 0.55, metalness: 0.0, color: 0xf3f5f4, opacity: 0.93, envMapIntensity: 0.5 },   // Zona E 17-nov: vidrio esmerilado de la suite
     vidrio:       { roughness: 0.03, metalness: 0.0, color: 0xdfeeee, opacity: 0.12, envMapIntensity: 1.6 },
   };
   root.traverse(o => {
