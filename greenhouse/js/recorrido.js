@@ -22,7 +22,7 @@ export class Recorrido {
     this.floors = [ground, ...pisosExtra]; this.walls = [];
     arquitectura.traverse(o => { if (!o.isMesh) return;
       if (PISOS.has(o.material.name)) this.floors.push(o);
-      if (MUROS.has(o.material.name) && !o.name.startsWith('arqsuite_')) this.walls.push(o); });   // la suite usa su escaneo real como muros
+      if (MUROS.has(o.material.name)) this.walls.push(o); });
     // Obstáculos 2D (plano): muebles, troncos de palma, jardineras
     this.rects = venue.objetos.filter(o => HUELLA[o.tipo]?.[0]).map(o => {
       const [w, d] = HUELLA[o.tipo]; return { x: o.pos[0], y: o.pos[1], hw: w / 2, hd: d / 2, a: THREE.MathUtils.degToRad(o.rot || 0) }; });

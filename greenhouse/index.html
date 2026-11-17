@@ -496,7 +496,8 @@ const suiteDibujada = []; gltf.scene.traverse(o => { if (o.isMesh && o.name.star
 const ZONA_SUITE = ZONAS.findIndex(z => z.id === 'GH-ESP-SUITE');
 const mueblesSuite = scene.children.filter(o => o.userData?.id && venue.objetos.find(q => q.id === o.userData.id && q.zona === 'suite' && q.tipo !== 'sala_hierro_rosa'));
 const escaneo = { malla: null, huella: null, on: null }; let modoHora = 'dia';
-fetch('./escaneos/suite.json').then(r => r.json()).then(async info => {
+const USAR_ESCANEO_SUITE = false;   // Zona E 17-nov: prefiere la suite dibujada (misma línea del Green House)
+(USAR_ESCANEO_SUITE ? fetch('./escaneos/suite.json').then(r => r.json()) : Promise.reject()).then(async info => {
   const g = await new GLTFLoader().loadAsync('./escaneos/suite.glb');
   g.scene.traverse(o => { if (o.isMesh) { const map = o.material.map; o.material = new THREE.MeshBasicMaterial({ map, side: THREE.DoubleSide, toneMapped: false }); o.userData.sinAO = true; escaneo.malla = o; } });
   escaneo.huella = info.huella_visor;          // [x0, x1, y0, y1] en coordenadas del visor
@@ -536,7 +537,7 @@ function aplicarHoraEscaneo(modo) {   // el escaneo trae la luz del día "pintad
 }
 
 // ---- Etapa 6: hotspots y plano ----
-const occluders = []; gltf.scene.traverse(o => { if (o.isMesh && !o.material.transparent && !o.name.startsWith('arqsuite_')) occluders.push(o); });
+const occluders = []; gltf.scene.traverse(o => { if (o.isMesh && !o.material.transparent) occluders.push(o); });
 const hotspots = new Hotspots({ root: document.getElementById('hsroot'), camera, venue: { ...venue, hotspots: venue.hotspots.filter(h => !h.espacio) }, inv, occluders,   // sin letreros de zona flotando: las zonas están en la barra
   onPick: (kind, d) => kind === 'space' ? showSpace(d.space) : showObject(d) });
 hotspots.setSpaces([]); window.__hs = hotspots;   // las zonas se navegan desde la barra inferior (menos letreros en pantalla)
