@@ -50,7 +50,7 @@ export function crearAmbiente({ scene, renderer, sun, hemi, cielo, venue, altura
   agregar(17.15, 1.25, 3.1, 4, 7); agregar(17.6, -1.6, 3.0, 2.5, 4, 0xfff0dc);
   agregar(17.18, -3.42, 2.9, 2.5, 5, 0xfff4e6);                                                   // panel LED del baño de la suite
   // De DÍA la suite recibe luz difusa y neutra a través del vidrio esmerilado: luz de relleno suave (sin sombra) [E]
-  for (const [x, y, d, i] of [[17.2, 1.4, 6, 5], [17.2, -0.9, 5, 3.5], [17.2, -3.4, 4.5, 2.5]]) agregar(x, y, 2.3, 0, d, 0xfff1e0).userData.dia = i;
+  for (const [x, y, d, i] of [[17.2, 1.4, 6, 2.5], [17.2, -0.9, 5, 2], [17.2, -3.4, 4.5, 1.5]]) agregar(x, y, 2.3, 0, d, 0xfff1e0).userData.dia = i;
   const esmerilados = []; scene.traverse(o => { if (o.isMesh && o.material?.name === 'vidrio_esmerilado' && !esmerilados.includes(o.material)) esmerilados.push(o.material); });
   // Deck y zona de cóctel (para que se vean las mesas cocteleras) [E]
   for (const x of [-3.5, 3.5]) agregar(x, 7.2, 2.45, 6, 8);
@@ -97,7 +97,7 @@ export function crearAmbiente({ scene, renderer, sun, hemi, cielo, venue, altura
     if (m.hemiColor) { hemi.color.setHex(m.hemiColor[0]); hemi.groundColor.setHex(m.hemiColor[1]); } else { hemi.color.setHex(0xeef3f7); hemi.groundColor.setHex(0x5d6b42); } scene.environmentIntensity = m.env; renderer.toneMappingExposure = m.exp;
     const fDia = modo === 'dia' ? 1 : modo === 'atardecer' ? 0.45 : 0;
     for (const l of puntos) l.intensity = l.userData.max * m.luces + (l.userData.dia || 0) * fDia;   // siempre en escena: el cambio de modo es inmediato (sin recompilar)
-    for (const v of esmerilados) { v.emissiveIntensity = modo === 'dia' ? 0.5 : modo === 'atardecer' ? 0.28 : 0.06; v.emissive.setHex(modo === 'noche' ? 0xffcf96 : 0xffffff); }   // el vidrio esmerilado se ve luminoso de día
+    for (const v of esmerilados) { v.emissiveIntensity = modo === 'dia' ? 0.12 : modo === 'atardecer' ? 0.1 : 0.05; v.emissive.setHex(modo === 'noche' ? 0xffcf96 : 0xffffff); }   // el vidrio esmerilado se ve luminoso de día
     for (const [c, op] of charcos) c.material.opacity = op * m.luces;
     for (const l of lentes) l.visible = m.luces > 0;
     matGuirnalda.color.copy(base.g).multiplyScalar(m.brillo);           // >1 = resplandor (bloom) de noche

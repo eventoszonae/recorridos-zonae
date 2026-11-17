@@ -590,7 +590,7 @@ if (!matchMedia('(pointer: coarse)').matches) {
     const metodo = ao._overrideVisibility ? '_overrideVisibility' : 'overrideVisibility';   // three r180: método privado con "_"
     const ocultar = ao[metodo].bind(ao);
     ao[metodo] = function () { ocultar(); scene.traverse(o => { if (o.userData.sinAO && o.visible) { o.visible = false; this._visibilityCache.push(o); } }); };
-    composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.28, 0.35, 1.15));
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.22, 0.3, 1.6)   /* solo brillan las luces, no los vidrios */);
     composer.addPass(new OutputPass());
   } catch (e) { console.warn('Post-proceso desactivado', e); composer = null; }
 }
