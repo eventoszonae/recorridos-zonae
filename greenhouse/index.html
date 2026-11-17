@@ -160,7 +160,19 @@
 <script type="importmap">
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
-  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/",
+  "./js/ambiente.js": "./js/ambiente.js?v=20261117111632",
+  "./js/arquitectura_glb.js": "./js/arquitectura_glb.js?v=20261117111632",
+  "./js/bar.js": "./js/bar.js?v=20261117111632",
+  "./js/exterior.js": "./js/exterior.js?v=20261117111632",
+  "./js/furniture.js": "./js/furniture.js?v=20261117111632",
+  "./js/hotspots.js": "./js/hotspots.js?v=20261117111632",
+  "./js/luces.js": "./js/luces.js?v=20261117111632",
+  "./js/materiales.js": "./js/materiales.js?v=20261117111632",
+  "./js/plano.js": "./js/plano.js?v=20261117111632",
+  "./js/recorrido.js": "./js/recorrido.js?v=20261117111632",
+  "./js/texturas.js": "./js/texturas.js?v=20261117111632",
+  "./js/vegetacion.js": "./js/vegetacion.js?v=20261117111632"
 } }
 </script>
 </head>
@@ -244,8 +256,8 @@ let interior = false;
 const pickables = [], spacePads = [];
 const [gltf, venue, inv] = await Promise.all([
   new GLTFLoader().parseAsync(Uint8Array.from(atob(GLB_B64), c => c.charCodeAt(0)).buffer, ''),
-  fetch('./data/greenhouse.venue.json').then(r => r.json()),
-  fetch('./data/inventario.json').then(r => r.json()),
+  fetch('./data/greenhouse.venue.json', { cache: 'no-cache' }).then(r => r.json()),
+  fetch('./data/inventario.json', { cache: 'no-cache' }).then(r => r.json()),
 ]);
 gltf.scene.traverse(o => {
   if (!o.isMesh) return;
@@ -542,7 +554,7 @@ const hotspots = new Hotspots({ root: document.getElementById('hsroot'), camera,
   onPick: (kind, d) => kind === 'space' ? showSpace(d.space) : showObject(d) });
 hotspots.setSpaces([]); window.__hs = hotspots;   // las zonas se navegan desde la barra inferior (menos letreros en pantalla)
 const ESP_PUNTO = { 'GH-ESP-CEREMONIA': 'ceremonia', 'GH-ESP-SUITE': 'suite', 'GH-ESP-SALON': 'salon', 'GH-ESP-DECK': 'deck', 'GH-ESP-SERVICIOS': 'bar', 'GH-ESP-ENTRADA': 'llegada', 'GH-ESP-MUELLE': 'muelle' };
-const fondoPlano = await fetch('./data/plano.json').then(r => r.json()).catch(() => null);
+const fondoPlano = await fetch('./data/plano.json', { cache: 'no-cache' }).then(r => r.json()).catch(() => null);
 const plano = new Plano({ canvas: document.getElementById('plano'), venue, fondo: fondoPlano, onSpace: id => {
   const i = ZONAS.findIndex(z => z.id === id); if (i >= 0) irZona(i);
 } });
