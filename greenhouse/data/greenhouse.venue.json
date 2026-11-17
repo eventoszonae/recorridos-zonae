@@ -89,8 +89,8 @@
     2.05
    ],
    "mira": [
-    17.99,
-    -2.0
+    17.59,
+    -2.6
    ]
   },
   {
@@ -4247,7 +4247,11 @@
    "z": 0,
    "rot": 90,
    "zona": "suite",
-   "montaje": "fijo"
+   "montaje": "fijo",
+   "pos_escaneo": [
+    18.469,
+    0.377
+   ]
   },
   {
    "id": "GH-SUITE-POL-01",
@@ -4259,7 +4263,11 @@
    "z": 0,
    "rot": -80,
    "zona": "suite",
-   "montaje": "fijo"
+   "montaje": "fijo",
+   "pos_escaneo": [
+    15.721,
+    -0.299
+   ]
   },
   {
    "id": "GH-SUITE-POL-02",
@@ -4271,7 +4279,11 @@
    "z": 0,
    "rot": -100,
    "zona": "suite",
-   "montaje": "fijo"
+   "montaje": "fijo",
+   "pos_escaneo": [
+    15.721,
+    1.052
+   ]
   },
   {
    "id": "GH-SUITE-MESA",
@@ -4283,7 +4295,11 @@
    "z": 0,
    "rot": 90,
    "zona": "suite",
-   "montaje": "fijo"
+   "montaje": "fijo",
+   "pos_escaneo": [
+    17.25,
+    0.377
+   ]
   },
   {
    "id": "GH-SUITE-TOCADOR",
@@ -4295,7 +4311,11 @@
    "z": 0,
    "rot": 0,
    "zona": "suite",
-   "montaje": "fijo"
+   "montaje": "fijo",
+   "pos_escaneo": [
+    17.531,
+    -2.63
+   ]
   },
   {
    "id": "GH-SUITE-BUTACO",
@@ -4307,7 +4327,11 @@
    "z": 0,
    "rot": 200,
    "zona": "suite",
-   "montaje": "fijo"
+   "montaje": "fijo",
+   "pos_escaneo": [
+    17.25,
+    -1.763
+   ]
   },
   {
    "id": "GH-SUITE-LAMPARA",
@@ -4319,7 +4343,11 @@
    "z": 2.4,
    "rot": 0,
    "zona": "suite",
-   "montaje": "fijo"
+   "montaje": "fijo",
+   "pos_escaneo": [
+    17.072,
+    1.052
+   ]
   },
   {
    "id": "GH-SUITE-VENT",
@@ -4331,7 +4359,11 @@
    "z": 3.4,
    "rot": 0,
    "zona": "suite",
-   "montaje": "fijo"
+   "montaje": "fijo",
+   "pos_escaneo": [
+    17.072,
+    -0.749
+   ]
   },
   {
    "id": "GH-SUITE-BANO",
@@ -4343,7 +4375,11 @@
    "z": 0,
    "rot": 0,
    "zona": "suite",
-   "montaje": "fijo"
+   "montaje": "fijo",
+   "pos_escaneo": [
+    17.1,
+    -4.01
+   ]
   },
   {
    "id": "GH-SUITE-SALA",

@@ -490,8 +490,53 @@ const fadeEl = document.getElementById('fade');
 const fade = fn => { fadeEl.style.opacity = 1; setTimeout(() => { fn(); fadeEl.style.opacity = 0; }, 360); };
 const walk = new Recorrido({ camera, dom: canvas, scene, arquitectura: gltf.scene, ground, venue, pisosExtra: exterior.floors,
   onPick: e => { const o = pick(e); if (o) { showObject(o.userData); return true; } closePanel(); return false; } });
+// ---- Suite: ESCANEO real (Scaniverse, Zona E 17-nov) ----
+// Dentro de la suite se muestra el escaneo (fotorrealista) y se oculta la suite dibujada; desde afuera, al revés.
+const suiteDibujada = []; gltf.scene.traverse(o => { if (o.isMesh && o.name.startsWith('arqsuite_')) suiteDibujada.push(o); });
+const ZONA_SUITE = ZONAS.findIndex(z => z.id === 'GH-ESP-SUITE');
+const mueblesSuite = scene.children.filter(o => o.userData?.id && venue.objetos.find(q => q.id === o.userData.id && q.zona === 'suite' && q.tipo !== 'sala_hierro_rosa'));
+const escaneo = { malla: null, huella: null, on: null }; let modoHora = 'dia';
+fetch('./escaneos/suite.json').then(r => r.json()).then(async info => {
+  const g = await new GLTFLoader().loadAsync('./escaneos/suite.glb');
+  g.scene.traverse(o => { if (o.isMesh) { const map = o.material.map; o.material = new THREE.MeshBasicMaterial({ map, side: THREE.DoubleSide, toneMapped: false }); o.userData.sinAO = true; escaneo.malla = o; } });
+  escaneo.huella = info.huella_visor;          // [x0, x1, y0, y1] en coordenadas del visor
+  scene.add(g.scene);
+  // Los espejos no se pueden escanear (quedan huecos): espejo del baño de la suite sobre el lavamanos [posición E]
+  const espejo = new THREE.Mesh(new THREE.PlaneGeometry(1.75, 1.05), new THREE.MeshStandardMaterial({ color: 0xb8c0c0, metalness: 1, roughness: 0.06 }));
+  espejo.position.set(45.10 - 28.91, 1.45, -(1.06 - 5.90)); espejo.rotation.y = Math.PI; g.scene.add(espejo); escaneo.espejo = espejo;
+  const [x0, x1, y0, y1] = escaneo.huella;     // piso invisible del escaneo (para caminar también en el baño)
+  const piso = new THREE.Mesh(new THREE.PlaneGeometry(x1 - x0, y1 - y0), new THREE.MeshBasicMaterial({ visible: false }));
+  piso.rotation.x = -Math.PI / 2; piso.position.set((x0 + x1) / 2, 0.0, -(y0 + y1) / 2); scene.add(piso);
+  walk.agregarPisos(piso); walk.agregarMuros(escaneo.malla);
+  aplicarHoraEscaneo(modoHora);
+}).catch(() => {});   // sin escaneo (p. ej. sin conexión): queda la suite dibujada
+function actualizarEscaneo() {
+  if (!escaneo.malla) return;
+  const [x0, x1, y0, y1] = escaneo.huella, x = camera.position.x, y = -camera.position.z;
+  const dentro = x > x0 && x < x1 && y > y0 && y < y1 && camera.position.y < 3.4;
+  const on = dentro || (!walk.enabled && interior && zonaActual === ZONA_SUITE);
+  if (on === escaneo.on) return; escaneo.on = on;
+  escaneo.malla.parent.visible = on;
+  for (const m of suiteDibujada) m.visible = !on;
+  if (on && !escaneo.reflejo) requestAnimationFrame(() => {   // el espejo refleja el baño escaneado (una sola captura)
+    const rt = escaneo.reflejo = new THREE.WebGLCubeRenderTarget(256, { generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
+    const cc = new THREE.CubeCamera(0.05, 30, rt); cc.position.set(46.0 - 28.91, 1.5, -(1.9 - 5.90));
+    escaneo.espejo.visible = false; scene.add(cc); cc.update(renderer, scene); scene.remove(cc); escaneo.espejo.visible = true;
+    escaneo.espejo.material.envMap = rt.texture; escaneo.espejo.material.color.setHex(0xe6ecec); escaneo.espejo.material.needsUpdate = true;
+  });
+  for (const m of mueblesSuite) {   // muebles dibujados: ocultos, pero se pueden tocar donde están en el escaneo
+    m.visible = !on; const o = venue.objetos.find(q => q.id === m.userData.id); const p = on && o.pos_escaneo ? o.pos_escaneo : o.pos;
+    m.position.x = p[0]; m.position.z = -p[1];
+    for (const it of hotspots.items) if (it.data?.id === o.id) { it.p.x = p[0]; it.p.z = -p[1]; }
+  }
+}
+function aplicarHoraEscaneo(modo) {   // el escaneo trae la luz del día "pintada": de noche se oscurece y se calienta
+  if (!escaneo.malla) return;
+  escaneo.malla.material.color.setHex(modo === 'noche' ? 0x8a6a4c : modo === 'atardecer' ? 0xe0c4a4 : 0xffffff);
+}
+
 // ---- Etapa 6: hotspots y plano ----
-const occluders = []; gltf.scene.traverse(o => { if (o.isMesh && !o.material.transparent) occluders.push(o); });
+const occluders = []; gltf.scene.traverse(o => { if (o.isMesh && !o.material.transparent && !o.name.startsWith('arqsuite_')) occluders.push(o); });
 const hotspots = new Hotspots({ root: document.getElementById('hsroot'), camera, venue: { ...venue, hotspots: venue.hotspots.filter(h => !h.espacio) }, inv, occluders,   // sin letreros de zona flotando: las zonas están en la barra
   onPick: (kind, d) => kind === 'space' ? showSpace(d.space) : showObject(d) });
 hotspots.setSpaces([]); window.__hs = hotspots;   // las zonas se navegan desde la barra inferior (menos letreros en pantalla)
@@ -542,8 +587,9 @@ if (!matchMedia('(pointer: coarse)').matches) {
     ao.updateGtaoMaterial({ radius: 0.55, distanceExponent: 1.4, thickness: 1.0, scale: 1.0, samples: 12 });
     ao.blendIntensity = 0.85; composer.addPass(ao);
     // el follaje de hojas recortadas no debe generar sombras cuadradas: se oculta en la pasada de oclusión
-    const ocultar = ao.overrideVisibility.bind(ao);
-    ao.overrideVisibility = function () { ocultar(); scene.traverse(o => { if (o.userData.sinAO && o.visible) { o.visible = false; this._visibilityCache.push(o); } }); };
+    const metodo = ao._overrideVisibility ? '_overrideVisibility' : 'overrideVisibility';   // three r180: método privado con "_"
+    const ocultar = ao[metodo].bind(ao);
+    ao[metodo] = function () { ocultar(); scene.traverse(o => { if (o.userData.sinAO && o.visible) { o.visible = false; this._visibilityCache.push(o); } }); };
     composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.28, 0.35, 1.15));
     composer.addPass(new OutputPass());
   } catch (e) { console.warn('Post-proceso desactivado', e); composer = null; }
@@ -558,7 +604,7 @@ const clock = new THREE.Clock();
 renderer.setAnimationLoop(() => {
   const dt = Math.min(clock.getDelta(), 0.05);
   exterior.update(dt);
-  hotspots.update();
+  hotspots.update(); actualizarEscaneo();
   if (performance.now() - planoT > 120) { planoT = performance.now();
     if (walk.enabled) plano.setPosition(walk.planPos, walk.yaw);
     else plano.setPosition([controls.target.x, -controls.target.z], Math.atan2(camera.position.x - controls.target.x, camera.position.z - controls.target.z)); }
@@ -575,7 +621,7 @@ requestAnimationFrame(() => espejoBar(renderer, scene));   // reflejo de los esp
 
 // ---- Día · Atardecer · Noche ----
 const ambiente = crearAmbiente({ scene, renderer, sun, hemi, cielo, venue, alturaTerreno,
-  alCambiar: () => requestAnimationFrame(() => espejoBar(renderer, scene)) });   // los espejos reflejan la nueva luz
+  alCambiar: modo => { requestAnimationFrame(() => espejoBar(renderer, scene)); modoHora = modo; aplicarHoraEscaneo(modo); } });   // los espejos reflejan la nueva luz
 const horaBtns = document.querySelectorAll('#hora button');
 horaBtns.forEach(b => b.onclick = () => {
   if (b.dataset.hora === ambiente.modo) return;

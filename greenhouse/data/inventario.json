@@ -566,7 +566,7 @@
         },
         {
           "k": "Medidas según modelo",
-          "v": "≈ 3,7 × 1,9 m",
+          "v": "≈ 3,6 × 1,8 m (escaneo)",
           "estado": "estimado"
         }
       ],
@@ -576,7 +576,7 @@
         "suite-bano-3",
         "suite-bano-4"
       ],
-      "modelo3d": "Modelado (distribución según fotos; medidas estimadas)"
+      "modelo3d": "Escaneo real (Scaniverse, 17-nov)"
     },
     "sala_hierro_rosa": {
       "nombre": "Sala de hierro fucsia (deck de la suite)",
@@ -826,8 +826,8 @@
           "estado": "confirmado"
         },
         {
-          "k": "Medidas según modelo",
-          "v": "≈ 4,0 × 7,0 m (sala ≈ 3,9 × 4,9 m)",
+          "k": "Medidas interiores (escaneo)",
+          "v": "Sala ≈ 3,6 × 5,5 m · baño ≈ 3,6 × 1,8 m",
           "estado": "estimado"
         },
         {

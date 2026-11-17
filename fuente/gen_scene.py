@@ -47,7 +47,10 @@ add('GH-BARRA-01', 'barra', 23.90, 1.60, zona='salon', estado='fijo')
 # Mirando las puertas desde el salón: IZQUIERDA = mujeres, DERECHA = hombres (Zona E).
 add('GH-BANO-M', 'bano_mujeres', 36.14, 0.85, zona='salon', estado='fijo')
 add('GH-BANO-H', 'bano_hombres', 34.57, 0.85, zona='salon', estado='fijo')
-# --- Suite de la novia (Zona E 17-nov, fotos y videos): mobiliario fijo de la suite. Posiciones ESTIMADAS desde las fotos.
+# --- Suite de la novia (Zona E 17-nov, fotos, videos y ESCANEO). La sala real (escaneo) mide ≈ 3,62 × 5,45 m por dentro
+# y el baño ≈ 1,80 m de fondo: más larga que la suite del plano Rhino. Las posiciones se llevan al escaneo con SX/SY.
+SX = lambda x: round(44.20 + (x - 44.16) * 3.62 / 3.86, 3)
+SY = lambda y: round(8.36 - (8.40 - y) * 5.45 / 4.84, 3) if y >= 3.5 else round(0.99 + (y - 1.54) * 1.80 / 1.88, 3)
 add('GH-SUITE-SOFA', 'sofa_luis', 47.55, 6.55, rot=90, zona='suite', estado='fijo')
 add('GH-SUITE-POL-01', 'poltrona_capitone', 44.62, 5.95, rot=-80, zona='suite', estado='fijo')
 add('GH-SUITE-POL-02', 'poltrona_capitone', 44.62, 7.15, rot=-100, zona='suite', estado='fijo')
@@ -58,6 +61,9 @@ add('GH-SUITE-LAMPARA', 'lampara_dorada', 46.06, 7.15, z=2.4, zona='suite', esta
 add('GH-SUITE-VENT', 'ventilador', 46.06, 5.55, z=3.40, zona='suite', estado='fijo')
 add('GH-SUITE-BANO', 'bano_suite', 46.09, 2.48, zona='suite', estado='fijo')   # origen = centro del baño
 add('GH-SUITE-SALA', 'sala_hierro_rosa', 46.10, 10.0, rot=0, zona='suite', estado='provisional')
+for _o in objs:   # posición equivalente dentro del ESCANEO (para fichas y puntos cuando se ve la suite real)
+    if _o['id'].startswith('GH-SUITE-') and _o['id'] != 'GH-SUITE-SALA':
+        _x, _y = _o['pos'][0] + O[0], _o['pos'][1] + O[1]; _o['pos_escaneo'] = L(SX(_x), SY(_y))
 puertas = json.load(open('../site/greenhouse_arquitectura_puertas.json'))
 for p in puertas:
     objs.append(dict(id=p['id'], tipo=('puerta_abatible' if 'abatible' in p['nombre'] else 'puerta_corrediza'), pos=p['pos'][:2], z=0, rot=0, zona='salon', montaje='fijo', nota=p['nombre'] + ('' if p['abierta'] else ' · cerrada en el recorrido'),
@@ -138,7 +144,7 @@ venue = dict(
     dict(id='salon',   nombre='Salón',    pos=L(31.7, 10.4),  mira=L(28.5, 3.0)),
     dict(id='bar',     nombre='Bar',      pos=L(26.6, 3.6),   mira=L(23.9, 1.4)),
     dict(id='ceremonia', nombre='Ceremonia', pos=L(28.91, 21.0), mira=L(28.91, 32.0)),
-    dict(id='suite',   nombre='Suite',    pos=L(45.0, 7.95),  mira=L(46.9, 3.9)),   # dentro de la suite: mira al tocador con la sala a la izquierda
+    dict(id='suite',   nombre='Suite',    pos=L(45.0, 7.95),  mira=L(46.5, 3.3)),   # dentro de la suite: mira al tocador con la sala a la izquierda
     dict(id='muelle',  nombre='Muelle',   pos=L(28.91, 31.3),  mira=L(28.91, 15.0)),
   ],
   # Puntos interactivos: UNO por tipo de elemento (ref = objeto donde se ancla) y uno por espacio.

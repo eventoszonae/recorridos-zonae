@@ -490,8 +490,21 @@ def add_view(data, target):
     off = len(blob); blob += data
     gl['bufferViews'].append(dict(buffer=0, byteOffset=off, byteLength=len(data), target=target))
     return len(gl['bufferViews'])-1
-stats = {}
+# Zona E 17-nov: la suite tiene ESCANEO real (escaneos/suite.glb). Su arquitectura dibujada va en nodos aparte
+# ('arqsuite_*') para que el visor la oculte cuando se está dentro de la suite y se muestra el escaneo.
+SUITE_BOX = (43.1, 48.35, 0.5, 8.6)
+def _en_suite(t):
+    c = t.mean(0); return SUITE_BOX[0] < c[0] < SUITE_BOX[1] and SUITE_BOX[2] < c[1] < SUITE_BOX[3]
+_salida = []
 for name, tris in buckets.items():
+    if not tris: continue
+    if name in ('teja_gris', 'cubierta') or name in CUSTOM_UV: _salida.append((name, name, tris)); continue
+    a = [t for t in tris if not _en_suite(t)]; b = [t for t in tris if _en_suite(t)]
+    if a: _salida.append((name, name, a))
+    if b: _salida.append((name, 'suite_' + name, b))
+stats = {}
+_mat_idx = {}
+for name, nodo, tris in _salida:
     if not tris: continue
     TR = np.array(tris, dtype=np.float64); T = to_gltf(TR)         # (n,3,3)
     nrm = np.cross(T[:,1]-T[:,0], T[:,2]-T[:,0]); ln = np.linalg.norm(nrm,axis=1,keepdims=True)
@@ -515,14 +528,15 @@ for name, tris in buckets.items():
                         dict(bufferView=vi, componentType=5125, count=len(idx), type='SCALAR'),
                         dict(bufferView=vu, componentType=5126, count=len(uv), type='VEC2')]
     md = MATERIALS[name]
-    mat = dict(name=name, pbrMetallicRoughness=dict(baseColorFactor=md['c'], metallicFactor=md['m'], roughnessFactor=md['r']),
-               doubleSided=True)
-    if md.get('blend'): mat['alphaMode'] = 'BLEND'
-    gl['materials'].append(mat)
-    gl['meshes'].append(dict(name=name, primitives=[dict(attributes=dict(POSITION=a0, NORMAL=a0+1, TEXCOORD_0=a0+3), indices=a0+2, material=len(gl['materials'])-1)]))
-    gl['nodes'].append(dict(name='arq_'+name, mesh=len(gl['meshes'])-1))
+    if name not in _mat_idx:
+        mat = dict(name=name, pbrMetallicRoughness=dict(baseColorFactor=md['c'], metallicFactor=md['m'], roughnessFactor=md['r']),
+                   doubleSided=True)
+        if md.get('blend'): mat['alphaMode'] = 'BLEND'
+        gl['materials'].append(mat); _mat_idx[name] = len(gl['materials']) - 1
+    gl['meshes'].append(dict(name=nodo, primitives=[dict(attributes=dict(POSITION=a0, NORMAL=a0+1, TEXCOORD_0=a0+3), indices=a0+2, material=_mat_idx[name])]))
+    gl['nodes'].append(dict(name=('arqsuite_' + name) if nodo.startswith('suite_') else ('arq_' + name), mesh=len(gl['meshes'])-1))
     gl['scenes'][0]['nodes'].append(len(gl['nodes'])-1)
-    stats[name] = len(T)
+    stats[nodo] = len(T)
 while len(blob) % 4: blob.append(0)
 gl['buffers'].append(dict(byteLength=len(blob)))
 js = json.dumps(gl, separators=(',',':')).encode()
