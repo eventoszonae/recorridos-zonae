@@ -383,6 +383,222 @@
         "bano-hombres-2"
       ],
       "modelo3d": "Puerta del modelo Rhino"
+    },
+    "sofa_luis": {
+      "nombre": "Sofá Luis XV",
+      "categoria": "Mobiliario de la suite",
+      "descripcion": "Sofá de tres puestos con marco de madera natural tallada, respaldo curvo y tela gris topo, con cojines en tonos camel.",
+      "campos": [
+        {
+          "k": "Ubicación",
+          "v": "Suite de la novia (fijo)",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Puestos",
+          "v": "3",
+          "estado": "estimado"
+        },
+        {
+          "k": "Medidas",
+          "v": "≈ 2,00 × 0,85 m",
+          "estado": "estimado"
+        },
+        {
+          "k": "Tapizado",
+          "v": "Tela gris topo",
+          "estado": "confirmado"
+        }
+      ],
+      "fotos": [
+        "suite-sofa",
+        "suite-sala"
+      ],
+      "modelo3d": "aproximado (medidas estimadas desde fotos)"
+    },
+    "poltrona_capitone": {
+      "nombre": "Poltrona capitoné",
+      "categoria": "Mobiliario de la suite",
+      "descripcion": "Poltrona sin brazos de respaldo alto capitoné, tela gris topo y patas torneadas de madera con rodachinas.",
+      "campos": [
+        {
+          "k": "Ubicación",
+          "v": "Suite de la novia (fijo)",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Cantidad",
+          "v": "2",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Medidas",
+          "v": "≈ 0,62 × 0,80 m",
+          "estado": "estimado"
+        }
+      ],
+      "fotos": [
+        "suite-poltronas",
+        "suite-1"
+      ],
+      "modelo3d": "aproximado (medidas estimadas desde fotos)"
+    },
+    "mesa_centro_vidrio": {
+      "nombre": "Mesa de centro de vidrio",
+      "categoria": "Mobiliario de la suite",
+      "descripcion": "Mesa de centro con cubierta de vidrio templado y base de tubo cromado.",
+      "campos": [
+        {
+          "k": "Ubicación",
+          "v": "Suite de la novia (fijo)",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Medidas",
+          "v": "≈ 1,30 × 0,75 m",
+          "estado": "estimado"
+        }
+      ],
+      "fotos": [
+        "suite-sala"
+      ],
+      "modelo3d": "aproximado (medidas estimadas desde fotos)"
+    },
+    "tocador_banco": {
+      "nombre": "Tocador con espejo",
+      "categoria": "Mobiliario de la suite",
+      "descripcion": "Tocador hecho con un banco de carpintero antiguo en madera blanqueada, frente a un espejo grande sobre el muro de papel de colgadura con palmas.",
+      "campos": [
+        {
+          "k": "Ubicación",
+          "v": "Suite de la novia (fijo)",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Espejo",
+          "v": "Sí, sobre el tocador",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Medidas del tocador",
+          "v": "≈ 1,80 × 0,60 m, alto 0,90 m",
+          "estado": "estimado"
+        }
+      ],
+      "fotos": [
+        "suite-tocador"
+      ],
+      "modelo3d": "aproximado (medidas estimadas desde fotos)"
+    },
+    "butaco_floral": {
+      "nombre": "Butaco alto",
+      "categoria": "Mobiliario de la suite",
+      "descripcion": "Butaco alto de madera con asiento y respaldo tapizados en tela floral, para el tocador.",
+      "campos": [
+        {
+          "k": "Ubicación",
+          "v": "Suite de la novia (fijo)",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Cantidad",
+          "v": "1",
+          "estado": "confirmado"
+        }
+      ],
+      "fotos": [
+        "suite-tocador"
+      ],
+      "modelo3d": "aproximado (medidas estimadas desde fotos)"
+    },
+    "lampara_dorada": {
+      "nombre": "Lámpara de hojas doradas",
+      "categoria": "Iluminación de la suite",
+      "descripcion": "Lámpara colgante de hojas doradas con seis velas, en el centro de la suite.",
+      "campos": [
+        {
+          "k": "Ubicación",
+          "v": "Suite de la novia (fijo)",
+          "estado": "confirmado"
+        }
+      ],
+      "fotos": [
+        "suite-techo",
+        "suite-1"
+      ],
+      "modelo3d": "aproximado"
+    },
+    "ventilador": {
+      "nombre": "Ventilador de techo",
+      "categoria": "Equipamiento de la suite",
+      "descripcion": "Ventilador de techo con motor negro y tres aspas de madera clara.",
+      "campos": [
+        {
+          "k": "Ubicación",
+          "v": "Suite de la novia (fijo)",
+          "estado": "confirmado"
+        }
+      ],
+      "fotos": [
+        "suite-techo"
+      ],
+      "modelo3d": "aproximado"
+    },
+    "bano_suite": {
+      "nombre": "Baño privado de la suite",
+      "categoria": "Servicios",
+      "descripcion": "Baño privado dentro de la suite: sanitario, lavamanos de sobreponer sobre mueble de madera, espejo grande, piso de baldosa verde en escama y papel de colgadura con palmas.",
+      "campos": [
+        {
+          "k": "Sanitarios",
+          "v": "1",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Lavamanos",
+          "v": "1, con espejo",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Acceso",
+          "v": "Puerta de madera desde la suite",
+          "estado": "confirmado"
+        }
+      ],
+      "fotos": [
+        "suite-bano-1",
+        "suite-bano-2",
+        "suite-bano-3",
+        "suite-bano-4"
+      ],
+      "modelo3d": "Puerta en el modelo; interior en fotos"
+    },
+    "sala_hierro_rosa": {
+      "nombre": "Sala de hierro fucsia (deck de la suite)",
+      "categoria": "Mobiliario",
+      "descripcion": "Sofás y poltronas de hierro forjado fucsia con respaldo de volutas y mesas con cubierta de vidrio, en el deck de madera junto a la suite.",
+      "campos": [
+        {
+          "k": "Ubicación",
+          "v": "Deck de la suite",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Composición",
+          "v": "2 sofás + 2 poltronas + 2 mesas",
+          "estado": "estimado"
+        },
+        {
+          "k": "Cantidades exactas",
+          "v": "Por confirmar",
+          "estado": "pendiente"
+        }
+      ],
+      "fotos": [
+        "suite-deck-1",
+        "suite-deck-2"
+      ],
+      "modelo3d": "aproximado (composición estimada desde el video)"
     }
   },
   "espacios": {
@@ -592,9 +808,13 @@
     },
     "GH-ESP-SUITE": {
       "nombre": "Suite de la novia",
-      "descripcion": "Casa independiente estilo invernadero junto al Green House: estructura negra con vidrio, pensada para que la novia se arregle con sus damas de honor o su familia.",
+      "descripcion": "Casa independiente estilo invernadero junto al Green House: estructura negra con vidrio esmerilado, techo de madera, lámpara dorada, sala, tocador con espejo y baño privado. Pensada para que la novia se arregle con sus damas de honor o su familia.",
       "fotos": [
-        "salon-mesas-2"
+        "suite-1",
+        "suite-tocador",
+        "suite-sala",
+        "suite-bano-1",
+        "suite-deck-1"
       ],
       "campos": [
         {
@@ -604,20 +824,36 @@
         },
         {
           "k": "Medidas según modelo",
-          "v": "≈ 4,0 × 7,0 m",
+          "v": "≈ 4,0 × 7,0 m (sala ≈ 3,9 × 4,9 m)",
           "estado": "estimado"
         },
         {
-          "k": "Interior",
-          "v": "No modelado todavía",
-          "estado": "pendiente"
+          "k": "Mobiliario",
+          "v": "Sofá, 2 poltronas, mesa de centro, tocador con espejo y butaco",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Baño",
+          "v": "Privado: sanitario y lavamanos",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Muros",
+          "v": "Retícula negra con vidrio esmerilado (privacidad)",
+          "estado": "confirmado"
+        },
+        {
+          "k": "Deck exterior",
+          "v": "Sala de hierro fucsia",
+          "estado": "confirmado"
         }
       ],
-      "resumen": "Suite estilo invernadero, en vidrio y estructura negra, para que la novia se arregle con sus damas de honor o su familia.",
+      "resumen": "Suite estilo invernadero con sala, tocador con espejo y baño privado, para que la novia se arregle con sus damas de honor o su familia.",
       "destacados": [
-        "Estilo invernadero",
-        "Incluida en el alquiler",
-        "Junto al salón"
+        "Baño privado",
+        "Tocador con espejo",
+        "Sofá y 2 poltronas",
+        "Deck exterior"
       ]
     }
   },

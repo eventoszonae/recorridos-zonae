@@ -12,7 +12,7 @@ const HUELLA = {
   mesa_coctel: [0.7, 0.7], silla_coctel: [0.42, 0.37], sala_hierro: [1.95, 1.35], sala_corazones: [2.9, 1.5], puerta_abatible: [0, 0], barra: [0, 0], puerta_corrediza: [0, 0],
 };
 const PISOS = new Set(['piso_salon', 'madera_deck', 'madera_pasarela', 'concreto_sendero', 'concreto']);
-const MUROS = new Set(['vidrio', 'espejo_bar', 'vidrio_bar', 'acero_negro', 'madera_rojiza', 'metal_cafe', 'verde_bosque', 'muro_claro', 'fachada_gris', 'marmol_negro']);
+const MUROS = new Set(['vidrio', 'vidrio_esmerilado', 'tablas_rojizas', 'papel_palmas', 'espejo', 'espejo_bar', 'vidrio_bar', 'acero_negro', 'madera_rojiza', 'metal_cafe', 'verde_bosque', 'muro_claro', 'fachada_gris', 'marmol_negro']);
 
 export class Recorrido {
   constructor({ camera, dom, scene, arquitectura, ground, venue, onPick, pisosExtra = [] }) {

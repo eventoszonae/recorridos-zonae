@@ -32,6 +32,11 @@ MATERIALS = {  # color base aproximado (Etapa 4 reemplaza por texturas reales)
   'damero':        dict(c=[1,1,1,1], r=0.35, m=0.0),
   'teja_gris':     dict(c=[0.24,0.25,0.26,1], r=0.85, m=0.0),
   'vidrio':        dict(c=[0.75,0.85,0.85,0.18], r=0.05, m=0.0, blend=True),
+  'vidrio_esmerilado': dict(c=[0.93,0.95,0.95,0.86], r=0.6, m=0.0, blend=True),
+  'piso_suite':    dict(c=[1,1,1,1], r=0.7, m=0.0),
+  'papel_palmas':  dict(c=[1,1,1,1], r=0.8, m=0.0),
+  'tablas_rojizas':dict(c=[1,1,1,1], r=0.6, m=0.0),
+  'espejo':        dict(c=[0.9,0.92,0.92,1], r=0.02, m=1.0),
 }
 
 # Objetos Rhino identificados en la verificación (índice de malla en el OBJ)
@@ -74,6 +79,8 @@ def classify(oid, tri, zmid=0):
     up, down = n[2] > 0.7, n[2] < -0.7
     zc = tri[:,2].mean(); horiz = up or down
     if oid in SUITE_TECHO: return 'teja_gris'
+    if oid == 36501: return 'tablas_rojizas'      # Zona E 17-nov (video): el volumen del baño de la suite es de tablas verticales rojizas
+    if oid == 36517: return None                  # hastial norte: en la realidad es vidrio con marco negro (se agrega abajo)
     if oid in SUITE_MUROS: return 'acero_negro'   # Zona E 13-nov: la suite es como el Green House: retícula NEGRA con vidrio
     if oid in SUITE_REMATES: return 'acero_negro'
     if oid == 36509: return 'madera_deck'
@@ -335,9 +342,65 @@ for _x in np.linspace(22.0, 35.85, 7):
 for (_a, _b, _c, _d) in [(21.87, 35.97, 11.25, 11.37), (21.87, 35.97, 19.05, 19.17), (21.87, 21.99, 11.25, 19.17), (35.85, 35.97, 11.25, 19.17)]:
     buckets['acero_negro'] += box(_a, _b, _c, _d, -0.40, -0.25)
 # Suite: vidrios dentro de la retícula negra (oeste, este y norte); el bloque sur (36501) es muro cerrado.
-buckets['vidrio'] += pane('x', 44.14, 5.38, 8.40, 0.0, 2.65)
-buckets['vidrio'] += pane('x', 48.04, 3.54, 8.40, 0.0, 2.65)
-buckets['vidrio'] += pane('y', 8.42, 44.12, 48.02, 0.0, 2.65)
+# Zona E 17-nov (fotos y videos de la suite): vidrio ESMERILADO en las 5 filas bajas y transparente en la fila alta.
+Z_ESM = 2.21
+for (_ax, _c, _a, _b) in [('x', 44.14, 5.38, 8.40), ('x', 48.04, 3.54, 8.40), ('y', 8.42, 44.12, 48.02)]:
+    buckets['vidrio_esmerilado'] += pane(_ax, _c, _a, _b, 0.0, Z_ESM)
+    buckets['vidrio'] += pane(_ax, _c, _a, _b, Z_ESM, 2.65)
+# Puerta de entrada (muro oeste, y 3,54–5,38: hueco en el modelo) [medidas E]: hoja de 0,90 m ABIERTA hacia afuera
+# (así el recorrido a pie puede entrar) + paño fijo de 0,90 m. Vidrio esmerilado con retícula negra como los muros.
+def _reticula_x(xc, y0, y1, zs=(0.03, 0.47, 0.91, 1.35, 1.79, 2.21, 2.62)):
+    out = []
+    for _y in (y0, y1): out += frame_bar('x', xc, _y - 0.03, _y + 0.03, 0.0, 2.65, 0.06)
+    for _z in zs: out += box(xc - 0.03, xc + 0.03, y0, y1, _z - 0.025, _z + 0.025)
+    out += frame_bar('x', xc, (y0 + y1) / 2 - 0.02, (y0 + y1) / 2 + 0.02, 0.0, 2.65, 0.05)
+    return out
+buckets['vidrio_esmerilado'] += pane('x', 44.14, 4.46, 5.36, 0.0, Z_ESM)          # paño fijo
+buckets['vidrio'] += pane('x', 44.14, 4.46, 5.36, Z_ESM, 2.65)
+buckets['acero_negro'] += _reticula_x(44.14, 4.46, 5.36)
+# hoja abierta: gira sobre la bisagra (x 44,14 ; y 3,56) y queda perpendicular al muro, hacia afuera
+buckets['vidrio_esmerilado'] += pane('y', 3.60, 43.24, 44.12, 0.0, Z_ESM)
+buckets['vidrio'] += pane('y', 3.60, 43.24, 44.12, Z_ESM, 2.62)
+for _x in (43.24, 44.12): buckets['acero_negro'] += box(_x - 0.03, _x + 0.03, 3.57, 3.63, 0.0, 2.62)
+for _z in (0.03, 0.47, 0.91, 1.35, 1.79, 2.21, 2.59): buckets['acero_negro'] += box(43.24, 44.12, 3.57, 3.63, _z - 0.025, _z + 0.025)
+buckets['acero_negro'] += box(43.66, 43.70, 3.575, 3.625, 0.0, 2.62)
+buckets['acero_negro'] += box(44.11, 44.17, 3.54, 4.46, 2.60, 2.66)                # dintel
+# Hastial norte (sobre el muro hacia el deck): triángulo de vidrio transparente con marco y montantes negros
+def _zr(x): return 2.62 + (4.08 - 2.62) * (1 - abs(x - 46.06) / 2.02)       # borde inferior del techo
+_hx = [44.06, 44.73, 45.40, 46.06, 46.72, 47.39, 48.06]
+for i in range(len(_hx) - 1):
+    a, b = _hx[i], _hx[i + 1]
+    q = [np.array([(a, 8.42, 2.65), (b, 8.42, 2.65), (b, 8.42, _zr(b))]), np.array([(a, 8.42, 2.65), (b, 8.42, _zr(b)), (a, 8.42, _zr(a))])]
+    for t in q: buckets['vidrio'] += [t, t[::-1]]
+for x in _hx[1:-1]: buckets['acero_negro'] += box(x - 0.025, x + 0.025, 8.40, 8.44, 2.65, _zr(x))
+buckets['acero_negro'] += box(44.06, 48.06, 8.40, 8.44, 2.62, 2.68)
+# Interior de la suite (Zona E 17-nov, fotos): cielo de MADERA bajo la cubierta, vigas negras, piso de concreto con
+# estampado blanco, muro divisorio con papel de colgadura negro con palmas, espejo del tocador y puerta del baño.
+def _cielo(x0, x1, y0, y1, k=0.07):
+    z = lambda x: 2.56 + (4.11 - 2.56) * (x - 43.98) / (46.06 - 43.98) - k if x <= 46.06 else 2.56 + (4.11 - 2.56) * (48.20 - x) / (48.20 - 46.06) - k
+    q = np.array([(x0, y0, z(x0)), (x1, y0, z(x1)), (x1, y1, z(x1)), (x0, y1, z(x0))])
+    return [q[[0, 1, 2]], q[[0, 2, 3]], q[[0, 2, 1]], q[[0, 3, 2]]]
+buckets['madera_cielo'] += _cielo(44.14, 46.06, 3.56, 8.40) + _cielo(46.06, 48.04, 3.56, 8.40)
+for _x in (44.75, 45.40, 46.06, 46.72, 47.37):            # correas a lo largo + cumbrera
+    _z = (2.56 + (4.11 - 2.56) * (_x - 43.98) / 2.08 if _x <= 46.06 else 2.56 + (4.11 - 2.56) * (48.20 - _x) / 2.14) - 0.13
+    buckets['acero_negro'] += box(_x - 0.04, _x + 0.04, 3.56, 8.40, _z - 0.06, _z + 0.06)
+for _y in (3.62, 6.0, 8.34):                               # pares (vigas inclinadas)
+    for (xa, xb) in ((44.14, 46.06), (46.06, 48.04)):
+        za = 2.56 + 1.55 * (xa - 43.98) / 2.08 - 0.12 if xa < 46 else 4.11 - 0.12
+        zb = 4.11 - 0.12 if xb < 46.1 else 2.56 + 1.55 * (48.20 - xb) / 2.14 - 0.12
+        n = 12
+        for k in range(n):
+            x0_, x1_ = xa + (xb - xa) * k / n, xa + (xb - xa) * (k + 1) / n
+            z0_, z1_ = za + (zb - za) * k / n, za + (zb - za) * (k + 1) / n
+            buckets['acero_negro'] += box(min(x0_, x1_), max(x0_, x1_), _y - 0.04, _y + 0.04, min(z0_, z1_) - 0.05, max(z0_, z1_) + 0.05)
+buckets['piso_suite'] += box(44.16, 48.02, 3.56, 8.40, 0.0, 0.004)
+# muro divisorio (cara hacia la sala, y = 3,555) hasta el cielo: papel de colgadura negro con palmas doradas
+_pp = [(44.16, 0.0), (48.02, 0.0), (48.02, 2.62), (46.06, 4.03), (44.16, 2.62)]
+for i in range(1, 4):
+    t = np.array([(_pp[0][0], 3.556, _pp[0][1]), (_pp[i][0], 3.556, _pp[i][1]), (_pp[i + 1][0], 3.556, _pp[i + 1][1])])
+    buckets['papel_palmas'] += [t, t[::-1]]
+buckets['espejo'] += box(45.80, 47.35, 3.557, 3.567, 0.98, 2.02)                       # espejo sin marco sobre el tocador [E 1,55 × 1,04 m]
+buckets['tablas_rojizas'] += box(44.30, 45.12, 3.557, 3.60, 0.0, 2.15)                  # puerta del baño (tablas verticales) [E]
 # Zona de servicio trasera (detrás de los baños): Zona E 12-nov – "debe tener una pared, no se ve lo que hay adentro".
 # Se cierran los 3 lados abiertos bajo la cubierta trasera (sur, oeste y este), desde el sardinel hasta la viga. Material [E]: muro claro.
 buckets['muro_claro'] += box(21.97, 37.91, -8.72, -8.60, 0.0, 2.75)     # sur

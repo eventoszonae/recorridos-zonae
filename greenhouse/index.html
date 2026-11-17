@@ -249,7 +249,7 @@ const [gltf, venue, inv] = await Promise.all([
 ]);
 gltf.scene.traverse(o => {
   if (!o.isMesh) return;
-  const glass = o.material.name === 'vidrio';
+  const glass = o.material.name.startsWith('vidrio');
   o.castShadow = !glass; o.receiveShadow = !glass;
   if (glass) { o.material.depthWrite = false; o.renderOrder = 2; }
   o.material.clippingPlanes = [];
@@ -273,9 +273,9 @@ for (const obj of venue.objetos) {
   const g = createFurniture(obj);
   if (g) { scene.add(g); pickables.push(g); }
   else {   // objetos fijos del modelo: marcador invisible para poder seleccionarlos
-    const bano = obj.tipo.startsWith('bano');   // baños: toda la puerta (0,85 × 2,1 m) se puede tocar
+    const bano = obj.tipo.startsWith('bano'), banoSalon = bano && obj.tipo !== 'bano_suite';   // baños: toda la puerta (0,85 × 2,1 m) se puede tocar
     const s = new THREE.Mesh(bano ? new THREE.BoxGeometry(0.85, 2.1, 0.12) : new THREE.SphereGeometry(0.35, 12, 8), new THREE.MeshBasicMaterial({ visible: false }));
-    s.position.set(obj.pos[0], bano ? 1.05 : obj.tipo === 'barra' ? 1.0 : 1.3, -obj.pos[1] + (bano ? 0.15 : 0));
+    s.position.set(obj.pos[0], bano ? 1.05 : obj.tipo === 'barra' ? 1.0 : 1.3, -obj.pos[1] + (banoSalon ? 0.15 : 0));
     s.userData = { id: obj.id, tipo: obj.tipo, medidas: obj.medidas_modelo, nota: obj.nota }; s.name = obj.id;
     scene.add(s); pickables.push(s);
   }
@@ -289,10 +289,10 @@ function letreroBano(tipo) {
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
   return new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.30), new THREE.MeshStandardMaterial({ map: t, transparent: true, alphaTest: 0.3, metalness: 0.6, roughness: 0.4 }));
 }
-for (const o of venue.objetos.filter(o => o.tipo.startsWith('bano'))) {
+for (const o of venue.objetos.filter(o => o.tipo === 'bano_mujeres' || o.tipo === 'bano_hombres')) {
   const m = letreroBano(o.tipo); m.position.set(o.pos[0], 1.6, -(-5.21)); m.rotation.y = Math.PI; scene.add(m);   // cara de la puerta hacia el salón (y = -5,21)
 }
-const labels = { mesa_novios: 'Mesa de 8 (novios)', mesa_postres: 'Mesa de postres', mesa_madera: 'Mesas de madera', silla_x: 'Sillas X', mesa_coctel: 'Mesas cocteleras', silla_coctel: 'Sillas cocteleras', sala_hierro: 'Sala de hierro (deck)', sala_corazones: 'Sala de hierro (muelle)', barra: 'Barra', puerta_abatible: 'Puerta de acceso', puerta_corrediza: 'Puertas corredizas' };
+const labels = { mesa_novios: 'Mesa de 8 (novios)', mesa_postres: 'Mesa de postres', mesa_madera: 'Mesas de madera', silla_x: 'Sillas X', mesa_coctel: 'Mesas cocteleras', silla_coctel: 'Sillas cocteleras', sala_hierro: 'Sala de hierro (deck)', sala_corazones: 'Sala de hierro (muelle)', barra: 'Barra', puerta_abatible: 'Puerta de acceso', puerta_corrediza: 'Puertas corredizas', sofa_luis: 'Sofá', poltrona_capitone: 'Poltronas', mesa_centro_vidrio: 'Mesa de centro', tocador_banco: 'Tocador', butaco_floral: 'Butaco', lampara_dorada: 'Lámpara', ventilador: 'Ventilador', bano_suite: 'Baño de la suite', sala_hierro_rosa: 'Sala fucsia (deck)' };
 // conteo por zona (para "En esta zona")
 const porZona = {};
 for (const o of venue.objetos) { const z = o.zona || 'salon'; (porZona[z] ||= {}); porZona[z][o.tipo] = (porZona[z][o.tipo] || 0) + 1; }
@@ -313,7 +313,7 @@ const views = {
   general: { pos: P(-26, 40, 20), target: P(-2, 8, 0) },
   planta:  { pos: P(0.01, 4, 42), target: P(0, 4, 0), interior: true },
 };
-for (const e of venue.espacios) views[e.id] = { pos: P(...e.camara.pos), target: P(...e.camara.mira), space: e.id, interior: !['GH-ESP-DECK', 'GH-ESP-ENTRADA', 'GH-ESP-MUELLE', 'GH-ESP-CEREMONIA', 'GH-ESP-SUITE'].includes(e.id) };
+for (const e of venue.espacios) views[e.id] = { pos: P(...e.camara.pos), target: P(...e.camara.mira), space: e.id, interior: !['GH-ESP-DECK', 'GH-ESP-ENTRADA', 'GH-ESP-MUELLE', 'GH-ESP-CEREMONIA'].includes(e.id) };
 let anim = null;
 function go(name) {
   const v = views[name]; if (!v) return;
@@ -364,7 +364,7 @@ const ZONAS = [   // orden del recorrido guiado (Zona E 13-nov)
   { id: 'GH-ESP-CEREMONIA', label: 'Ceremonia', punto: 'ceremonia', zona: null },
   { id: 'GH-ESP-SALON', label: 'Salón', punto: 'salon', zona: 'salon', excluye: ['barra', 'bano_mujeres', 'bano_hombres'] },
   { id: 'GH-ESP-SERVICIOS', label: 'Bar y baños', punto: 'bar', zona: 'salon', solo: ['barra', 'bano_mujeres', 'bano_hombres'] },
-  { id: 'GH-ESP-SUITE', label: 'Suite', punto: 'suite', zona: null },
+  { id: 'GH-ESP-SUITE', label: 'Suite', punto: 'suite', zona: 'suite' },
 ];
 let zonaActual = -1;
 const zonasEl = document.getElementById('zonas');

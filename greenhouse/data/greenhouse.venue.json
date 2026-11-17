@@ -85,12 +85,12 @@
    "id": "suite",
    "nombre": "Suite",
    "pos": [
-    17.19,
-    7.6
+    15.84,
+    -1.55
    ],
    "mira": [
-    17.19,
-    -0.9
+    18.69,
+    2.0
    ]
   },
   {
@@ -150,6 +150,22 @@
   {
    "ref": "GH-BANO-H",
    "h": 1.7
+  },
+  {
+   "ref": "GH-SUITE-SOFA",
+   "h": 1.15
+  },
+  {
+   "ref": "GH-SUITE-TOCADOR",
+   "h": 1.15
+  },
+  {
+   "ref": "GH-SUITE-BANO",
+   "h": 1.7
+  },
+  {
+   "ref": "GH-SUITE-SALA",
+   "h": 1.1
   },
   {
    "espacio": "GH-ESP-SALON",
@@ -467,6 +483,22 @@
     ],
     "alto": 3.28,
     "giro": 292
+   },
+   {
+    "pos": [
+     15.84,
+     5.15
+    ],
+    "alto": 7.5,
+    "giro": 40
+   },
+   {
+    "pos": [
+     18.64,
+     3.15
+    ],
+    "alto": 6.5,
+    "giro": 200
    }
   ],
   "adoquin": [
@@ -2506,14 +2538,14 @@
    ],
    "camara": {
     "pos": [
-     12.09,
-     10.1,
-     5.5
+     12.69,
+     6.7,
+     6.2
     ],
     "mira": [
      17.19,
-     -0.9,
-     1.5
+     0.3,
+     0.3
     ]
    }
   },
@@ -4204,6 +4236,126 @@
    "rot": 0,
    "zona": "salon",
    "montaje": "fijo"
+  },
+  {
+   "id": "GH-SUITE-SOFA",
+   "tipo": "sofa_luis",
+   "pos": [
+    18.64,
+    0.65
+   ],
+   "z": 0,
+   "rot": 90,
+   "zona": "suite",
+   "montaje": "fijo"
+  },
+  {
+   "id": "GH-SUITE-POL-01",
+   "tipo": "poltrona_capitone",
+   "pos": [
+    15.71,
+    0.05
+   ],
+   "z": 0,
+   "rot": -80,
+   "zona": "suite",
+   "montaje": "fijo"
+  },
+  {
+   "id": "GH-SUITE-POL-02",
+   "tipo": "poltrona_capitone",
+   "pos": [
+    15.71,
+    1.25
+   ],
+   "z": 0,
+   "rot": -100,
+   "zona": "suite",
+   "montaje": "fijo"
+  },
+  {
+   "id": "GH-SUITE-MESA",
+   "tipo": "mesa_centro_vidrio",
+   "pos": [
+    17.34,
+    0.65
+   ],
+   "z": 0,
+   "rot": 90,
+   "zona": "suite",
+   "montaje": "fijo"
+  },
+  {
+   "id": "GH-SUITE-TOCADOR",
+   "tipo": "tocador_banco",
+   "pos": [
+    17.64,
+    -2.02
+   ],
+   "z": 0,
+   "rot": 0,
+   "zona": "suite",
+   "montaje": "fijo"
+  },
+  {
+   "id": "GH-SUITE-BUTACO",
+   "tipo": "butaco_floral",
+   "pos": [
+    17.34,
+    -1.25
+   ],
+   "z": 0,
+   "rot": 200,
+   "zona": "suite",
+   "montaje": "fijo"
+  },
+  {
+   "id": "GH-SUITE-LAMPARA",
+   "tipo": "lampara_dorada",
+   "pos": [
+    17.15,
+    1.25
+   ],
+   "z": 2.4,
+   "rot": 0,
+   "zona": "suite",
+   "montaje": "fijo"
+  },
+  {
+   "id": "GH-SUITE-VENT",
+   "tipo": "ventilador",
+   "pos": [
+    17.15,
+    -0.35
+   ],
+   "z": 3.4,
+   "rot": 0,
+   "zona": "suite",
+   "montaje": "fijo"
+  },
+  {
+   "id": "GH-SUITE-BANO",
+   "tipo": "bano_suite",
+   "pos": [
+    15.8,
+    -2.28
+   ],
+   "z": 0,
+   "rot": 0,
+   "zona": "suite",
+   "montaje": "fijo"
+  },
+  {
+   "id": "GH-SUITE-SALA",
+   "tipo": "sala_hierro_rosa",
+   "pos": [
+    17.19,
+    4.1
+   ],
+   "z": 0,
+   "rot": 0,
+   "zona": "suite",
+   "montaje": "provisional"
   },
   {
    "id": "GH-PUERTA-01",

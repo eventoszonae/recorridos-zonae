@@ -47,6 +47,17 @@ add('GH-BARRA-01', 'barra', 23.90, 1.60, zona='salon', estado='fijo')
 # Mirando las puertas desde el salón: IZQUIERDA = mujeres, DERECHA = hombres (Zona E).
 add('GH-BANO-M', 'bano_mujeres', 36.14, 0.85, zona='salon', estado='fijo')
 add('GH-BANO-H', 'bano_hombres', 34.57, 0.85, zona='salon', estado='fijo')
+# --- Suite de la novia (Zona E 17-nov, fotos y videos): mobiliario fijo de la suite. Posiciones ESTIMADAS desde las fotos.
+add('GH-SUITE-SOFA', 'sofa_luis', 47.55, 6.55, rot=90, zona='suite', estado='fijo')
+add('GH-SUITE-POL-01', 'poltrona_capitone', 44.62, 5.95, rot=-80, zona='suite', estado='fijo')
+add('GH-SUITE-POL-02', 'poltrona_capitone', 44.62, 7.15, rot=-100, zona='suite', estado='fijo')
+add('GH-SUITE-MESA', 'mesa_centro_vidrio', 46.25, 6.55, rot=90, zona='suite', estado='fijo')
+add('GH-SUITE-TOCADOR', 'tocador_banco', 46.55, 3.88, rot=0, zona='suite', estado='fijo')
+add('GH-SUITE-BUTACO', 'butaco_floral', 46.25, 4.65, rot=200, zona='suite', estado='fijo')
+add('GH-SUITE-LAMPARA', 'lampara_dorada', 46.06, 7.15, z=2.4, zona='suite', estado='fijo')
+add('GH-SUITE-VENT', 'ventilador', 46.06, 5.55, z=3.40, zona='suite', estado='fijo')
+add('GH-SUITE-BANO', 'bano_suite', 44.71, 3.62, zona='suite', estado='fijo')
+add('GH-SUITE-SALA', 'sala_hierro_rosa', 46.10, 10.0, rot=0, zona='suite', estado='provisional')
 puertas = json.load(open('../site/greenhouse_arquitectura_puertas.json'))
 for p in puertas:
     objs.append(dict(id=p['id'], tipo=('puerta_abatible' if 'abatible' in p['nombre'] else 'puerta_corrediza'), pos=p['pos'][:2], z=0, rot=0, zona='salon', montaje='fijo', nota=p['nombre'] + ('' if p['abierta'] else ' · cerrada en el recorrido'),
@@ -127,14 +138,14 @@ venue = dict(
     dict(id='salon',   nombre='Salón',    pos=L(31.7, 10.4),  mira=L(28.5, 3.0)),
     dict(id='bar',     nombre='Bar',      pos=L(26.6, 3.6),   mira=L(23.9, 1.4)),
     dict(id='ceremonia', nombre='Ceremonia', pos=L(28.91, 21.0), mira=L(28.91, 32.0)),
-    dict(id='suite',   nombre='Suite',    pos=L(46.1, 13.5),  mira=L(46.1, 5.0)),
+    dict(id='suite',   nombre='Suite',    pos=L(44.75, 4.35),  mira=L(47.6, 7.9)),   # dentro de la suite, junto a la puerta
     dict(id='muelle',  nombre='Muelle',   pos=L(28.91, 31.3),  mira=L(28.91, 15.0)),
   ],
   # Puntos interactivos: UNO por tipo de elemento (ref = objeto donde se ancla) y uno por espacio.
   hotspots=[
     dict(ref='GH-MESA-03', h=0.95), dict(ref='GH-SILLA-021', h=1.05), dict(ref='GH-NOVIOS-01', h=0.95),
     dict(ref='GH-POSTRES-01', h=1.2), dict(ref='GH-COCT-02', h=1.25), dict(ref='GH-SCOCT-06', h=1.3),
-    dict(ref='GH-SALA-01', h=1.15), dict(ref='GH-SALA-02', h=0.5), dict(ref='GH-BARRA-01', h=1.45), dict(ref='GH-BANO-M', h=1.7), dict(ref='GH-BANO-H', h=1.7),
+    dict(ref='GH-SALA-01', h=1.15), dict(ref='GH-SALA-02', h=0.5), dict(ref='GH-BARRA-01', h=1.45), dict(ref='GH-BANO-M', h=1.7), dict(ref='GH-BANO-H', h=1.7), dict(ref='GH-SUITE-SOFA', h=1.15), dict(ref='GH-SUITE-TOCADOR', h=1.15), dict(ref='GH-SUITE-BANO', h=1.7), dict(ref='GH-SUITE-SALA', h=1.1),
     dict(espacio='GH-ESP-SALON', pos=L(31.3, 5.9), h=3.1), dict(espacio='GH-ESP-DECK', pos=L(29.0, 15.5), h=2.6),
  dict(espacio='GH-ESP-SERVICIOS', pos=L(26.0, 0.0), h=2.6),
     dict(espacio='GH-ESP-ENTRADA', pos=L(14.2, -3.0), h=1.4), dict(espacio='GH-ESP-MUELLE', pos=L(28.91, 30.17), h=1.2),
@@ -145,7 +156,7 @@ venue = dict(
     dict(id='GH-ESP-CEREMONIA', nombre='Zona de ceremonia', poligono=R([(23.9, 20.2), (33.9, 20.2), (33.9, 28.2), (23.9, 28.2)]),
          camara=dict(pos=L(28.91, 16.5)+[3.2], mira=L(28.91, 27.0)+[0.0])),
     dict(id='GH-ESP-SUITE', nombre='Suite', poligono=R([(44.1, 1.4), (48.1, 1.4), (48.1, 11.55), (44.1, 11.55)]),
-         camara=dict(pos=L(41.0, 16.0)+[5.5], mira=L(46.1, 5.0)+[1.5])),
+         camara=dict(pos=L(41.6, 12.6)+[6.2], mira=L(46.1, 6.2)+[0.3])),
     dict(id='GH-ESP-MUELLE', nombre='Muelle', poligono=R(muelle_rect()), camara=dict(pos=L(28.91, 20.0)+[4.0], mira=L(28.91, 30.17)+[0.0])),
     dict(id='GH-ESP-ENTRADA', nombre='Llegada y pasarela', poligono=R([(12.86,-8.72),(15.53,-8.72),(15.53,10.35),(20.88,14.46),(21.87,14.46),(21.87,17.11),(20.88,17.11),(12.86,10.22)]),
          camara=dict(pos=L(14.2, -11.5)+[0.94], mira=L(15.0, 6.0)+[0.5])),
@@ -157,6 +168,8 @@ venue = dict(
          camara=dict(pos=L(30.0, 8.0)+[2.2], mira=L(24.5, 1.0)+[1.2])),
   ],
   objetos=objs)
+# Árboles que atraviesan el deck de la suite (video 17-nov): palmas de tronco alto [posición y altura E]
+venue['exterior']['palmas'] += [dict(pos=L(44.75, 11.05), alto=7.5, giro=40), dict(pos=L(47.55, 9.05), alto=6.5, giro=200)]
 json.dump(venue, open('../site/data/greenhouse.venue.json', 'w'), ensure_ascii=False, indent=1)
 from collections import Counter
 print(Counter(o['tipo'] for o in objs))

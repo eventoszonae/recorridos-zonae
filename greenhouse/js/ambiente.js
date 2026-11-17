@@ -46,6 +46,8 @@ export function crearAmbiente({ scene, renderer, sun, hemi, cielo, venue, altura
   // Salón: guirnaldas (luces suaves sin sombra)
   for (const x of [-3.6, 3.6]) for (const y of [-2.6, 2.6]) agregar(x, y, 3.4, 10, 10);
   agregar(-5.1, -3.65, 2.7, 5, 5, 0xffb064);                                                       // lámparas de ratán
+  // Suite de la novia: lámpara de hojas doradas y panel sobre el tocador (coords. venue: suite en x ≈ 17,2) [E]
+  agregar(17.15, 1.25, 3.1, 4, 7); agregar(17.6, -1.6, 3.0, 2.5, 4, 0xfff0dc);
   // Deck y zona de cóctel (para que se vean las mesas cocteleras) [E]
   for (const x of [-3.5, 3.5]) agregar(x, 7.2, 2.45, 6, 8);
   for (const x of [-1.6, 2.4]) agregar(x, 11.1, 2.6, 7, 8);
