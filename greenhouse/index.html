@@ -161,18 +161,18 @@
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
   "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/",
-  "./js/ambiente.js": "./js/ambiente.js?v=20261117112541",
-  "./js/arquitectura_glb.js": "./js/arquitectura_glb.js?v=20261117112541",
-  "./js/bar.js": "./js/bar.js?v=20261117112541",
-  "./js/exterior.js": "./js/exterior.js?v=20261117112541",
-  "./js/furniture.js": "./js/furniture.js?v=20261117112541",
-  "./js/hotspots.js": "./js/hotspots.js?v=20261117112541",
-  "./js/luces.js": "./js/luces.js?v=20261117112541",
-  "./js/materiales.js": "./js/materiales.js?v=20261117112541",
-  "./js/plano.js": "./js/plano.js?v=20261117112541",
-  "./js/recorrido.js": "./js/recorrido.js?v=20261117112541",
-  "./js/texturas.js": "./js/texturas.js?v=20261117112541",
-  "./js/vegetacion.js": "./js/vegetacion.js?v=20261117112541"
+  "./js/ambiente.js": "./js/ambiente.js?v=20261117113105",
+  "./js/arquitectura_glb.js": "./js/arquitectura_glb.js?v=20261117113105",
+  "./js/bar.js": "./js/bar.js?v=20261117113105",
+  "./js/exterior.js": "./js/exterior.js?v=20261117113105",
+  "./js/furniture.js": "./js/furniture.js?v=20261117113105",
+  "./js/hotspots.js": "./js/hotspots.js?v=20261117113105",
+  "./js/luces.js": "./js/luces.js?v=20261117113105",
+  "./js/materiales.js": "./js/materiales.js?v=20261117113105",
+  "./js/plano.js": "./js/plano.js?v=20261117113105",
+  "./js/recorrido.js": "./js/recorrido.js?v=20261117113105",
+  "./js/texturas.js": "./js/texturas.js?v=20261117113105",
+  "./js/vegetacion.js": "./js/vegetacion.js?v=20261117113105"
 } }
 </script>
 </head>
@@ -207,6 +207,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { Reflector } from 'three/addons/objects/Reflector.js';
 import { createFurniture } from './js/furniture.js';
 import GLB_B64 from './js/arquitectura_glb.js';
 import { aplicarMateriales, cieloHora } from './js/materiales.js';
@@ -277,6 +278,16 @@ const exterior = construirExterior(scene, venue.exterior, { madera: maderaMat })
 guirnaldas(scene);
 lamparasRatan(scene, [[-5.7, -3.65], [-4.5, -3.65]], 2.55);   // sobre la barra del bar interno [posición E]
 gltf.scene.traverse(o => { if (o.isMesh && (o.material.name === 'espejo' || o.material.name === 'espejo_bano')) registrarEspejoSuite(o.material); });
+// Espejos de la suite (tocador y baño): reflejo REAL (plano), no un reflejo aproximado del entorno.
+{ const espejos = []; gltf.scene.traverse(o => { if (o.isMesh && (o.material.name === 'espejo' || o.material.name === 'espejo_bano')) espejos.push(o); });
+  const movil = matchMedia('(pointer: coarse)').matches, res = Math.round(Math.min(devicePixelRatio, 2) * (movil ? 384 : 768));
+  for (const m of espejos) {
+    m.geometry.computeBoundingBox(); const b = m.geometry.boundingBox;   // caja delgada pegada al muro (cara hacia +y del plano = -Z)
+    const r = new Reflector(new THREE.PlaneGeometry(b.max.x - b.min.x, b.max.y - b.min.y), { textureWidth: res, textureHeight: Math.round(res * (b.max.y - b.min.y) / (b.max.x - b.min.x)), color: 0xc4cccc, clipBias: 0.003 });
+    r.position.set((b.min.x + b.max.x) / 2, (b.min.y + b.max.y) / 2, b.min.z - 0.002); r.rotation.y = Math.PI;
+    m.parent.add(r); m.visible = false; m.userData.reflector = r;
+  }
+}
 crearBar(gltf.scene); crearNicho(scene);   // dentro del grupo de arquitectura: el recorrido la trata como obstáculo
 
 // Mobiliario e IDs desde los datos (no desde el modelo)
