@@ -384,15 +384,16 @@ buckets['madera_cielo'] += _cielo(44.14, 46.06, 3.56, 8.40) + _cielo(46.06, 48.0
 for _x in (44.75, 45.40, 46.06, 46.72, 47.37):            # correas a lo largo + cumbrera
     _z = (2.56 + (4.11 - 2.56) * (_x - 43.98) / 2.08 if _x <= 46.06 else 2.56 + (4.11 - 2.56) * (48.20 - _x) / 2.14) - 0.13
     buckets['acero_negro'] += box(_x - 0.04, _x + 0.04, 3.56, 8.40, _z - 0.06, _z + 0.06)
-for _y in (3.62, 6.0, 8.34):                               # pares (vigas inclinadas)
-    for (xa, xb) in ((44.14, 46.06), (46.06, 48.04)):
-        za = 2.56 + 1.55 * (xa - 43.98) / 2.08 - 0.12 if xa < 46 else 4.11 - 0.12
-        zb = 4.11 - 0.12 if xb < 46.1 else 2.56 + 1.55 * (48.20 - xb) / 2.14 - 0.12
-        n = 12
-        for k in range(n):
-            x0_, x1_ = xa + (xb - xa) * k / n, xa + (xb - xa) * (k + 1) / n
-            z0_, z1_ = za + (zb - za) * k / n, za + (zb - za) * (k + 1) / n
-            buckets['acero_negro'] += box(min(x0_, x1_), max(x0_, x1_), _y - 0.04, _y + 0.04, min(z0_, z1_) - 0.05, max(z0_, z1_) + 0.05)
+def _viga(p0, p1, w, h):
+    """Viga recta de sección w × h entre dos puntos del plano x–z (a y constante)."""
+    p0, p1 = np.array(p0, float), np.array(p1, float); d = p1 - p0; d /= np.linalg.norm(d)
+    n = np.array([-d[2], 0, d[0]]) * h / 2; s_ = np.array([0, w / 2, 0])
+    c = [p0 - n - s_, p1 - n - s_, p1 + n - s_, p0 + n - s_, p0 - n + s_, p1 - n + s_, p1 + n + s_, p0 + n + s_]
+    F = [(0,1,2),(0,2,3),(4,6,5),(4,7,6),(0,4,5),(0,5,1),(3,2,6),(3,6,7),(0,3,7),(0,7,4),(1,5,6),(1,6,2)]
+    return [np.array([c[i] for i in t]) for t in F]
+for _y in (3.62, 6.0, 8.34):                               # pares (vigas inclinadas) bajo el cielo
+    buckets['acero_negro'] += _viga((44.14, _y, 2.56 + 1.55 * 0.16 / 2.08 - 0.12), (46.06, _y, 4.11 - 0.12), 0.08, 0.10)
+    buckets['acero_negro'] += _viga((46.06, _y, 4.11 - 0.12), (48.04, _y, 2.56 + 1.55 * 0.16 / 2.14 - 0.12), 0.08, 0.10)
 buckets['piso_suite'] += box(44.16, 48.02, 3.56, 8.40, 0.0, 0.004)
 # muro divisorio (cara hacia la sala, y = 3,555) hasta el cielo: papel de colgadura negro con palmas doradas
 _pp = [(44.16, 0.0), (48.02, 0.0), (48.02, 2.62), (46.06, 4.03), (44.16, 2.62)]

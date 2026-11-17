@@ -115,7 +115,7 @@ export async function aplicarMateriales(root, renderer) {
     madera_nicho: { roughness: 0.5, color: 0x9c7a55 },   // Zona E: el triplex real es más oscuro
     metal_cafe:   { roughness: 0.42, metalness: 0.35, color: 0x2e1a12 },   // lámina metálica café oscuro (volumen de servicios)
     marmol_negro: { roughness: 0.15, color: 0x0d0d0d },
-    piso_suite:   { roughness: 0.55, color: 0xffffff },
+    piso_suite:   { roughness: 0.55, color: 0xf2e9e0 },
     papel_palmas: { roughness: 0.75, color: 0xffffff },
     tablas_rojizas: { roughness: 0.6, color: 0xffffff },
     espejo:       { roughness: 0.02, metalness: 1.0, color: 0xe8eeee, envMapIntensity: 1.2 },
