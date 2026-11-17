@@ -547,7 +547,7 @@
     "bano_suite": {
       "nombre": "Baño privado de la suite",
       "categoria": "Servicios",
-      "descripcion": "Baño privado dentro de la suite: sanitario, lavamanos de sobreponer sobre mueble de madera, espejo grande, piso de baldosa verde en escama y papel de colgadura con palmas.",
+      "descripcion": "Baño privado dentro de la suite: sanitario, lavamanos de sobreponer sobre un mueble antiguo de madera, espejo grande, piso de baldosa verde en escama y papel de colgadura gris con palmas.",
       "campos": [
         {
           "k": "Sanitarios",
@@ -563,6 +563,11 @@
           "k": "Acceso",
           "v": "Puerta de madera desde la suite",
           "estado": "confirmado"
+        },
+        {
+          "k": "Medidas según modelo",
+          "v": "≈ 3,7 × 1,9 m",
+          "estado": "estimado"
         }
       ],
       "fotos": [
@@ -571,7 +576,7 @@
         "suite-bano-3",
         "suite-bano-4"
       ],
-      "modelo3d": "Puerta en el modelo; interior en fotos"
+      "modelo3d": "Modelado (distribución según fotos; medidas estimadas)"
     },
     "sala_hierro_rosa": {
       "nombre": "Sala de hierro fucsia (deck de la suite)",
@@ -595,7 +600,6 @@
         }
       ],
       "fotos": [
-        "suite-deck-1",
         "suite-deck-2"
       ],
       "modelo3d": "aproximado (composición estimada desde el video)"
@@ -813,8 +817,7 @@
         "suite-1",
         "suite-tocador",
         "suite-sala",
-        "suite-bano-1",
-        "suite-deck-1"
+        "suite-bano-1"
       ],
       "campos": [
         {

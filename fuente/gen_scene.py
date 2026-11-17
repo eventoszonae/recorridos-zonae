@@ -56,7 +56,7 @@ add('GH-SUITE-TOCADOR', 'tocador_banco', 46.55, 3.88, rot=0, zona='suite', estad
 add('GH-SUITE-BUTACO', 'butaco_floral', 46.25, 4.65, rot=200, zona='suite', estado='fijo')
 add('GH-SUITE-LAMPARA', 'lampara_dorada', 46.06, 7.15, z=2.4, zona='suite', estado='fijo')
 add('GH-SUITE-VENT', 'ventilador', 46.06, 5.55, z=3.40, zona='suite', estado='fijo')
-add('GH-SUITE-BANO', 'bano_suite', 44.71, 3.62, zona='suite', estado='fijo')
+add('GH-SUITE-BANO', 'bano_suite', 46.09, 2.48, zona='suite', estado='fijo')   # origen = centro del baño
 add('GH-SUITE-SALA', 'sala_hierro_rosa', 46.10, 10.0, rot=0, zona='suite', estado='provisional')
 puertas = json.load(open('../site/greenhouse_arquitectura_puertas.json'))
 for p in puertas:

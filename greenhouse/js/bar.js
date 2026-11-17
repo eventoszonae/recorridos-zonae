@@ -119,10 +119,15 @@ export function espejoBar(renderer, scene) {
     const r2 = rtSuite = new THREE.WebGLCubeRenderTarget(256, { generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
     const c2 = new THREE.CubeCamera(0.1, 60, r2); const [sx, sy] = L(46.5, 6.4); c2.position.set(sx, 1.5, -sy);
     scene.add(c2); c2.update(renderer, scene); scene.remove(c2);
-    for (const m of espejosSuite) { m.envMap = r2.texture; m.envMapIntensity = 1.0; m.needsUpdate = true; }
+    for (const m of espejosSuite) if (m.name !== 'espejo_bano') { m.envMap = r2.texture; m.envMapIntensity = 1.0; m.needsUpdate = true; }
+    rtBano?.dispose();   // espejo del baño de la suite: captura desde el centro del baño
+    const r3 = rtBano = new THREE.WebGLCubeRenderTarget(256, { generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
+    const c3 = new THREE.CubeCamera(0.05, 40, r3); const [bx, by] = L(46.0, 2.7); c3.position.set(bx, 1.5, -by);
+    scene.add(c3); c3.update(renderer, scene); scene.remove(c3);
+    for (const m of espejosSuite) if (m.name === 'espejo_bano') { m.envMap = r3.texture; m.envMapIntensity = 1.0; m.needsUpdate = true; }
   }
 }
-const espejosSuite = []; let rtSuite = null;
+const espejosSuite = []; let rtSuite = null, rtBano = null;
 /** Registra el material del espejo de la suite (viene del GLB con el nombre 'espejo'). */
 export function registrarEspejoSuite(mat) { espejosSuite.push(mat); }
 

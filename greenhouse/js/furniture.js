@@ -302,10 +302,10 @@ Object.assign(BUILDERS, {
 
 // ======== Suite de la novia (fotos y videos de Zona E, 17-nov). Medidas ESTIMADAS a partir de las fotos. ========
 Object.assign(MAT, {
-  tapiz:     new THREE.MeshStandardMaterial({ color: 0xa08f88, roughness: 0.95 }),            // tela gris topo de sofá y poltronas
+  tapiz:     new THREE.MeshStandardMaterial({ color: 0xb09a8e, roughness: 0.95 }),            // tela gris topo de sofá y poltronas
   roble:     new THREE.MeshStandardMaterial({ color: 0xb08a5c, roughness: 0.7 }),             // madera natural del marco del sofá
   mostaza:   new THREE.MeshStandardMaterial({ color: 0xb28a4c, roughness: 0.9 }),             // cojines camel / mostaza
-  crema:     new THREE.MeshStandardMaterial({ color: 0xe9e2d2, roughness: 0.95 }),
+  crema:     new THREE.MeshStandardMaterial({ color: 0xd9cfbd, roughness: 0.95 }),
   cromo:     new THREE.MeshStandardMaterial({ color: 0xdfe3e6, roughness: 0.12, metalness: 1.0 }),
   vidrioMesa:new THREE.MeshStandardMaterial({ color: 0xcfe6df, roughness: 0.03, transparent: true, opacity: 0.32, depthWrite: false }),
   blanqueada:new THREE.MeshStandardMaterial({ color: 0xcdb99d, roughness: 0.9 }),             // banco de carpintero blanqueado
@@ -315,7 +315,30 @@ Object.assign(MAT, {
   hierroRosa:new THREE.MeshStandardMaterial({ color: 0xb02a55, roughness: 0.45, metalness: 0.5 }),   // hierro forjado fucsia del deck de la suite (video)
   aspa:      new THREE.MeshStandardMaterial({ color: 0xd9b27a, roughness: 0.7 }),
   floral:    new THREE.MeshStandardMaterial({ roughness: 0.95 }),
+  ceramica:  new THREE.MeshStandardMaterial({ color: 0xf3f3f0, roughness: 0.12 }),
+  dispensador: new THREE.MeshStandardMaterial({ color: 0x8e9498, roughness: 0.3, metalness: 0.7 }),
+  plasticoBlanco: new THREE.MeshStandardMaterial({ color: 0xeeeeea, roughness: 0.4 }),
+  led:       new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1.2, roughness: 0.5 }),
+  boton:     new THREE.MeshStandardMaterial({ color: 0x7d706b, roughness: 0.8 }),
+  cuadro:    new THREE.MeshStandardMaterial({ roughness: 0.8 }),
+  pino:      new THREE.MeshStandardMaterial({ color: 0xc8925a, roughness: 0.55 }),   // mueble del lavamanos: madera miel clara (fotos)
 });
+(function telaTapiz() {   // trama de tela (lino) para que el tapizado no se vea plástico
+  const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
+  g.fillStyle = '#ffffff'; g.fillRect(0, 0, 128, 128);
+  for (let i = 0; i < 128; i += 2) { g.fillStyle = `rgba(0,0,0,${0.03 + Math.random() * 0.05})`; g.fillRect(0, i, 128, 1); g.fillRect(i, 0, 1, 128); }
+  for (let i = 0; i < 400; i++) { g.fillStyle = `rgba(0,0,0,${Math.random() * 0.06})`; g.fillRect(Math.random() * 128, Math.random() * 128, 3, 1); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(6, 6);
+  for (const m of [MAT.tapiz, MAT.mostaza, MAT.crema]) { m.map = t; m.needsUpdate = true; }
+})();
+(function cuadroAbstracto() {   // cuadro del baño: pintura abstracta colorida (genérica, no es copia de la obra)
+  const c = document.createElement('canvas'); c.width = 256; c.height = 200; const g = c.getContext('2d');
+  g.fillStyle = '#f2ead8'; g.fillRect(0, 0, 256, 200);
+  const cols = ['#e2442a', '#f2b632', '#2b59c3', '#f07e2b', '#3aa655', '#c5304a', '#5fb8e8', '#f5d44a'];
+  for (let i = 0; i < 90; i++) { g.strokeStyle = cols[i % cols.length]; g.globalAlpha = 0.75; g.lineWidth = 4 + Math.random() * 14; g.lineCap = 'round';
+    g.beginPath(); const x = Math.random() * 256, y = Math.random() * 200; g.moveTo(x, y); g.quadraticCurveTo(x + Math.random() * 60 - 30, y + Math.random() * 60 - 30, x + Math.random() * 70 - 35, y + Math.random() * 70 - 35); g.stroke(); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; MAT.cuadro.map = t;
+})();
 (function telaFloral() {   // tapiz del butaco: fondo vino/café con flores rosadas (foto del tocador)
   const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
   g.fillStyle = '#5b3a32'; g.fillRect(0, 0, 128, 128);
@@ -374,8 +397,14 @@ Object.assign(BUILDERS, {
     const back = softBox(0.58, 0.12, 0.62, 0, 0, 0, 0.05); back.rotateX(0.28); back.translate(0, 0.74, 0.27); tap.push(back);
     const roll = new THREE.CylinderGeometry(0.065, 0.065, 0.58, 14); roll.rotateZ(Math.PI / 2); roll.translate(0, 1.04, 0.34); tap.push(roll);
     for (const [x, y] of [[-0.25, 0.30], [0.25, 0.30], [-0.24, -0.22], [0.24, -0.22]]) { const g = pataTorneada(0.34, x, y); g.scale(0.55, 1, 0.55); g.translate(x * 0.45, 0, -y * 0.45); wood.push(g); }
-    const c = softBox(0.40, 0.12, 0.38, 0, -0.08, 0.70, 0.06); c.rotateX(0); pil.push(c);
-    return [[merge(tap), MAT.tapiz], [merge(wood), MAT.roble], [merge(pil), MAT.crema]];
+    const c = softBox(0.34, 0.10, 0.32, 0, 0, 0, 0.05); c.rotateX(0.32); c.translate(0, 0.66, 0.15); pil.push(c);   // cojín apoyado en el respaldo
+    const bot = [];   // botones del capitoné (rombos) en respaldo y asiento
+    for (let r = 0; r < 3; r++) for (let k = 0; k < (r % 2 ? 2 : 3); k++) {
+      const x = (k - (r % 2 ? 0.5 : 1)) * 0.17, z = 0.62 + r * 0.14, y = -0.235 - (z - 0.55) * 0.29;
+      const b = new THREE.SphereGeometry(0.011, 6, 4); b.translate(x, z, -y); bot.push(b);
+    }
+    for (const [x, y] of [[-0.12, 0.12], [0.12, 0.12], [0, 0.0], [-0.12, -0.12], [0.12, -0.12]]) { const b = new THREE.SphereGeometry(0.011, 6, 4); b.translate(x, 0.47, -(y + 0.06)); bot.push(b); }
+    return [[merge(tap), MAT.tapiz], [merge(wood), MAT.roble], [merge(pil), MAT.crema], [merge(bot), MAT.boton]];
   },
   // Mesa de centro (foto): cubierta de vidrio templado ≈ 1,30 × 0,75 m sobre base de tubo cromado curvo, con una monstera.
   mesa_centro_vidrio() {
@@ -383,8 +412,15 @@ Object.assign(BUILDERS, {
     for (const sx of [-1, 1]) { chrome.push(tube([[sx * 0.55, -0.28, 0.0], [sx * 0.50, -0.20, 0.25], [sx * 0.42, 0, 0.405], [sx * 0.50, 0.20, 0.25], [sx * 0.55, 0.28, 0.0]], 0.014, 24));
       chrome.push(tube([[sx * 0.42, 0, 0.405], [0, 0, 0.36], [-sx * 0.0, 0, 0.36]], 0.012, 8)); }
     const p = new THREE.CylinderGeometry(0.10, 0.08, 0.14, 16); p.translate(0.05, 0.50, 0); pot.push(p);
-    for (let i = 0; i < 9; i++) { const a = i / 9 * Math.PI * 2, L = 0.30 + (i % 3) * 0.06; const g = hojaMonstera(L, L * 0.85);
-      g.rotateX(-Math.PI / 2 + 0.55 + (i % 2) * 0.25); g.rotateY(a); g.translate(0.05, 0.60, 0); leaf.push(g);}
+    const tallos = [];
+    for (let i = 0; i < 8; i++) {   // monstera: 8 hojas sobre tallos que salen de la maceta [E]
+      const a = i / 8 * Math.PI * 2 + (i % 2) * 0.3, h = 0.20 + (i % 3) * 0.08, r = 0.16 + (i % 2) * 0.06, L = 0.26 + (i % 3) * 0.05;
+      const tip = [0.05 + Math.cos(a) * r, 0.50 + Math.sin(a) * r, 0.57 + h];
+      tallos.push(tube([[0.05, 0.50, 0.55], [0.05 + Math.cos(a) * r * 0.4, 0.50 + Math.sin(a) * r * 0.4, 0.57 + h * 0.9], tip], 0.006, 8, false, 4));
+      const g = hojaMonstera(L, L * 0.9); g.rotateX(-Math.PI / 2 + 0.75); g.rotateY(-a + Math.PI / 2);
+      g.translate(tip[0], tip[2], -tip[1]); leaf.push(g);
+    }
+    leaf.push(...tallos);
     return [[merge(glass), MAT.vidrioMesa], [merge(chrome), MAT.cromo], [merge(leaf), MAT.hoja], [merge(pot), MAT.maceta]];
   },
   // Tocador (foto): banco de carpintero rústico blanqueado con prensa y repisa baja. ≈ 1,80 × 0,60 × 0,90 m [E]
@@ -453,6 +489,37 @@ Object.assign(BUILDERS, {
     asiento(0, 0.80, 1.10, Math.PI); asiento(0, -0.80, 1.10, 0);
     asiento(-1.35, 0, 0.55, -Math.PI / 2); asiento(1.35, 0, 0.55, Math.PI / 2);
     return [[merge(iron), MAT.hierroRosa], [merge(glass), MAT.vidrio]];
+  },
+});
+
+Object.assign(BUILDERS, {
+  // Baño privado de la suite (fotos 17-nov). Origen del objeto = centro del baño. Todo [E] salvo la composición (fotos).
+  bano_suite() {
+    const wood = [], cer = [], disp = [], plas = [], cromo = [], led = [], cuadro = [], hoja = [];
+    // mueble antiguo de madera con cajones, patas torneadas (lavamanos) contra el muro sur
+    const vx = -0.79, vy = -0.66;
+    wood.push(box(1.40, 0.56, 0.04, vx, vy, 0.80), box(1.30, 0.50, 0.14, vx, vy, 0.71), box(0.46, 0.50, 0.32, vx + 0.40, vy, 0.62));
+    for (const [sx, sy] of [[-0.64, -0.23], [0.64, -0.23], [-0.64, 0.23], [0.64, 0.23]]) { const g = pataTorneada(0.66, 0, 0); g.scale(0.7, 1, 0.7); g.translate(vx + sx, 0, -(vy + sy)); wood.push(g); }
+    const lav = new THREE.LatheGeometry([[0.0, 0], [0.12, 0.0], [0.19, 0.04], [0.21, 0.10], [0.20, 0.15], [0.185, 0.15], [0.17, 0.06], [0.0, 0.035]].map(([r, z]) => new THREE.Vector2(r, z)), 28);
+    lav.translate(vx - 0.10, 0.82, -(vy + 0.02)); cer.push(lav);
+    cromo.push(tube([[vx - 0.10, vy - 0.22, 0.82], [vx - 0.10, vy - 0.22, 1.12], [vx - 0.10, vy - 0.12, 1.16], [vx - 0.10, vy - 0.06, 1.08]], 0.011, 14));
+    const mac = new THREE.CylinderGeometry(0.07, 0.06, 0.10, 12); mac.translate(vx - 0.55, 0.87, -(vy - 0.08)); wood.push(mac);
+    for (let i = 0; i < 14; i++) { const a = i * 2.4, r = 0.05 + (i % 4) * 0.03; const l = new THREE.SphereGeometry(0.035, 5, 4); l.scale(1.4, 0.5, 0.8); l.translate(vx - 0.55 + Math.cos(a) * r, 0.94 + (i % 3) * 0.03, -(vy - 0.08 + Math.sin(a) * r)); hoja.push(l); }
+    // sanitario de una pieza contra el muro sur, junto al muro este
+    const sx = 1.26, sy = -0.60;
+    const taza = new THREE.LatheGeometry([[0.0, 0.0], [0.15, 0.0], [0.17, 0.20], [0.20, 0.36], [0.19, 0.40], [0.0, 0.40]].map(([r, z]) => new THREE.Vector2(r, z)), 24);
+    taza.scale(1, 1, 1.25); taza.translate(sx, 0, -(sy + 0.10)); cer.push(taza);
+    cer.push(softBox(0.38, 0.20, 0.40, sx, sy - 0.24, 0.60, 0.04));
+    const tapa = new THREE.CylinderGeometry(0.19, 0.19, 0.03, 24); tapa.scale(1, 1, 1.25); tapa.translate(sx, 0.415, -(sy + 0.10)); plas.push(tapa);
+    // dispensadores (fotos): toallas y jabón en el muro oeste; papel higiénico junto al sanitario
+    disp.push(softBox(0.20, 0.30, 0.36, -1.76, 0.15, 1.50, 0.03), softBox(0.24, 0.12, 0.26, 0.70, -0.86, 0.80, 0.02));
+    plas.push(box(0.08, 0.10, 0.20, -1.82, -0.25, 1.30));
+    // cuadro colorido sobre el muro blanco del divisorio
+    cuadro.push(box(0.90, 0.03, 0.68, 0.66, 0.92, 1.55));
+    // panel LED en el cielo inclinado
+    const p = new THREE.BoxGeometry(1.10, 0.02, 0.30); p.rotateZ(Math.atan2(1.55, 2.08)); p.translate(-0.70, 3.40, 0); led.push(p);
+    return [[uvMetros(merge(wood)), MAT.pino], [merge(cer), MAT.ceramica], [merge(disp), MAT.dispensador], [merge(plas), MAT.plasticoBlanco],
+            [merge(cromo), MAT.cromo], [merge(led), MAT.led], [merge(cuadro), MAT.cuadro], [merge(hoja), MAT.hoja]];
   },
 });
 

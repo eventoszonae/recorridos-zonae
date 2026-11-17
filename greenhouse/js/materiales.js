@@ -18,7 +18,9 @@ const ESCANEO = {
   damero: ['damero', 1.57, 1.57],                      // ESCANEO del nicho: baldosas de 19,6 cm alineadas con los muros (no en diagonal)
   madera_nicho: ['madera_nicho', 1.22, 2.44],          // FOTO del nicho: láminas de triplex con veta y tira dorada
   concreto: ['concreto_sendero', 1.5, 2.35],           // zócalos y losas: el mismo concreto real del sendero
-  piso_suite: ['piso_suite', 1.0, 1.0],                // Zona E 17-nov (fotos): concreto gris con estampado blanco; módulo ≈ 1 m [E]
+  piso_suite: ['piso_suite', 1.25, 1.25],              // Zona E 17-nov (fotos): concreto gris con estampado blanco; módulo ≈ 1,25 m [E]
+  papel_gris: ['papel_gris', 0.40, 2.38],              // baño de la suite (foto): papel gris con palmas y casas [escala E]
+  escama_verde: ['escama_verde', 0.52, 0.52],          // baño de la suite (fotos): baldosa en escama verde ≈ 13 cm [E]
   papel_palmas: ['papel_palmas', 0.55, 1.1],           // Zona E 17-nov (foto del tocador): papel negro con palmas oliva [escala E]
   tablas_rojizas: ['tablas_rojizas', 0.56, 0.56],      // Zona E 17-nov (video): tablas verticales de ≈ 14 cm [E]
 };
@@ -115,11 +117,16 @@ export async function aplicarMateriales(root, renderer) {
     madera_nicho: { roughness: 0.5, color: 0x9c7a55 },   // Zona E: el triplex real es más oscuro
     metal_cafe:   { roughness: 0.42, metalness: 0.35, color: 0x2e1a12 },   // lámina metálica café oscuro (volumen de servicios)
     marmol_negro: { roughness: 0.15, color: 0x0d0d0d },
-    piso_suite:   { roughness: 0.55, color: 0xf2e9e0 },
+    piso_suite:   { roughness: 0.6, color: 0xfff0e2, envMapIntensity: 0.3 },
+    papel_gris:   { roughness: 0.85, color: 0xffffff },
+    escama_verde: { roughness: 0.22, color: 0xffffff, envMapIntensity: 0.8 },
+    muro_blanco:  { roughness: 0.9, color: 0xeeebe4 },
+    laton:        { roughness: 0.35, metalness: 0.9, color: 0xa88a4a },
+    espejo_bano:  { roughness: 0.02, metalness: 1.0, color: 0xe8eeee, envMapIntensity: 1.2 },
     papel_palmas: { roughness: 0.75, color: 0xffffff },
     tablas_rojizas: { roughness: 0.6, color: 0xffffff },
     espejo:       { roughness: 0.02, metalness: 1.0, color: 0xe8eeee, envMapIntensity: 1.2 },
-    vidrio_esmerilado: { roughness: 0.55, metalness: 0.0, color: 0xf3f5f4, opacity: 0.93, envMapIntensity: 0.5 },   // Zona E 17-nov: vidrio esmerilado de la suite
+    vidrio_esmerilado: { roughness: 0.55, metalness: 0.0, color: 0xf3f5f4, opacity: 0.94, envMapIntensity: 0.4, emissive: 0xffffff, emissiveIntensity: 0.5 },   // Zona E 17-nov: vidrio esmerilado de la suite
     vidrio:       { roughness: 0.03, metalness: 0.0, color: 0xdfeeee, opacity: 0.12, envMapIntensity: 1.6 },
   };
   root.traverse(o => {
@@ -128,11 +135,12 @@ export async function aplicarMateriales(root, renderer) {
     if (maps[n]) m.map = maps[n];
     if (n === 'madera_rojiza') m.map = panelesMadera(renderer);
     if (n === 'verde_bosque') m.map = laminaCorrugada(renderer);
-    if (tune[n]) for (const [k, v] of Object.entries(tune[n])) k === 'color' ? m.color.setHex(v) : (m[k] = v);
+    if (tune[n]) for (const [k, v] of Object.entries(tune[n])) (k === 'color' || k === 'emissive') ? m[k].setHex(v) : (m[k] = v);
     m.needsUpdate = true;
   });
   // Mobiliario: madera real de las mesas y de las cocteleras
   MAT.maderaMiel.map = await tex('madera_mesa', renderer, [1 / 0.65, 1 / 0.65]);   // [E] la foto muestra 3 tablas ≈ 0,65 m (tablas de ~22 cm) MAT.maderaMiel.color.setHex(0xf0b878); MAT.maderaMiel.needsUpdate = true;
+  if (MAT.pino) { MAT.pino.map = MAT.maderaMiel.map; MAT.pino.needsUpdate = true; }   // mueble del baño de la suite: misma veta, tono más claro
   MAT.maderaGris.map = await tex('madera_coctel', renderer, [1 / 0.7, 1 / 0.7]); MAT.maderaGris.color.setHex(0x6e5a4c); MAT.maderaGris.needsUpdate = true;   // Zona E: la madera de las cocteleras es más oscura
   return { prado: await tex('prado', renderer, [1, 1]) };   // la malla del terreno ya trae UV repetidas (cada 4 m)
 }

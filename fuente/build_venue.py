@@ -37,6 +37,11 @@ MATERIALS = {  # color base aproximado (Etapa 4 reemplaza por texturas reales)
   'papel_palmas':  dict(c=[1,1,1,1], r=0.8, m=0.0),
   'tablas_rojizas':dict(c=[1,1,1,1], r=0.6, m=0.0),
   'espejo':        dict(c=[0.9,0.92,0.92,1], r=0.02, m=1.0),
+  'espejo_bano':   dict(c=[0.9,0.92,0.92,1], r=0.02, m=1.0),
+  'papel_gris':    dict(c=[1,1,1,1], r=0.85, m=0.0),
+  'escama_verde':  dict(c=[1,1,1,1], r=0.25, m=0.0),
+  'muro_blanco':   dict(c=[0.92,0.91,0.88,1], r=0.9, m=0.0),
+  'laton':         dict(c=[0.62,0.48,0.24,1], r=0.35, m=0.9),
 }
 
 # Objetos Rhino identificados en la verificación (índice de malla en el OBJ)
@@ -79,7 +84,7 @@ def classify(oid, tri, zmid=0):
     up, down = n[2] > 0.7, n[2] < -0.7
     zc = tri[:,2].mean(); horiz = up or down
     if oid in SUITE_TECHO: return 'teja_gris'
-    if oid == 36501: return 'tablas_rojizas'      # Zona E 17-nov (video): el volumen del baño de la suite es de tablas verticales rojizas
+    if oid == 36501: return None                  # volumen del baño de la suite: se reconstruye abajo con muros y puerta (Zona E 17-nov)
     if oid == 36517: return None                  # hastial norte: en la realidad es vidrio con marco negro (se agrega abajo)
     if oid in SUITE_MUROS: return 'acero_negro'   # Zona E 13-nov: la suite es como el Green House: retícula NEGRA con vidrio
     if oid in SUITE_REMATES: return 'acero_negro'
@@ -395,13 +400,72 @@ for _y in (3.62, 6.0, 8.34):                               # pares (vigas inclin
     buckets['acero_negro'] += _viga((44.14, _y, 2.56 + 1.55 * 0.16 / 2.08 - 0.12), (46.06, _y, 4.11 - 0.12), 0.08, 0.10)
     buckets['acero_negro'] += _viga((46.06, _y, 4.11 - 0.12), (48.04, _y, 2.56 + 1.55 * 0.16 / 2.14 - 0.12), 0.08, 0.10)
 buckets['piso_suite'] += box(44.16, 48.02, 3.56, 8.40, 0.0, 0.004)
-# muro divisorio (cara hacia la sala, y = 3,555) hasta el cielo: papel de colgadura negro con palmas doradas
-_pp = [(44.16, 0.0), (48.02, 0.0), (48.02, 2.62), (46.06, 4.03), (44.16, 2.62)]
-for i in range(1, 4):
-    t = np.array([(_pp[0][0], 3.556, _pp[0][1]), (_pp[i][0], 3.556, _pp[i][1]), (_pp[i + 1][0], 3.556, _pp[i + 1][1])])
-    buckets['papel_palmas'] += [t, t[::-1]]
-buckets['espejo'] += box(45.80, 47.35, 3.557, 3.567, 0.98, 2.02)                       # espejo sin marco sobre el tocador [E 1,55 × 1,04 m]
-buckets['tablas_rojizas'] += box(44.30, 45.12, 3.557, 3.60, 0.0, 2.15)                  # puerta del baño (tablas verticales) [E]
+def _zt(x):   # borde inferior del cielo de madera de la suite/baño (x en m)
+    return (2.56 + 1.55 * (x - 43.98) / 2.08 if x <= 46.06 else 2.56 + 1.55 * (48.20 - x) / 2.14) - 0.07
+def _poly_y(pts, y, mat):
+    """Polígono vertical CONVEXO en el plano y = const, con puntos (x, z). Doble cara."""
+    for i in range(1, len(pts) - 1):
+        t = np.array([(pts[0][0], y, pts[0][1]), (pts[i][0], y, pts[i][1]), (pts[i + 1][0], y, pts[i + 1][1])])
+        buckets[mat] += [t, t[::-1]]
+def _poly_x(pts, x, mat):
+    for i in range(1, len(pts) - 1):
+        t = np.array([(x, pts[0][0], pts[0][1]), (x, pts[i][0], pts[i][1]), (x, pts[i + 1][0], pts[i + 1][1])])
+        buckets[mat] += [t, t[::-1]]
+# ---- Volumen del baño de la suite (y 1,42–3,54): muros de tablas rojizas por fuera, con hueco de puerta hacia la sala ----
+PX0, PX1 = 44.30, 45.12                                     # vano de la puerta del baño [E 0,82 m]
+buckets['tablas_rojizas'] += box(44.11, 48.07, 1.42, 1.54, 0.0, 2.65)       # muro sur (exterior)
+buckets['tablas_rojizas'] += box(44.11, 44.23, 1.54, 3.42, 0.0, 2.65)       # muro oeste
+buckets['tablas_rojizas'] += box(47.95, 48.07, 1.54, 3.42, 0.0, 2.65)       # muro este
+buckets['tablas_rojizas'] += box(44.11, PX0, 3.42, 3.54, 0.0, 2.65)          # divisorio, a los lados de la puerta
+buckets['tablas_rojizas'] += box(PX1, 48.07, 3.42, 3.54, 0.0, 2.65)
+buckets['tablas_rojizas'] += box(PX0, PX1, 3.42, 3.54, 2.15, 2.65)          # dintel
+# cara hacia la sala: papel negro con palmas hasta el cielo (sin tapar el vano de la puerta)
+YS = 3.556
+_poly_y([(44.16, 0.0), (PX0, 0.0), (PX0, _zt(PX0)), (44.16, _zt(44.16))], YS, 'papel_palmas')
+_poly_y([(PX0, 2.15), (PX1, 2.15), (PX1, _zt(PX1)), (PX0, _zt(PX0))], YS, 'papel_palmas')
+_poly_y([(PX1, 0.0), (48.02, 0.0), (48.02, _zt(48.02)), (46.06, _zt(46.06)), (PX1, _zt(PX1))], YS, 'papel_palmas')
+buckets['espejo'] += box(45.80, 47.35, 3.557, 3.567, 0.98, 2.02)            # espejo sin marco sobre el tocador [E 1,55 × 1,04 m]
+buckets['tablas_rojizas'] += box(PX0 - 0.05, PX0, 3.54, 3.60, 0.0, 2.20)    # marco de la puerta (lado sala)
+buckets['tablas_rojizas'] += box(PX1, PX1 + 0.05, 3.54, 3.60, 0.0, 2.20)
+buckets['tablas_rojizas'] += box(PX0 - 0.05, PX1 + 0.05, 3.54, 3.60, 2.15, 2.20)
+# puerta del baño ABIERTA hacia adentro, contra el muro oeste (así el recorrido entra al baño) [E]
+buckets['tablas_rojizas'] += box(PX0 - 0.0, PX0 + 0.04, 2.60, 3.42, 0.0, 2.12)
+
+# ---- Interior del baño (fotos 17-nov): piso de escama verde, papel gris con palmas y listones de latón,
+# muro blanco con cuadro, panel de triplex, cielo de madera, celosía de listones en los hastiales ----
+YB0, YB1, XB0, XB1 = 1.54, 3.42, 44.23, 47.95
+buckets['escama_verde'] += box(XB0, XB1, YB0, YB1, 0.0, 0.006)
+ZP_ = 2.45                                                   # altura del papel; encima, listones de madera hasta el cielo
+# muro sur (hastial): papel + listones de latón cada ≈ 0,8 m
+_poly_y([(XB0, 0.0), (XB1, 0.0), (XB1, ZP_), (XB0, ZP_)], YB0 + 0.004, 'papel_gris')
+for _x in np.arange(XB0 + 0.8, XB1, 0.8): buckets['laton'] += box(_x - 0.012, _x + 0.012, YB0, YB0 + 0.012, 0.0, ZP_)
+buckets['laton'] += box(XB0, XB1, YB0, YB0 + 0.015, ZP_ - 0.02, ZP_ + 0.01)
+# muro oeste: papel (con dispensadores, en el mobiliario)
+_poly_x([(YB0, 0.0), (YB1, 0.0), (YB1, ZP_), (YB0, ZP_)], XB0 + 0.004, 'papel_gris')
+buckets['laton'] += box(XB0, XB0 + 0.012, 2.48 - 0.012, 2.48 + 0.012, 0.0, ZP_)
+buckets['laton'] += box(XB0, XB0 + 0.015, YB0, YB1, ZP_ - 0.02, ZP_ + 0.01)
+# muro este: panel de triplex (lado del divisorio) + papel con rejilla de ventilación negra arriba
+_poly_x([(YB0, 0.0), (2.40, 0.0), (2.40, ZP_), (YB0, ZP_)], XB1 - 0.004, 'papel_gris')
+_poly_x([(2.40, 0.0), (YB1, 0.0), (YB1, ZP_), (2.40, ZP_)], XB1 - 0.004, 'madera_nicho')
+buckets['laton'] += box(XB1 - 0.012, XB1, 2.40 - 0.012, 2.40 + 0.012, 0.0, ZP_)
+buckets['acero_negro'] += box(XB1 - 0.03, XB1, 1.75, 2.30, 2.08, 2.38)     # rejilla
+# divisorio (cara del baño): triplex junto a la puerta, muro BLANCO con el cuadro hacia el este
+_poly_y([(PX1, 0.0), (45.70, 0.0), (45.70, ZP_), (PX1, ZP_)], YB1 - 0.004, 'madera_nicho')
+_poly_y([(45.70, 0.0), (XB1, 0.0), (XB1, ZP_), (45.70, ZP_)], YB1 - 0.004, 'muro_blanco')
+_poly_y([(XB0, 0.0), (PX0, 0.0), (PX0, ZP_), (XB0, ZP_)], YB1 - 0.004, 'madera_nicho')
+_poly_y([(PX0, 2.15), (PX1, 2.15), (PX1, ZP_), (PX0, ZP_)], YB1 - 0.004, 'madera_nicho')
+# encima de 2,45 m en ambos hastiales: celosía de listones verticales de madera (fotos) hasta el cielo
+for (_y, _s) in ((YB0 + 0.03, 1), (YB1 - 0.03, -1)):
+    buckets['madera_cielo'] += box(XB0, XB1, _y - 0.02, _y + 0.02, ZP_ + 0.01, ZP_ + 0.06)
+    for _x in np.arange(XB0 + 0.05, XB1, 0.11):
+        buckets['madera_cielo'] += box(_x - 0.025, _x + 0.025, _y - 0.015, _y + 0.015, ZP_ + 0.06, _zt(_x) - 0.01)
+# cielo de madera y correas negras sobre el baño
+buckets['madera_cielo'] += _cielo(XB0, 46.06, YB0, YB1) + _cielo(46.06, XB1, YB0, YB1)
+for _x in (44.75, 45.40, 46.06, 46.72, 47.37):
+    _z = (2.56 + 1.55 * (_x - 43.98) / 2.08 if _x <= 46.06 else 2.56 + 1.55 * (48.20 - _x) / 2.14) - 0.13
+    buckets['acero_negro'] += box(_x - 0.04, _x + 0.04, YB0, YB1, _z - 0.06, _z + 0.06)
+# espejo grande sobre el mueble del lavamanos (muro sur) [E 1,40 × 0,80 m]
+buckets['espejo_bano'] += box(44.60, 46.00, YB0 + 0.005, YB0 + 0.015, 1.05, 1.85)
 # Zona de servicio trasera (detrás de los baños): Zona E 12-nov – "debe tener una pared, no se ve lo que hay adentro".
 # Se cierran los 3 lados abiertos bajo la cubierta trasera (sur, oeste y este), desde el sardinel hasta la viga. Material [E]: muro claro.
 buckets['muro_claro'] += box(21.97, 37.91, -8.72, -8.60, 0.0, 2.75)     # sur
