@@ -152,6 +152,14 @@
     body.walk .panel.compact { top:auto; } body.compactopen .plano { display:none !important; }
     .bar { bottom:12px; }
   }
+  @media (max-height:560px) and (min-width:701px) {
+    .panel.compact { top:62px; left:14px; width:290px; max-height:calc(100vh - 160px); padding:12px 16px; }
+    .panel.compact:not(.expanded) .gal, .panel.compact:not(.expanded) .aqui { display:none; }
+    .panel.compact.expanded { max-height:calc(100vh - 150px); }
+    .plano { top:62px; bottom:auto; left:14px; width:150px; height:170px; }
+    .nav { bottom:8px; } .wa-fab { bottom:12px; width:46px; height:46px; }
+    .hint { top:42%; padding:12px 16px; font-size:13px; }
+  }
   @media (max-width:460px) { .brand { top:16px; left:14px; } .brand h1 { font-size:17px !important; letter-spacing:.04em; } .hora button { padding:6px 8px; } }
   @media (max-width:700px) and (pointer:fine) {     /* ventana angosta en computador: el plano sigue visible */
     .plano { display:block; top:70px; } .pill.mob { display:none; }
@@ -161,18 +169,18 @@
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
   "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/",
-  "./js/ambiente.js": "./js/ambiente.js?v=20261117113435",
-  "./js/arquitectura_glb.js": "./js/arquitectura_glb.js?v=20261117113435",
-  "./js/bar.js": "./js/bar.js?v=20261117113435",
-  "./js/exterior.js": "./js/exterior.js?v=20261117113435",
-  "./js/furniture.js": "./js/furniture.js?v=20261117113435",
-  "./js/hotspots.js": "./js/hotspots.js?v=20261117113435",
-  "./js/luces.js": "./js/luces.js?v=20261117113435",
-  "./js/materiales.js": "./js/materiales.js?v=20261117113435",
-  "./js/plano.js": "./js/plano.js?v=20261117113435",
-  "./js/recorrido.js": "./js/recorrido.js?v=20261117113435",
-  "./js/texturas.js": "./js/texturas.js?v=20261117113435",
-  "./js/vegetacion.js": "./js/vegetacion.js?v=20261117113435"
+  "./js/ambiente.js": "./js/ambiente.js?v=20261118104904",
+  "./js/arquitectura_glb.js": "./js/arquitectura_glb.js?v=20261118104904",
+  "./js/bar.js": "./js/bar.js?v=20261118104904",
+  "./js/exterior.js": "./js/exterior.js?v=20261118104904",
+  "./js/furniture.js": "./js/furniture.js?v=20261118104904",
+  "./js/hotspots.js": "./js/hotspots.js?v=20261118104904",
+  "./js/luces.js": "./js/luces.js?v=20261118104904",
+  "./js/materiales.js": "./js/materiales.js?v=20261118104904",
+  "./js/plano.js": "./js/plano.js?v=20261118104904",
+  "./js/recorrido.js": "./js/recorrido.js?v=20261118104904",
+  "./js/texturas.js": "./js/texturas.js?v=20261118104904",
+  "./js/vegetacion.js": "./js/vegetacion.js?v=20261118104904"
 } }
 </script>
 </head>
@@ -235,6 +243,13 @@ const scene = new THREE.Scene();
 scene.environmentIntensity = 0.7;
 
 const camera = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.1, 1200);
+let composer = null;
+// Ajuste al tamaño de la ventana DESDE EL INICIO: si la ventana cambia mientras carga (p. ej. se maximiza), no queda media pantalla.
+function ajustarTamano() {
+  camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight); composer?.setSize(innerWidth, innerHeight);
+}
+addEventListener('resize', ajustarTamano);
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true; controls.maxPolarAngle = Math.PI * 0.495; controls.minDistance = 1.5; controls.maxDistance = 90;
 
@@ -614,7 +629,7 @@ document.getElementById('startAerial').onclick = () => { start.remove(); setMode
 
 // ---- Post-proceso (realismo): oclusión ambiental (sombras de contacto en esquinas y bajo los muebles)
 //      + resplandor suave de bombillos y luces. Solo en computador; en celular se dibuja directo (rendimiento).
-let composer = null;
+
 if (!matchMedia('(pointer: coarse)').matches) {
   try {
     composer = new EffectComposer(renderer);
@@ -635,7 +650,7 @@ const dibujar = () => {
   if (composer) { try { composer.render(); return; } catch (e) { console.warn('Post-proceso desactivado', e); composer = null; } }
   renderer.render(scene, camera);
 };
-addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); composer?.setSize(innerWidth, innerHeight); });
+ajustarTamano(); plano.resize();   // por si la ventana cambió durante la carga
 const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const clock = new THREE.Clock();
 renderer.setAnimationLoop(() => {
